@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionCalls>
         <name>Transfer_Dispatcher</name>
@@ -223,37 +223,6 @@
             <label>All Appointments Eligible</label>
         </rules>
     </decisions>
-    <dynamicChoiceSets>
-        <name>DispatcherChoices</name>
-        <dataType>String</dataType>
-        <displayField>Name</displayField>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>HOT_IsTjenesteleverandorDispatcher__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <booleanValue>true</booleanValue>
-            </value>
-        </filters>
-        <filters>
-            <field>IsActive</field>
-            <operator>EqualTo</operator>
-            <value>
-                <booleanValue>true</booleanValue>
-            </value>
-        </filters>
-        <filters>
-            <field>RelatedRecordId</field>
-            <operator>NotEqualTo</operator>
-            <value>
-                <elementReference>$User.Id</elementReference>
-            </value>
-        </filters>
-        <object>ServiceResource</object>
-        <sortField>Name</sortField>
-        <sortOrder>Asc</sortOrder>
-        <valueField>RelatedRecordId</valueField>
-    </dynamicChoiceSets>
     <environments>Default</environments>
     <interviewLabel>HOT Service Provider Transfer SA Dispatcher {!$Flow.CurrentDateTime}</interviewLabel>
     <label>HOT Service Provider Transfer SA Dispatcher</label>
@@ -367,10 +336,10 @@
         </faultConnector>
         <filterLogic>and</filterLogic>
         <filters>
-            <field>RelatedRecordId</field>
+            <field>Id</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>Dispatcher_Choice.selectedChoiceValues</elementReference>
+                <elementReference>Dispatcher_Choice.value</elementReference>
             </value>
         </filters>
         <filters>
@@ -417,7 +386,8 @@
         <allowPause>false</allowPause>
         <fields>
             <name>Invalid_Message</name>
-            <fieldText>&lt;p&gt;Ingen oppdrag ble overført. Valgt formidler eller ett av oppdragene er ikke lenger tilgjengelig for overføring. &lt;/p&gt;</fieldText>
+            <fieldText
+            >&lt;p&gt;Ingen oppdrag ble overført. Valgt formidler eller ett av oppdragene er ikke lenger tilgjengelig for overføring. &lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>
@@ -445,7 +415,8 @@
         </connector>
         <fields>
             <name>Selection_Info</name>
-            <fieldText>&lt;p&gt;{!selectedCount} oppdrag valgt. Velg en annen formidler som skal overta oppdragene.&lt;/p&gt;</fieldText>
+            <fieldText
+            >&lt;p&gt;{!selectedCount} oppdrag valgt. Velg en annen formidler som skal overta oppdragene.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>
@@ -458,7 +429,8 @@
         </fields>
         <fields>
             <name>Dispatcher_Error</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;color: rgb(234, 0, 30);&quot;&gt;Valgt bruker kan ikke overta oppdragene. Velg en annen aktiv tjenesteleverandør-formidler.&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText
+            >&lt;p&gt;&lt;span style=&quot;color: rgb(234, 0, 30);&quot;&gt;Valgt bruker kan ikke overta oppdragene. Velg en annen aktiv tjenesteleverandør-formidler.&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>
@@ -481,18 +453,34 @@
         </fields>
         <fields>
             <name>Dispatcher_Choice</name>
-            <choiceReferences>DispatcherChoices</choiceReferences>
-            <extensionName>flowruntime:choiceLookup</extensionName>
-            <fieldText>Ny formidler</fieldText>
-            <fieldType>ComponentChoice</fieldType>
+            <extensionName>c:hot_flowWantedResourceSearch</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>label</name>
+                <value>
+                    <stringValue>Ny formidler</stringValue>
+                </value>
+            </inputParameters>
             <inputParameters>
                 <name>placeholder</name>
                 <value>
                     <stringValue>Søk etter formidler</stringValue>
                 </value>
             </inputParameters>
+            <inputParameters>
+                <name>searchServiceProviderDispatcher</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>clearButton</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
+            <isRequired>false</isRequired>
             <storeOutputAutomatically>true</storeOutputAutomatically>
             <styleProperties>
                 <verticalAlignment>
@@ -656,7 +644,8 @@
         <allowPause>false</allowPause>
         <fields>
             <name>Error_Message</name>
-            <fieldText>&lt;p&gt;Oppdragene kunne ikke overføres.&lt;/p&gt;&lt;p&gt;{!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
+            <fieldText
+            >&lt;p&gt;Oppdragene kunne ikke overføres.&lt;/p&gt;&lt;p&gt;{!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>

@@ -9,6 +9,7 @@ export default class Hot_flowWantedResourceSearch extends LightningElement {
     @api clearButton = false;
     @api searchFreelances = false;
     @api searchEmployees = false;
+    @api searchServiceProviderDispatcher = false;
     @api value = '';
     @api recordId;
 
@@ -21,7 +22,8 @@ export default class Hot_flowWantedResourceSearch extends LightningElement {
 
     @wire(getAllServiceResources, {
         searchFreelances: '$searchFreelances',
-        searchEmployees: '$searchEmployees'
+        searchEmployees: '$searchEmployees',
+        searchServiceProviderDispatcher: '$searchServiceProviderDispatcher'
     })
     wiredServiceResources({ data, error }) {
         if (data) {
@@ -60,17 +62,21 @@ export default class Hot_flowWantedResourceSearch extends LightningElement {
     async handleResourceSelect(event) {
         const resourceId = event.currentTarget.dataset.resourceId;
         const resource = this.serviceResources.find((item) => item.Id === resourceId);
-        if (!resource || !this.recordId) {
+        if (!resource) {
             return;
         }
 
         this.searchText = resource.Name;
         this.value = resource.Id;
         this.selectedResource = undefined;
-        this.isLoadingDetails = true;
         this.detailsError = undefined;
         this.dispatchEvent(new FlowAttributeChangeEvent('value', this.value));
 
+        if (!this.recordId) {
+            return;
+        }
+
+        this.isLoadingDetails = true;
         try {
             this.selectedResource = await getResourceDetails({
                 resourceId: resource.Id,
