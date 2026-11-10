@@ -1,8 +1,11 @@
+@import 'c/hot_sharedFonts';
+:host {
+    font-family: 'Source Sans 3', Arial, sans-serif;
+}
 .main-content {
     background-color: #fff;
     border-radius: 0.5rem;
     width: 100%;
-    font-family: 'Source Sans Pro', Arial, sans-serif;
     align-items: center;
     padding-top: 0.5rem;
     text-align: end;
@@ -21,7 +24,11 @@
 }
 
 span {
-    font-weight: normal;
+    font-weight: 400;
+}
+
+strong {
+    font-weight: 600;
 }
 
 lightning-input-field.ikke-sensitive-opplysninger > lightning-textarea > label:after {
@@ -70,9 +77,6 @@ lightning-input-field.ikke-sensitive-opplysninger > lightning-textarea > label:a
     padding-top: 5rem;
 }
 
-dialog.modal-container h2 {
-    font-family: 'Source Sans Pro', Arial, sans-serif;
-}
 dialog::backdrop {
     background-color: rgba(0, 0, 0, 0.6);
     z-index: 10000;
@@ -80,6 +84,7 @@ dialog::backdrop {
 
 /* Selve dialogen (default skjult) */
 dialog.modal-container {
+    font-family: inherit;
     z-index: 10001;
     background: white;
     border-radius: 0.5rem;

@@ -145,6 +145,18 @@ export default class hot_tindRequestHighlightPanelBot extends NavigationMixin(Li
             this.dispatchRefreshEvent();
         }
     }
+    async handleMessageToAllInterpreters() {
+        const result = await Hot_flowModal.open({
+            size: 'small',
+            flowApiName: 'HOT_SendMessageToAllInterpreters',
+            flowLabel: 'Send beskjed til tolk',
+            recordId: this.recordId
+        });
+
+        if (result === 'FINISHED' || result === 'FINISHED_SCREEN') {
+            this.dispatchRefreshEvent();
+        }
+    }
     get showFormidlerActions() {
         return hasFormidlerAccess;
     }

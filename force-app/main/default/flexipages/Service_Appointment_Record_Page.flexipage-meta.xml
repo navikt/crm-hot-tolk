@@ -30,6 +30,23 @@
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
+                    <name>header</name>
+                    <value>Beskjed til tolk</value>
+                </componentInstanceProperties>
+                <componentName>hot_serviceAppointmentMessage</componentName>
+                <identifier>c_hot_serviceAppointmentMessage</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!$Client.formFactor}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Small</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
                     <name>actionNames</name>
                     <valueList>
                         <valueListItems>
@@ -1476,6 +1493,23 @@
                 </componentInstanceProperties>
                 <componentName>force:relatedListSingleContainer</componentName>
                 <identifier>force_relatedListSingleContainer5</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>header</name>
+                    <value>Beskjed til tolk</value>
+                </componentInstanceProperties>
+                <componentName>hot_serviceAppointmentMessage</componentName>
+                <identifier>c_hot_serviceAppointmentMessage2</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!$Client.formFactor}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Large</rightValue>
+                    </criteria>
+                </visibilityRule>
             </componentInstance>
         </itemInstances>
         <itemInstances>
