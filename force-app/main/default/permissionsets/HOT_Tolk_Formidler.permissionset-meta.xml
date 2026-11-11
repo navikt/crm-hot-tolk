@@ -285,11 +285,6 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
-        <field>HOT_InterestedResource__c.HOT_ServiceResourceName__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
         <editable>true</editable>
         <field>HOT_InterestedResource__c.HOT_TermsOfAgreement__c</field>
         <readable>true</readable>
