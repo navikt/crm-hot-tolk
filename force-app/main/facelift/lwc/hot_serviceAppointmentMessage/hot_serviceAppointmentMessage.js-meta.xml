@@ -9,6 +9,7 @@
     <targetConfigs>
         <targetConfig targets="lightning__RecordPage">
             <property name="header" type="String" label="Tittel" default="Beskjed fra formidler" />
+            <property name="isFormidlerView" type="Boolean" label="Formidlervisning" default="false" />
             <objects>
                 <object>ServiceAppointment</object>
             </objects>

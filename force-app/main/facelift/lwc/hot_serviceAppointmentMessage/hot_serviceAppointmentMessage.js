@@ -4,6 +4,7 @@ import { refreshApex } from '@salesforce/apex';
 
 export default class Hot_serviceAppointmentMessage extends LightningElement {
     @api header = 'Beskjed fra formidler';
+    @api isFormidlerView = false;
 
     _recordId;
     hasRefreshedMessages = false;
@@ -45,6 +46,7 @@ export default class Hot_serviceAppointmentMessage extends LightningElement {
                 message: message.Message__c,
                 createdDate: message.CreatedDate,
                 created: this.formatDateTime(message.CreatedDate),
+                createdBy: message.CreatedBy?.Name ?? '',
                 isNewest: index === 0 && data.length > 1
             }));
             this.errorMessage = undefined;
