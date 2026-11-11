@@ -45,6 +45,14 @@ private class HOT_SAMessageControllerTest {
         insert messages;
         Test.setCreatedDate(messages[0].Id, Datetime.newInstanceGmt(2020, 1, 1, 10, 0, 0));
         Test.setCreatedDate(messages[1].Id, Datetime.newInstanceGmt(2020, 1, 2, 10, 0, 0));
+
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
+        insert resource;
+        List<AssignedResource> assignedResources = new List<AssignedResource>();
+        for (ServiceAppointment appointment : [SELECT Id FROM ServiceAppointment]) {
+            assignedResources.add(HOT_TestDataFactory.createAssignedResource(appointment.Id, resource.Id));
+        }
+        insert assignedResources;
     }
 
     @IsTest
@@ -161,6 +169,21 @@ private class HOT_SAMessageControllerTest {
         update appointment;
 
         Assert.areEqual(0, getMessagesAsUser(appointment.Id).size());
+    }
+
+    @IsTest
+    static void rejectsUserWithoutAssignmentOrPermissions() {
+        ServiceAppointment appointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
+        delete [SELECT Id FROM AssignedResource WHERE ServiceAppointmentId = :appointment.Id];
+
+        Test.startTest();
+        try {
+            getMessagesAsUser(appointment.Id);
+            Assert.fail('En bruker uten tildeling eller formidler-/adminrettighet skal ikke ha tilgang.');
+        } catch (AuraHandledException error) {
+            Assert.isNotNull(error);
+        }
+        Test.stopTest();
     }
 
     @IsTest
