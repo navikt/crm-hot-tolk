@@ -189,11 +189,12 @@ private class HOT_InterestedResourceNotificationTest {
         Test.stopTest();
 
         List<HOT_Notification__c> notifications = [
-            SELECT HOT_NotificationChannel__c
+            SELECT HOT_ServiceResource__c, HOT_NotificationChannel__c
             FROM HOT_Notification__c
             WHERE HOT_RelatedObject__c = :interestedResource.Id
         ];
         System.assertEquals(1, notifications.size());
+        System.assertEquals(interestedResource.ServiceResource__c, notifications[0].HOT_ServiceResource__c);
         System.assertEquals('SMS', notifications[0].HOT_NotificationChannel__c);
     }
 
