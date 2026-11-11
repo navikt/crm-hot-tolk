@@ -232,57 +232,7 @@ private class HOT_WantedSRListControllerTest {
         System.assertEquals('Declined', irToCheck.Status__c = 'Declined', 'Could not change the ir status');
     }
     @IsTest
-    static void noOverlapTest() {
-        List<ServiceAppointment> saList = [SELECT Id FROM ServiceAppointment LIMIT 2];
-
-        Profile profile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'];
-        User user1 = new User(
-            alias = 'TestUser',
-            email = 'HOT_testaccount@nav.hot.no',
-            emailencodingkey = 'UTF-8',
-            lastname = 'Testing',
-            languagelocalekey = 'en_US',
-            localesidkey = 'en_US',
-            profileid = profile.Id,
-            country = 'Norway',
-            IsActive = true,
-            timezonesidkey = 'Europe/Paris',
-            username = 'HOT_testaccount@nav.hot.no'
-        );
-        insert user1;
-        ServiceResource resource1 = HOT_TestDataFactory.createServiceResource(user1.Id);
-        insert resource1;
-
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert workType;
-
-        Test.startTest();
-        Integer index = 2;
-        for (ServiceAppointment ServiceAppointment : saList) {
-            ServiceAppointment.EarliestStartTime = Datetime.now().addDays(index);
-            ServiceAppointment.DueDate = ServiceAppointment.EarliestStartTime.addHours(index);
-            ServiceAppointment.SchedStartTime = Datetime.now().addDays(index);
-            ServiceAppointment.SchedEndTime = ServiceAppointment.SchedStartTime.addHours(index);
-            index += 2;
-        }
-        update saList;
-
-        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(saList[0].Id, resource1.Id);
-        insert assignedResource;
-
-        Test.stopTest();
-
-        List<ServiceAppointment> saToCheck = new List<ServiceAppointment>();
-        saToCheck.add(saList[1]);
-
-        System.runAs(user1) {
-            List<ServiceAppointment> availableSA = HOT_wantedSRListController.checkForOverlap(saToCheck);
-            System.assertEquals(1, availableSA.size(), 'Should return 1 because available sa');
-        }
-
-    }
-    @IsTest
-    static void hasOverlapTest() {
+    static void getWantedAppointmentsWithOverlapTest() {
         Profile profile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'];
         User user1 = new User(
             alias = 'TestUser',
@@ -334,23 +284,30 @@ private class HOT_WantedSRListControllerTest {
         ServiceAppointment.Status = 'Dispatched';
         update ServiceAppointment;
 
-        //
-
         ServiceAppointment ServiceAppointment2 = HOT_TestDataFactory.createServiceAppointment(WorkOrderLineItem);
         ServiceAppointment2.EarliestStartTime = Datetime.now().addDays(52);
         ServiceAppointment2.DueDate = ServiceAppointment2.EarliestStartTime.addHours(3);
         ServiceAppointment2.SchedStartTime = Datetime.now().addDays(52);
         ServiceAppointment2.SchedEndTime = ServiceAppointment2.SchedStartTime.addHours(4);
+        ServiceAppointment2.ServiceTerritoryId = [SELECT Id FROM ServiceTerritory LIMIT 1].Id;
+        ServiceAppointment2.HOT_IsReleasedToFreelance__c = true;
+        ServiceAppointment2.Status = 'Released To Freelance';
+        ServiceAppointment2.HOT_DeadlineDate__c = Date.today().addDays(3);
         insert ServiceAppointment2;
-        Test.stopTest();
 
-        List<ServiceAppointment> saToCheck = new List<ServiceAppointment>();
-        saToCheck.add(ServiceAppointment2);
+        HOT_InterestedResource__c wantedResource = HOT_TestDataFactory.createInterestedResource(
+            ServiceAppointment2.Id,
+            resource1.Id
+        );
+        wantedResource.Status__c = 'Wanted';
+        insert wantedResource;
 
         System.runAs(user1) {
-            List<ServiceAppointment> availableSA = HOT_wantedSRListController.checkForOverlap(saToCheck);
-            System.assertEquals(0, availableSA.size(), 'Should return 0 because no available sa');
+            List<ServiceAppointment> availableSA = HOT_wantedSRListController.getWantedServiceAppointments();
+            System.assertEquals(1, availableSA.size(), 'Should return the wanted appointment despite overlap');
+            System.assertEquals(ServiceAppointment2.Id, availableSA[0].Id, 'Should return the overlapping appointment');
         }
+        Test.stopTest();
     }
     @IsTest
     static void hasOverlapTestExisting() {
