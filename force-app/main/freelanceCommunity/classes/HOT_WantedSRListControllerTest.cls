@@ -291,9 +291,10 @@ private class HOT_WantedSRListControllerTest {
         ServiceAppointment2.SchedEndTime = ServiceAppointment2.SchedStartTime.addHours(4);
         ServiceAppointment2.ServiceTerritoryId = [SELECT Id FROM ServiceTerritory LIMIT 1].Id;
         ServiceAppointment2.HOT_IsReleasedToFreelance__c = true;
-        ServiceAppointment2.Status = 'Released To Freelance';
         ServiceAppointment2.HOT_DeadlineDate__c = Date.today().addDays(3);
         insert ServiceAppointment2;
+        ServiceAppointment2.Status = 'Released To Freelance';
+        update ServiceAppointment2;
 
         HOT_InterestedResource__c wantedResource = HOT_TestDataFactory.createInterestedResource(
             ServiceAppointment2.Id,
