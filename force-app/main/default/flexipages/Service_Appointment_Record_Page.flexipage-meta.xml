@@ -33,10 +33,6 @@
                     <name>header</name>
                     <value>Beskjed til tolk</value>
                 </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>isFormidlerView</name>
-                    <value>false</value>
-                </componentInstanceProperties>
                 <componentName>hot_serviceAppointmentMessage</componentName>
                 <identifier>c_hot_serviceAppointmentMessage</identifier>
                 <visibilityRule>
