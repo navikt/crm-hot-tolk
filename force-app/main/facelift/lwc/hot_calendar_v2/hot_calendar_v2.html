@@ -164,6 +164,9 @@
                                                     delete-file-on-button-click="false"
                                                 ></c-record-files-with-sharing>
                                             </div>
+                                            <c-hot_service-appointment-message
+                                                record-id={serviceAppointment.Id}
+                                            ></c-hot_service-appointment-message>
                                         </div>
 
                                         <div
@@ -231,9 +234,6 @@
                                                 ></c-hot_button>
                                             </div>
                                         </div>
-                                        <c-hot_service-appointment-message
-                                            record-id={serviceAppointment.Id}
-                                        ></c-hot_service-appointment-message>
                                     </template>
                                 </template>
                                 <template lwc:else>

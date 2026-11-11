@@ -117,6 +117,9 @@
                             delete-file-on-button-click="false"
                         ></c-record-files-without-sharing>
                     </div>
+                    <c-hot_service-appointment-message
+                        record-id={serviceAppointment.Id}
+                    ></c-hot_service-appointment-message>
                     <div class="button-container">
                         <c-hot_button
                             disabled={isEditButtonDisabled}
@@ -185,7 +188,6 @@
                         >
                         </c-hot_button>
                     </div>
-                    <c-hot_service-appointment-message record-id={recordId}></c-hot_service-appointment-message>
                 </div>
             </div>
         </template>
