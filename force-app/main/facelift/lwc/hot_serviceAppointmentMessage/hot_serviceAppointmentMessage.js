@@ -1,10 +1,13 @@
 import { LightningElement, api, wire } from 'lwc';
 import getMessages from '@salesforce/apex/HOT_ServiceAppointmentMessageController.getMessages';
+import { refreshApex } from '@salesforce/apex';
 
 export default class Hot_serviceAppointmentMessage extends LightningElement {
     @api header = 'Beskjed fra formidler';
+    @api isFormidlerView = false;
 
     _recordId;
+    hasRefreshedMessages = false;
     messages = [];
     errorMessage;
 
@@ -18,14 +21,20 @@ export default class Hot_serviceAppointmentMessage extends LightningElement {
             return;
         }
         this._recordId = value || undefined;
+        this.hasRefreshedMessages = false;
         this.messages = [];
         this.errorMessage = undefined;
     }
 
     @wire(getMessages, { recordId: '$recordId' })
-    wiredMessages({ data, error }) {
+    wiredMessages(result) {
+        const { data, error } = result;
         if (!this.recordId) {
             return;
+        }
+        if (!this.hasRefreshedMessages && (data || error)) {
+            this.hasRefreshedMessages = true;
+            refreshApex(result).catch(() => {});
         }
         if (error) {
             console.error('Kunne ikke hente beskjeder til oppdraget', error);
@@ -37,6 +46,7 @@ export default class Hot_serviceAppointmentMessage extends LightningElement {
                 message: message.Message__c,
                 createdDate: message.CreatedDate,
                 created: this.formatDateTime(message.CreatedDate),
+                createdBy: message.CreatedBy?.Name ?? '',
                 isNewest: index === 0 && data.length > 1
             }));
             this.errorMessage = undefined;

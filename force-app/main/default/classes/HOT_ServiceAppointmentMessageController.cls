@@ -1,8 +1,20 @@
-public with sharing class HOT_ServiceAppointmentMessageController {
+public without sharing class HOT_ServiceAppointmentMessageController {
     @AuraEnabled(cacheable=true)
     public static List<HOT_ServiceAppointmentMessage__c> getMessages(Id recordId) {
         if (recordId == null || recordId.getSObjectType() != ServiceAppointment.SObjectType) {
             throw new AuraHandledException('Ikke en gyldig oppdrags-ID.');
+        }
+
+        if (!HOT_CheckPermissions.isFormidlerOrAdmin()) {
+            List<AssignedResource> assignedResources = [
+                SELECT Id
+                FROM AssignedResource
+                WHERE ServiceAppointmentId = :recordId AND ServiceResource.RelatedRecordId = :UserInfo.getUserId()
+                LIMIT 1
+            ];
+            if (assignedResources.isEmpty()) {
+                throw new AuraHandledException('Fant ikke oppdraget, eller du mangler tilgang.');
+            }
         }
 
         List<ServiceAppointment> serviceAppointments = [
@@ -23,7 +35,7 @@ public with sharing class HOT_ServiceAppointmentMessageController {
         }
 
         return [
-            SELECT Id, Message__c, CreatedDate
+            SELECT Id, Message__c, CreatedDate, CreatedBy.Name
             FROM HOT_ServiceAppointmentMessage__c
             WHERE
                 (Request__c != NULL

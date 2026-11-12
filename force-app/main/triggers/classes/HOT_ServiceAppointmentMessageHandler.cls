@@ -41,6 +41,7 @@ public without sharing class HOT_ServiceAppointmentMessageHandler extends MyTrig
         return [
             SELECT
                 ServiceAppointmentId,
+                ServiceAppointment.AppointmentNumber,
                 ServiceAppointment.HOT_Request__c,
                 ServiceAppointment.HOT_WorkOrderID__c,
                 ServiceResourceId,

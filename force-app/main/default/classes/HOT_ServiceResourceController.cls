@@ -79,14 +79,12 @@ public with sharing class HOT_ServiceResourceController {
             SELECT Id, Name, HOT_PreferredRegions__c, HOT_IsEmployedInterpreter__c, HOT_IsFreelanceInterpreter__c
             FROM ServiceResource
             WHERE Id = :resourceId
-            WITH USER_MODE
             LIMIT 1
         ];
         ServiceAppointment appointment = [
-            SELECT EarliestStartTime, DueDate, ServiceTerritory.Name
+            SELECT SchedStartTime, SchedEndTime, ServiceTerritory.Name
             FROM ServiceAppointment
             WHERE Id = :serviceAppointmentId
-            WITH USER_MODE
             LIMIT 1
         ];
 
@@ -125,21 +123,21 @@ public with sharing class HOT_ServiceResourceController {
             ];
             details.regionMatches = !matchingTerritoryMembers.isEmpty();
         }
-        details.hasOverlap = false;
-
-        if (appointment.EarliestStartTime != null && appointment.DueDate != null) {
-            List<ServiceAppointment> overlappingAppointments = [
-                SELECT Id
-                FROM ServiceAppointment
-                WHERE
-                    Id IN (SELECT ServiceAppointmentId FROM AssignedResource WHERE ServiceResourceId = :resourceId)
-                    AND Id != :serviceAppointmentId
-                    AND EarliestStartTime < :appointment.DueDate
-                    AND DueDate > :appointment.EarliestStartTime
-                LIMIT 1
-            ];
-            details.hasOverlap = !overlappingAppointments.isEmpty();
+        if (appointment.SchedStartTime == null || appointment.SchedEndTime == null) {
+            throw new AuraHandledException('Kan ikke vurdere tilgjengelighet fordi oppdraget mangler planlagte tider.');
         }
+
+        List<ServiceAppointment> overlappingAppointments = [
+            SELECT Id
+            FROM ServiceAppointment
+            WHERE
+                Id IN (SELECT ServiceAppointmentId FROM AssignedResource WHERE ServiceResourceId = :resourceId)
+                AND Id != :serviceAppointmentId
+                AND SchedStartTime < :appointment.SchedEndTime
+                AND SchedEndTime > :appointment.SchedStartTime
+            LIMIT 1
+        ];
+        details.hasOverlap = !overlappingAppointments.isEmpty();
 
         return details;
     }
