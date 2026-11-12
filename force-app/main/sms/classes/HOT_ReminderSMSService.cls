@@ -377,6 +377,7 @@ public without sharing class HOT_ReminderSMSService {
         List<SMS__c> smsList = new List<SMS__c>();
         List<HOT_InterestedResource__c> wantedIRList = [
             SELECT
+                ServiceResource__c,
                 ServiceResource__r.Account.Id,
                 ServiceResource__r.HOT_MobilePhone__c,
                 ServiceAppointment__r.AppointmentNumber
@@ -400,6 +401,7 @@ public without sharing class HOT_ReminderSMSService {
             //creating notification object
             HOT_Notification__c notification = new HOT_Notification__c();
             notification.HOT_Account__c = ir.ServiceResource__r.Account.Id;
+            notification.HOT_ServiceResource__c = ir.ServiceResource__c;
             notification.HOT_NotificationChannel__c = 'SMS';
             notification.HOT_Subject__c = 'Du er ønsket til et oppdrag. ' + ir.ServiceAppointment__r.AppointmentNumber;
             notification.HOT_NotificationText__c =

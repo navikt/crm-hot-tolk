@@ -30,23 +30,6 @@
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
-                    <name>header</name>
-                    <value>Beskjed til tolk</value>
-                </componentInstanceProperties>
-                <componentName>hot_serviceAppointmentMessage</componentName>
-                <identifier>c_hot_serviceAppointmentMessage</identifier>
-                <visibilityRule>
-                    <criteria>
-                        <leftValue>{!$Client.formFactor}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>Small</rightValue>
-                    </criteria>
-                </visibilityRule>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
                     <name>actionNames</name>
                     <valueList>
                         <valueListItems>
@@ -1454,6 +1437,27 @@
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
+                    <name>header</name>
+                    <value>Beskjed til tolk</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>isFormidlerView</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentName>hot_serviceAppointmentMessage</componentName>
+                <identifier>c_hot_serviceAppointmentMessage</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!$Client.formFactor}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Small</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
                     <name>label</name>
                     <value>Tabs</value>
                 </componentInstanceProperties>
@@ -1499,15 +1503,52 @@
             <componentInstance>
                 <componentInstanceProperties>
                     <name>header</name>
-                    <value>Beskjed til tolk</value>
+                    <value>Beskjed fra formidler til tolk</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>isFormidlerView</name>
+                    <value>true</value>
                 </componentInstanceProperties>
                 <componentName>hot_serviceAppointmentMessage</componentName>
-                <identifier>c_hot_serviceAppointmentMessage2</identifier>
+                <identifier>c_hot_serviceAppointmentMessage3</identifier>
                 <visibilityRule>
+                    <booleanFilter>1 AND 2</booleanFilter>
                     <criteria>
                         <leftValue>{!$Client.formFactor}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>Large</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!$User.Profile.Name}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>HOT Tolk Formidler</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>header</name>
+                    <value>Beskjed til tolk</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>isFormidlerView</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentName>hot_serviceAppointmentMessage</componentName>
+                <identifier>c_hot_serviceAppointmentMessage2</identifier>
+                <visibilityRule>
+                    <booleanFilter>1 AND 2</booleanFilter>
+                    <criteria>
+                        <leftValue>{!$Client.formFactor}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Large</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!$User.Profile.Name}</leftValue>
+                        <operator>NE</operator>
+                        <rightValue>HOT Tolk Formidler</rightValue>
                     </criteria>
                 </visibilityRule>
             </componentInstance>

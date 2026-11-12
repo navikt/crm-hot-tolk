@@ -458,11 +458,17 @@ private class HOT_ReminderSMSServiceTest {
         HOT_InterestedResource__c ir = HOT_TestDataFactory.createInterestedResource(sa.Id, sr.Id);
         insert ir;
 
-        Set<Id> irIds = (new Map<Id, HOT_InterestedResource__c>([SELECT Id FROM HOT_InterestedResource__c LIMIT 1]))
-            .keySet();
-
-        HOT_ReminderSMSService.sendSMSOnNewWantedSR(irIds);
+        HOT_ReminderSMSService.sendSMSOnNewWantedSR(new Set<Id>{ ir.Id });
         Test.stopTest();
+
+        List<HOT_Notification__c> notifications = [
+            SELECT HOT_ServiceResource__c, HOT_NotificationChannel__c
+            FROM HOT_Notification__c
+            WHERE HOT_RelatedObject__c = :ir.Id
+        ];
+        System.assertEquals(1, notifications.size());
+        System.assertEquals(sr.Id, notifications[0].HOT_ServiceResource__c);
+        System.assertEquals('SMS', notifications[0].HOT_NotificationChannel__c);
     }
     @IsTest
     static void cancelledByUserConstructMessage() {

@@ -21,10 +21,6 @@ public without sharing class HOT_ServiceAppointmentNotification {
         List<AssignedResource> assignedResources
     ) {
         String title = 'Ny beskjed fra formidler';
-        String text = 'Formidler har gitt deg en beskjed angående et oppdrag du er tildelt.';
-        String smsText = text;
-        smsText += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
-        smsText += '\nMvh tolketjenesten i Nav';
 
         List<HOT_Notification__c> notifications = new List<HOT_Notification__c>();
         List<HOT_Notification__c> pushNotifications = new List<HOT_Notification__c>();
@@ -51,6 +47,12 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 ServiceResource resource = assignedResource.ServiceResource;
                 resourcesById.put(assignedResource.ServiceResourceId, resource);
                 String channel = resource.HOT_NotificationChannel__c;
+                String text =
+                    'Formidler har gitt deg en beskjed angående et oppdrag du er tildelt. ' +
+                    serviceAppointment.AppointmentNumber;
+                String smsText = text;
+                smsText += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
+                smsText += '\nMvh tolketjenesten i Nav';
                 HOT_Notification__c notification = new HOT_Notification__c();
                 notification.HOT_ServiceResource__c = assignedResource.ServiceResourceId;
                 notification.HOT_NotificationChannel__c = channel;

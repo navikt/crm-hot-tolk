@@ -26,6 +26,10 @@
                             ></c-hot_tag>
                         </template>
                         <div class="message-date">
+                            <template lwc:if={isFormidlerView}>
+                                <span>Opprettet av: {message.createdBy}</span>
+                                <br />
+                            </template>
                             <time datetime={message.createdDate}>{message.created}</time>
                         </div>
                     </li>
