@@ -162,7 +162,7 @@ private class HOT_SAMessageHandlerTest {
                 notification,
                 serviceAppointmentsByResource.get(notification.HOT_ServiceResource__c),
                 'Push-varsel i appen',
-                messageText()
+                messageText(serviceAppointmentsByResource.get(notification.HOT_ServiceResource__c))
             );
         }
         Assert.areEqual(0, [SELECT COUNT() FROM SMS__c WHERE ServiceAppointment__c = :appointment.Id]);
@@ -199,7 +199,9 @@ private class HOT_SAMessageHandlerTest {
                 notification,
                 serviceAppointmentsByResource.get(notification.HOT_ServiceResource__c),
                 isSMS ? 'SMS' : 'Push-varsel i appen',
-                isSMS ? smsText() : messageText()
+                isSMS
+                    ? smsText(serviceAppointmentsByResource.get(notification.HOT_ServiceResource__c))
+                    : messageText(serviceAppointmentsByResource.get(notification.HOT_ServiceResource__c))
             );
         }
         List<SMS__c> smsMessages = [
@@ -208,7 +210,7 @@ private class HOT_SAMessageHandlerTest {
             WHERE ServiceAppointment__c = :appointment.Id
         ];
         Assert.areEqual(1, smsMessages.size());
-        Assert.areEqual(smsText(), smsMessages[0].Message__c);
+        Assert.areEqual(smsText(appointment.Id), smsMessages[0].Message__c);
         Assert.areEqual('91234567', smsMessages[0].Recipient__c);
         Assert.areEqual('HOT', smsMessages[0].Domain__c);
         Assert.areEqual('Interpreter', smsMessages[0].Type__c);
@@ -240,7 +242,7 @@ private class HOT_SAMessageHandlerTest {
                 notification,
                 serviceAppointmentsByResource.get(notification.HOT_ServiceResource__c),
                 'SMS',
-                smsText()
+                smsText(serviceAppointmentsByResource.get(notification.HOT_ServiceResource__c))
             );
         }
         Assert.areEqual(0, [SELECT COUNT() FROM SMS__c WHERE ServiceAppointment__c = :appointment.Id]);
@@ -338,12 +340,17 @@ private class HOT_SAMessageHandlerTest {
         return serviceAppointmentsByResource;
     }
 
-    private static String messageText() {
-        return 'Formidler har gitt deg en beskjed angående et oppdrag du er tildelt.';
+    private static String messageText(Id serviceAppointmentId) {
+        ServiceAppointment appointment = [
+            SELECT AppointmentNumber
+            FROM ServiceAppointment
+            WHERE Id = :serviceAppointmentId
+        ];
+        return 'Formidler har gitt deg en beskjed angående et oppdrag du er tildelt. ' + appointment.AppointmentNumber;
     }
 
-    private static String smsText() {
-        return messageText() +
+    private static String smsText(Id serviceAppointmentId) {
+        return messageText(serviceAppointmentId) +
             '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.' +
             '\nMvh tolketjenesten i Nav';
     }

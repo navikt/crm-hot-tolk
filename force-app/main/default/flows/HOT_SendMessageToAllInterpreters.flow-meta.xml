@@ -284,7 +284,7 @@
         <allowPause>false</allowPause>
         <fields>
             <name>show_result_text</name>
-            <fieldText>&lt;p style=&quot;text-align: center;&quot;&gt;Alt i orden. Tildelte tolker vil straks få varsel 😌&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p style=&quot;text-align: center;&quot;&gt;Tildelte tolker vil nå få varsel&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>
