@@ -154,12 +154,14 @@ export default class Hot_myServiceAppointmentsList_v2 extends NavigationMixin(Li
     ];
 
     closeModal() {
+        this.showServiceAppointmentDetailsModal = false;
         this.updateURL();
         const dialog = this.template.querySelector('dialog');
         dialog.close();
     }
 
     showServiceAppointmentDetails() {
+        this.showServiceAppointmentDetailsModal = true;
         const dialog = this.template.querySelector('dialog');
         dialog.showModal();
         dialog.focus();

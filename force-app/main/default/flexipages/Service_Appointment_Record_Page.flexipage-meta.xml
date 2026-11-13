@@ -16,6 +16,19 @@
         </itemInstances>
         <itemInstances>
             <componentInstance>
+                <componentName>hot_interpreterWantedChoice</componentName>
+                <identifier>c_hot_interpreterWantedChoice</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!$Client.formFactor}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Small</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
                 <componentInstanceProperties>
                     <name>actionNames</name>
                     <valueList>
@@ -118,6 +131,13 @@
                         </valueListItems>
                         <valueListItems>
                             <value>ServiceAppointment.HOT_registrerWantedServiceResource</value>
+                            <visibilityRule>
+                                <criteria>
+                                    <leftValue>{!$Permission.CustomPermission.HOT_AccessToFormidlerActions}</leftValue>
+                                    <operator>EQUAL</operator>
+                                    <rightValue>true</rightValue>
+                                </criteria>
+                            </visibilityRule>
                         </valueListItems>
                     </valueList>
                 </componentInstanceProperties>
@@ -138,6 +158,10 @@
                     <value>false</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
+                    <name>hideSlackAction</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
                     <name>numVisibleActions</name>
                     <value>10</value>
                 </componentInstanceProperties>
@@ -149,6 +173,19 @@
             <componentInstance>
                 <componentName>hot_warningBannerServiceAppointment</componentName>
                 <identifier>hot_warningBannerServiceAppointment</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>hot_interpreterWantedChoice</componentName>
+                <identifier>c_hot_interpreterWantedChoice2</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!$Client.formFactor}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Large</rightValue>
+                    </criteria>
+                </visibilityRule>
             </componentInstance>
         </itemInstances>
         <name>header</name>
@@ -1400,6 +1437,27 @@
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
+                    <name>header</name>
+                    <value>Beskjed til tolk</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>isFormidlerView</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentName>hot_serviceAppointmentMessage</componentName>
+                <identifier>c_hot_serviceAppointmentMessage</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!$Client.formFactor}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Small</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
                     <name>label</name>
                     <value>Tabs</value>
                 </componentInstanceProperties>
@@ -1439,6 +1497,60 @@
                 </componentInstanceProperties>
                 <componentName>force:relatedListSingleContainer</componentName>
                 <identifier>force_relatedListSingleContainer5</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>header</name>
+                    <value>Beskjed fra formidler til tolk</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>isFormidlerView</name>
+                    <value>true</value>
+                </componentInstanceProperties>
+                <componentName>hot_serviceAppointmentMessage</componentName>
+                <identifier>c_hot_serviceAppointmentMessage3</identifier>
+                <visibilityRule>
+                    <booleanFilter>1 AND 2</booleanFilter>
+                    <criteria>
+                        <leftValue>{!$Client.formFactor}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Large</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!$User.Profile.Name}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>HOT Tolk Formidler</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>header</name>
+                    <value>Beskjed til tolk</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>isFormidlerView</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentName>hot_serviceAppointmentMessage</componentName>
+                <identifier>c_hot_serviceAppointmentMessage2</identifier>
+                <visibilityRule>
+                    <booleanFilter>1 AND 2</booleanFilter>
+                    <criteria>
+                        <leftValue>{!$Client.formFactor}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Large</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!$User.Profile.Name}</leftValue>
+                        <operator>NE</operator>
+                        <rightValue>HOT Tolk Formidler</rightValue>
+                    </criteria>
+                </visibilityRule>
             </componentInstance>
         </itemInstances>
         <itemInstances>

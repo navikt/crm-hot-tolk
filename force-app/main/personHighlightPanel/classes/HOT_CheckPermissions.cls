@@ -8,6 +8,11 @@ public with sharing class HOT_CheckPermissions {
         return currentUserId;
     }
 
+    public static Boolean isFormidlerOrAdmin() {
+        Map<String, Boolean> permissions = getAllPermissions();
+        return permissions.get('isFormidler') || permissions.get('isFormidlerAdmin') || permissions.get('isAdmin');
+    }
+
     @AuraEnabled(cacheable=true)
     public static Map<String, Boolean> getAllPermissions() {
         Id userId = getCurrentUserId();

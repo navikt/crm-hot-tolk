@@ -6,7 +6,11 @@
             <div class="error-content">
                 <p>Du har ikke tilgang til denne samtalen.</p>
                 <br />
-                <c-button button-styling="Primary" button-label="Gå til hjem" onbuttonclick={goToHome}></c-button>
+                <c-hot_button
+                    button-styling="Primary"
+                    button-label="Gå til hjem"
+                    onbuttonclick={goToHome}
+                ></c-hot_button>
             </div>
         </template>
         <template lwc:if={isContentReady}>
@@ -114,18 +118,18 @@
                                             <div style="display: inline-block; padding-right: 1vw">
                                                 <p>Åpne adressen i en karttjeneste (ekstern):</p>
                                                 <div class="maps-button-container">
-                                                    <c-button
+                                                    <c-hot_button
                                                         button-styling="secondary"
                                                         button-label="Google maps"
                                                         onbuttonclick={openGoogleMaps}
-                                                    ></c-button>
+                                                    ></c-hot_button>
                                                 </div>
                                                 <div class="maps-button-container">
-                                                    <c-button
+                                                    <c-hot_button
                                                         button-styling="secondary"
                                                         button-label="Apple maps"
                                                         onbuttonclick={openAppleMaps}
-                                                    ></c-button>
+                                                    ></c-hot_button>
                                                 </div>
                                             </div>
                                         </template>
@@ -208,6 +212,9 @@
                                         <template lwc:if={hasServiceAppointmentCanceledDate}>
                                             <p>Avlyst dato: <span>{serviceAppointment.HOT_CanceledDate__c}</span></p>
                                         </template>
+                                        <c-hot_service-appointment-message
+                                            record-id={serviceAppointment.Id}
+                                        ></c-hot_service-appointment-message>
                                     </div>
                                 </template>
 
