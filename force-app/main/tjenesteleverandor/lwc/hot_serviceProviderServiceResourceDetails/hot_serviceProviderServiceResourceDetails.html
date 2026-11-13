@@ -1,5 +1,5 @@
 <template>
-    <article class="detail-page">
+    <div class="detail-page">
         <nav class="slds-m-bottom_medium" aria-label="Navigasjon for tjenesteressursdetaljer">
             <button class="back-button" type="button" onclick={handleBack}>
                 <lightning-icon
@@ -15,13 +15,11 @@
 
         <header class="slds-assistive-text">
             <h1 class="slds-text-heading_large">Tjenesteressursdetaljer</h1>
-            <p class="slds-text-body_regular slds-text-color_weak">Informasjonen er skrivebeskyttet.</p>
         </header>
 
         <template lwc:if={isLoading}>
-            <div class="loading-container" role="status" aria-live="polite">
-                <lightning-spinner alternative-text="Laster tjenesteressursdetaljer" size="medium"></lightning-spinner>
-                <span class="slds-assistive-text">Laster tjenesteressursdetaljer</span>
+            <div class="loading-container" role="status">
+                <c-hot_loader size="3xlarge"></c-hot_loader>
             </div>
         </template>
 
@@ -30,7 +28,6 @@
                 <span class="slds-assistive-text">Feil</span>
                 <lightning-icon
                     icon-name="utility:error"
-                    alternative-text="Feil"
                     size="x-small"
                     variant="inverse"
                     class="slds-m-right_x-small"
@@ -67,7 +64,7 @@
                                         </template>
                                     </ul>
                                 </template>
-                                <template lwc:else>—</template>
+                                <template lwc:else>{dashForNoPreferredRegionTags}</template>
                             </dd>
                         </div>
                     </dl>
@@ -83,14 +80,14 @@
                         </template>
                     </dl>
                 </section>
-                <template lwc:if={hasSkills}>
+                <template lwc:if={hasQualifications}>
                     <section class="detail-card" aria-labelledby="resource-skills-heading">
                         <h2 id="resource-skills-heading" class="card-heading">Kvalifikasjoner</h2>
                         <ul class="tag-list">
-                            <template for:each={skills} for:item="skill">
-                                <li key={skill.Id}>
+                            <template for:each={activeQualifications} for:item="qualification">
+                                <li key={qualification.Id}>
                                     <c-hot_tag
-                                        label={skill.Skill.MasterLabel}
+                                        label={qualification.label}
                                         variant="moderate"
                                         size="large"
                                         color="success"
@@ -102,5 +99,5 @@
                 </template>
             </div>
         </template>
-    </article>
+    </div>
 </template>

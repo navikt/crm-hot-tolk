@@ -1,6 +1,6 @@
 import { LightningElement, wire } from 'lwc';
-import getSRDetails from '@salesforce/apex/HOT_TjenesteleverandorListController.getSRDetails';
-import getServiceResourceSkills from '@salesforce/apex/HOT_TjenesteleverandorListController.getServiceResourceSkills';
+import getSRDetails from '@salesforce/apex/HOT_SPServiceResourceController.getServiceResourceDetails';
+import getServiceResourceSkills from '@salesforce/apex/HOT_SPServiceResourceController.getServiceResourceSkills';
 import { NavigationMixin, CurrentPageReference } from 'lightning/navigation';
 
 const RESOURCE_FIELDS = [
@@ -80,11 +80,14 @@ export default class Hot_serviceProviderServiceResourceDetails extends Navigatio
         }
     }
 
+    // So-called qualifications live in the ServiceResourceSkill sObject
     @wire(getServiceResourceSkills, { resourceId: '$recordId' })
-    wiredSkills({ data, error }) {
-        console.log("fetched:", data, error);
+    wiredServiceResourceSkills({ data, error }) {
         if (data){
-            this.qualifications = data;
+            this.qualifications = data.map((qualification) => ({
+                Id: qualification.Id,
+                label: qualification.Skill.MasterLabel
+            }));
             this.hasError = false;
             this.isLoading = false;
         }
@@ -112,7 +115,15 @@ export default class Hot_serviceProviderServiceResourceDetails extends Navigatio
     }
 
     get hasQualifications() {
-        return Boolean(this.qualifications);
+        return Boolean(this.activeQualifications);
+    }
+
+    get activeQualifications() {
+        return this.qualifications?.filter(q => !q.EffectiveEndDate);
+    }
+
+    get dashForNoPreferredRegionTags() {
+        return '—';
     }
 
     get preferredRegionTags() {

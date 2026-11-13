@@ -1,14 +1,12 @@
 import { LightningElement, wire } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
-import { columns } from './columns';
 import getServiceResources from '@salesforce/apex/HOT_TjenesteleverandorListController.getServiceResources';
 import searchIcon from '@salesforce/resourceUrl/MagnifyingGlass';
 import { createDefaultFilters, filterRecords } from 'c/hot_tjenesteleverandorFilters';
 
-export default class Hot_tjenesteleverandorTolkerWrapper extends NavigationMixin(LightningElement) {
-    allTolkerList = [];
-    tolkerList = [];
-    columns = columns;
+export default class Hot_serviceProviderServiceResourceWrapper extends NavigationMixin(LightningElement) {
+    allInterpretersList = [];
+    interpretersList = [];
     searchIcon = searchIcon;
     dataLoader = true;
     filters = [];
@@ -20,22 +18,23 @@ export default class Hot_tjenesteleverandorTolkerWrapper extends NavigationMixin
     @wire(getServiceResources)
     wiredServiceResources({ error, data }) {
         if (data) {
-            this.allTolkerList = data.map((item) => ({
+            this.allInterpretersList = data.map((item) => ({
                 ...item,
                 Region: item.HOT_ServiceTerritory__r?.Name ?? 'Ikke tilgjengelig',
                 HOT_ServiceTerritoryDeveloperName__c: item.HOT_ServiceTerritory__r?.HOT_DeveloperName__c,
-                IsActiveLabel: item.IsActive ? 'Aktiv' : 'Inaktiv'
+                IsActiveLabel: item.IsActive ? 'Aktiv' : 'Inaktiv',
+                statusBadgeClass: item.IsActive ? 'resource-badge badge-blue' : 'resource-badge badge-gray'
             }));
             this.error = null;
             this.updateFilters();
-            this.tolkerList = this.getFilteredRecords(this.filters);
+            this.interpretersList = this.getFilteredRecords(this.filters);
             this.dataLoader = false;
         } else if (error) {
             console.error('Error fetching service resources:', error);
             this.error = error;
             this.dataLoader = false;
-            this.tolkerList = [];
-            this.allTolkerList = [];
+            this.interpretersList = [];
+            this.allInterpretersList = [];
         }
     }
 
@@ -51,19 +50,18 @@ export default class Hot_tjenesteleverandorTolkerWrapper extends NavigationMixin
                 c__recordId: recordId
             }
         });
-        
     }
 
     handleSearch(event) {
         this.searchText = event.currentTarget.value.toLowerCase();
-        this.tolkerList = this.getFilteredRecords(this.filters);
+        this.interpretersList = this.getFilteredRecords(this.filters);
         this.updatePreviewCount();
     }
 
     applyFilter(event) {
         this.filters = JSON.parse(JSON.stringify(event.detail.filterArray));
         this.previewFilters = undefined;
-        this.tolkerList = this.getFilteredRecords(this.filters);
+        this.interpretersList = this.getFilteredRecords(this.filters);
     }
 
     sendFilteredRecordsLength(event) {
@@ -78,7 +76,7 @@ export default class Hot_tjenesteleverandorTolkerWrapper extends NavigationMixin
     }
 
     getFilteredRecords(filters) {
-        return filterRecords(this.allTolkerList, filters).filter((tolk) =>
+        return filterRecords(this.allInterpretersList, filters).filter((tolk) =>
             tolk.Name.toLowerCase().includes(this.searchText)
         );
     }
@@ -107,15 +105,15 @@ export default class Hot_tjenesteleverandorTolkerWrapper extends NavigationMixin
     }
 
     get hasNoResult() {
-        return !this.error && !this.dataLoader && this.allTolkerList.length === 0;
+        return !this.error && !this.dataLoader && this.allInterpretersList.length === 0;
     }
 
     get hasNoSearchResult() {
-        return !this.error && !this.dataLoader && this.tolkerList.length === 0;
+        return !this.error && !this.dataLoader && this.interpretersList.length === 0;
     }
 
     get hasResult() {
-        return this.allTolkerList.length > 0 && !this.dataLoader;
+        return this.allInterpretersList.length > 0 && !this.dataLoader;
     }
 
     get hasError() {
