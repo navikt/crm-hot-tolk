@@ -23,10 +23,12 @@ export default class hot_messagingThreadViewer extends LightningElement {
     threadid;
     messages = [];
     showspinner = false;
+    isLoadingMessages = true;
     hideModal = true;
     @api showClose;
     @api englishTextTemplate;
     @api setInputInFocusOnRender;
+    @api isTjenesteLeverandorFormidlerView;
     langBtnLock = false;
     langBtnAriaToggle = false;
     newMessage = false;
@@ -69,8 +71,7 @@ export default class hot_messagingThreadViewer extends LightningElement {
                     this.canReply = result.replyPolicy?.canReply !== false;
                     this.handleSubscribe();
                     this.scrolltobottom();
-                    markAsReadByNav({ threadId: this.threadid });
-                    markThreadAsReadEmployee({ threadId: this.threadid });
+                    this.markThreadAsRead();
                 })
                 .catch((error) => {
                     if (error.body.message === 'No access') {
@@ -88,8 +89,7 @@ export default class hot_messagingThreadViewer extends LightningElement {
     renderedCallback() {
         this.refreshMessages();
         if (this.newMessage) {
-            markAsReadByNav({ threadId: this.threadid });
-            markThreadAsReadEmployee({ threadId: this.threadid });
+            this.markThreadAsRead();
             this.newMessage = false;
         }
         this.scrolltobottom();
@@ -134,9 +134,12 @@ export default class hot_messagingThreadViewer extends LightningElement {
         this._mySendForSplitting = result;
         if (result.error) {
             this.error = result.error;
+            this.isLoadingMessages = false;
         } else if (result.data) {
             this.messages = result.data;
+            this.isLoadingMessages = false;
             this.showspinner = false;
+            console.log('Newest message istjenesteleverandor: ', this.messages[0]?.HOT_IsTjenesteleverandorMessage__c);
         }
     }
     //If empty, stop submitting.
@@ -172,6 +175,18 @@ export default class hot_messagingThreadViewer extends LightningElement {
                 }
             });
         }
+    }
+
+    get sendDisabled() {
+        return this.closedThread || this.showOverlay;
+    }
+
+    get showOverlay() {
+        return this.isLoadingMessages || this.showspinner;
+    }
+
+    get spinnerText() {
+        return this.isLoadingMessages ? 'Laster samtale...' : 'Sender melding...';
     }
 
     //Enriching the toolbar event with reference to the thread id
@@ -240,6 +255,22 @@ export default class hot_messagingThreadViewer extends LightningElement {
     }
     refreshMessages() {
         return refreshApex(this._mySendForSplitting);
+    }
+
+    async markThreadAsRead() {
+        try {
+            await Promise.all([
+                markAsReadByNav({ threadId: this.threadid }),
+                markThreadAsReadEmployee({ threadId: this.threadid })
+            ]);
+            this.dispatchEvent(
+                new CustomEvent('threadread', {
+                    detail: { threadId: this.threadid }
+                })
+            );
+        } catch (error) {
+            console.log('Unable to mark thread as read:', error);
+        }
     }
 
     showQuickText(event) {

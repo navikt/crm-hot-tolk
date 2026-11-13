@@ -1,12 +1,23 @@
 public without sharing class HOT_ServiceAppointmentAccessHandler extends MyTriggers {
+    private static final Set<String> TJENESTELEVERANDOR_SHARED_STATUSES = new Set<String>{ 'Transferred', 'Accepted' };
+
     public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
         List<Id> serviceAppointmentsWithUpdatedStatusDispatched = new List<Id>();
         Set<Id> serviceAppointmentsHiddenNow = new Set<Id>();
+        Set<Id> sharedWithTjenesteleverandorServiceAppointmentIds = new Set<Id>();
+        Set<Id> removedFromTjenesteleverandorServiceAppointmentIds = new Set<Id>();
 
         for (ServiceAppointment sa : (List<ServiceAppointment>) records) {
             ServiceAppointment oldRecord = (ServiceAppointment) triggerOldMap.get(sa.Id);
             if (sa.Status != oldRecord.Status && sa.Status == 'Dispatched' && !system.isBatch()) {
                 serviceAppointmentsWithUpdatedStatusDispatched.add(sa.Id);
+            }
+            if (sa.HOT_TjenesteleverandorStatus__c != oldRecord.HOT_TjenesteleverandorStatus__c) {
+                if (TJENESTELEVERANDOR_SHARED_STATUSES.contains(sa.HOT_TjenesteleverandorStatus__c)) {
+                    sharedWithTjenesteleverandorServiceAppointmentIds.add(sa.Id);
+                } else if (TJENESTELEVERANDOR_SHARED_STATUSES.contains(oldRecord.HOT_TjenesteleverandorStatus__c)) {
+                    removedFromTjenesteleverandorServiceAppointmentIds.add(sa.Id);
+                }
             }
             // Boolean oldHidden = (oldRecord.HOT_DelPol_IsHideRecord__c == true);
             // if (!oldHidden && sa.HOT_DelPol_IsHideRecord__c == true) {
@@ -22,6 +33,12 @@ public without sharing class HOT_ServiceAppointmentAccessHandler extends MyTrigg
         //         serviceAppointmentsHiddenNow
         //     );
         // }
+        HOT_ServiceAppointmentsSharingService.grantAccessToTjenesteleverandorGroup(
+            sharedWithTjenesteleverandorServiceAppointmentIds
+        );
+        HOT_ServiceAppointmentsSharingService.removeAccessFromTjenesteleverandorGroup(
+            removedFromTjenesteleverandorServiceAppointmentIds
+        );
     }
 
     @Future

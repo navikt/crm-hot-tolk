@@ -51,6 +51,9 @@
                     <p lwc:if={request.UserPreferredInterpreter__c}>
                         <strong>Ønsket tolk: </strong><span>{request.UserPreferredInterpreter__c}</span>
                     </p>
+                    <p lwc:if={request.UserPreferredGender__c}>
+                        <strong>Ønsket kjønn: </strong><span>{request.UserPreferredGender__c}</span>
+                    </p>
                     <p lwc:if={request.UserInterpretationMethod__c}>
                         <strong>Foretrukket tolkemetode: </strong><span>{request.UserInterpretationMethod__c}</span>
                     </p>
@@ -118,7 +121,9 @@
                     <p lwc:if={request.UserPreferredInterpreter__c}>
                         <strong>Ønsket tolk: </strong><span>{request.UserPreferredInterpreter__c}</span>
                     </p>
-
+                    <p lwc:if={request.UserPreferredGender__c}>
+                        <strong>Ønsket kjønn: </strong><span>{request.UserPreferredGender__c}</span>
+                    </p>
                     <p lwc:if={request.UserInterpretationMethod__c}>
                         <strong>Foretrukket tolkemetode: </strong><span>{request.UserInterpretationMethod__c}</span>
                     </p>

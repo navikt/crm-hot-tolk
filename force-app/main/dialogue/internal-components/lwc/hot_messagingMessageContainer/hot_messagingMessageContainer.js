@@ -7,6 +7,7 @@ export default class messagingMessageContainer extends LightningElement {
     isevent = false;
     showReplybutton;
     @api message;
+    @api isTjenesteLeverandorView;
     isoutbound;
     userid;
 
@@ -14,7 +15,13 @@ export default class messagingMessageContainer extends LightningElement {
         this.userid = Id;
         //Indicate if the message is inbound or outbound, i.e left or right hand of the screen. tea
 
-        this.isoutbound = !this.message.CRM_External_Message__c;
+        if (this.isTjenesteLeverandorView) {
+            this.isoutbound = this.message.HOT_IsTjenesteleverandorMessage__c !== false;
+        } else if (this.message.HOT_IsTjenesteleverandorMessage__c === true) {
+            this.isoutbound = false;
+        } else {
+            this.isoutbound = !this.message.CRM_External_Message__c;
+        }
 
         if (this.message.CRM_Type__c == 'Event') {
             this.isevent = true;

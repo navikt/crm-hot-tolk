@@ -160,6 +160,16 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
+                <fieldItem>Record.UserPreferredGender__c</fieldItem>
+                <identifier>RecordUserPreferredGender_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
                 <fieldItem>Record.UserInterpretationMethod__c</fieldItem>
                 <identifier>RecordUserInterpretationMethod__cField</identifier>
             </fieldInstance>

@@ -1,0 +1,49 @@
+<template>
+    <lightning-card title={title} icon-name="custom:custom15">
+        <div class="slds-is-relative slds-p-around_small" aria-busy={isLoading}>
+            <template lwc:if={isLoading}>
+                <c-hot_loader size="small" aria-hidden="true"></c-hot_loader>
+            </template>
+            <template lwc:elseif={errorMessage}>
+                <p class="slds-text-color_error" role="alert">{errorMessage}</p>
+            </template>
+            <template lwc:elseif={hasResources}>
+                <div class="slds-scrollable_x">
+                    <table
+                        class="slds-table slds-table_cell-buffer slds-table_bordered"
+                        aria-label="Interesserte ressurser"
+                    >
+                        <thead>
+                            <tr>
+                                <th scope="col">Ressurs</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Tjenesteområde</th>
+                                <th scope="col">Kommentar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={resources} for:item="resource">
+                                <tr key={resource.id}>
+                                    <th scope="row">
+                                        <template lwc:if={resource.resourceUrl}>
+                                            <a href={resource.resourceUrl} target="_self">{resource.resourceName}</a>
+                                        </template>
+                                        <template lwc:else>
+                                            <span>{resource.resourceName}</span>
+                                        </template>
+                                    </th>
+                                    <td>{resource.status}</td>
+                                    <td>{resource.serviceTerritory}</td>
+                                    <td class="slds-cell-wrap">{resource.comments}</td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+            </template>
+            <template lwc:else>
+                <p>Ingen interesserte ressurser.</p>
+            </template>
+        </div>
+    </lightning-card>
+</template>

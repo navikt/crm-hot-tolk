@@ -162,7 +162,7 @@ private class HOT_IRListControllerTest {
         Test.stopTest();
 
         System.assertNotEquals(null, thread, 'Thread skal opprettes');
-        System.assertEquals('HOT_TOLK-FORMIDLER', thread.CRM_Thread_Type__c);
+        System.assertEquals('HOT_TJENESTELEVERANDOR-TOLK', thread.CRM_Thread_Type__c);
         System.assertEquals(newInterestedResource.Id, thread.CRM_Related_Object__c);
     }
 
