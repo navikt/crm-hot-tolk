@@ -11,6 +11,7 @@ function appointment(preferredGender, resourceGender, resourceId = RESOURCE_ID) 
         apiName: 'ServiceAppointment',
         id: RECORD_ID,
         fields: {
+            Status: { value: 'Scheduled' },
             HOT_UserPreferredGender__c: { value: preferredGender },
             HOT_ServiceResource__c: { value: resourceId },
             HOT_ServiceResource__r: {
@@ -23,7 +24,15 @@ function appointment(preferredGender, resourceGender, resourceId = RESOURCE_ID) 
                                   value: {
                                       apiName: 'Account',
                                       id: '001000000000001AAA',
-                                      fields: { HOT_Gender__c: { value: resourceGender } }
+                                      fields: {
+                                          CRM_Person__r: {
+                                              value: {
+                                                  apiName: 'Person__c',
+                                                  id: 'a00000000000001AAA',
+                                                  fields: { INT_Sex__c: { value: resourceGender } }
+                                              }
+                                          }
+                                      }
                                   }
                               }
                           }
@@ -106,6 +115,16 @@ it('updates the banner when the mismatch is resolved', async () => {
 
     getRecord.emit(appointment('Kvinne', 'Kvinne'));
     await flushPromises();
+    expect(element.shadowRoot.querySelector('[role="status"]')).toBeNull();
+});
+
+it.each(['Dispatched', 'Completed'])('hides a gender mismatch when status is %s', async (status) => {
+    const element = mountBanner();
+    const record = appointment('Kvinne', 'Mann');
+    record.fields.Status.value = status;
+    getRecord.emit(record);
+    await flushPromises();
+
     expect(element.shadowRoot.querySelector('[role="status"]')).toBeNull();
 });
 

@@ -2,9 +2,10 @@ import { LightningElement, api, wire } from 'lwc';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import USER_ID from '@salesforce/user/Id';
 
+const STATUS = 'ServiceAppointment.Status';
 const PREFERRED_GENDER = 'ServiceAppointment.HOT_UserPreferredGender__c';
 const SERVICE_RESOURCE = 'ServiceAppointment.HOT_ServiceResource__c';
-const RESOURCE_GENDER = 'ServiceAppointment.HOT_ServiceResource__r.Account.HOT_Gender__c';
+const RESOURCE_GENDER = 'ServiceAppointment.HOT_ServiceResource__r.Account.CRM_Person__r.INT_Sex__c';
 
 export default class Hot_genderMismatchBanner extends LightningElement {
     @api recordId;
@@ -32,13 +33,14 @@ export default class Hot_genderMismatchBanner extends LightningElement {
             !!this.preferredGender &&
             !!getFieldValue(this.record, SERVICE_RESOURCE) &&
             this.preferredGender !== this.resourceGender &&
+            getFieldValue(this.record, STATUS) == 'Scheduled' &&
             !this.dismissed
         );
     }
 
     @wire(getRecord, {
         recordId: '$recordId',
-        fields: [PREFERRED_GENDER, SERVICE_RESOURCE, RESOURCE_GENDER]
+        fields: [STATUS, PREFERRED_GENDER, SERVICE_RESOURCE, RESOURCE_GENDER]
     })
     wiredServiceAppointment({ data, error }) {
         this.record = data;
