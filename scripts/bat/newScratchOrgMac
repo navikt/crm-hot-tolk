@@ -106,6 +106,3 @@ sf apex run --file scripts/apex/activateCommonCodes.apex
 sf apex run --file scripts/apex/updateMunicipalityPerson.apex
 
 echo "Alt ferdig"
-
-# Varsle når scratch org-oppsettet er ferdig
-scripts/bat/helpers/scratchOrgNotification
