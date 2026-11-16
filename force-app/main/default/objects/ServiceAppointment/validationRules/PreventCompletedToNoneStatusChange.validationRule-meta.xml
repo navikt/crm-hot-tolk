@@ -3,14 +3,15 @@
     <fullName>PreventCompletedToNoneStatusChange</fullName>
     <active>true</active>
     <description>Oppdrag status satt til dekket, kan ikke endres tilbake til åpent.</description>
-    <errorConditionFormula>AND(
+   <errorConditionFormula>AND(
     NOT(ISNEW()),
-    ISPICKVAL(PRIORVALUE(Status), &quot;Completed&quot;),
-    ISPICKVAL(Status, &quot;None&quot;),
+    ISPICKVAL(PRIORVALUE(Status), "Completed"),
+    ISPICKVAL(Status, "None"),
     NOT(
         OR(
             $Permission.Validation_Override,
-            $Profile.Name = &quot;System Administrator&quot;
+            $Profile.Name = "Delegated Administrator - Tolk",
+            $Profile.Name = "System Administrator"
         )
     )
 )</errorConditionFormula>
