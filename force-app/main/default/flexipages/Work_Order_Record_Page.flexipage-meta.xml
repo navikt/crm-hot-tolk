@@ -55,7 +55,7 @@
                             </visibilityRule>
                         </valueListItems>
                         <valueListItems>
-                            <value>WorkOrder.Send_melding_til_tolker</value>
+                            <value>WorkOrder.Gi_beskjed_til_tolk</value>
                             <visibilityRule>
                                 <booleanFilter>1 AND 2</booleanFilter>
                                 <criteria>

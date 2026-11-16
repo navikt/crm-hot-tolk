@@ -1,44 +1,76 @@
 public with sharing class HOT_ServiceResourceController {
     @AuraEnabled(cacheable=true)
-    public static List<ServiceResource> getAllServiceResources(Boolean searchFreelances, Boolean searchEmployees) {
-        if (searchFreelances == true && searchEmployees == true) {
-            return [
-                SELECT Id, Name, HOT_IsEmployedInterpreter__c, HOT_IsFreelanceInterpreter__c
-                FROM ServiceResource
-                WHERE
-                    IsActive = TRUE
-                    AND CRM_Domain__c = 'HOT'
-                    AND CRM_Subdomain__c = 'Tolketjenesten'
-                    AND (HOT_IsFreelanceInterpreter__c = TRUE
-                    OR HOT_IsEmployedInterpreter__c = TRUE)
-                ORDER BY Name
-            ];
+    public static List<ServiceResource> getAllServiceResources(
+        Boolean searchFreelances,
+        Boolean searchEmployees,
+        Boolean searchServiceProviderDispatcher
+    ) {
+        String searchMode = 'NONE';
+        if (searchServiceProviderDispatcher == true) {
+            searchMode = 'DISPATCHER';
+        } else if (searchFreelances == true && searchEmployees == true) {
+            searchMode = 'ALL_INTERNAL_SERVICE_RESOURCES';
+        } else if (searchFreelances == true) {
+            searchMode = 'FREELANCE';
+        } else if (searchEmployees == true) {
+            searchMode = 'EMPLOYEE';
         }
-        if (searchFreelances == true) {
-            return [
-                SELECT Id, Name, HOT_IsEmployedInterpreter__c, HOT_IsFreelanceInterpreter__c
-                FROM ServiceResource
-                WHERE
-                    IsActive = TRUE
-                    AND CRM_Domain__c = 'HOT'
-                    AND CRM_Subdomain__c = 'Tolketjenesten'
-                    AND HOT_IsFreelanceInterpreter__c = TRUE
-                ORDER BY Name
-            ];
+
+        switch on searchMode {
+            when 'DISPATCHER' {
+                return [
+                    SELECT Id, Name, RelatedRecordId, HOT_IsTjenesteleverandorDispatcher__c
+                    FROM ServiceResource
+                    WHERE
+                        IsActive = TRUE
+                        AND CRM_Domain__c = 'HOT'
+                        AND CRM_Subdomain__c = 'Tolketjenesten'
+                        AND HOT_IsTjenesteleverandorDispatcher__c = TRUE
+                        AND RelatedRecordId != :UserInfo.getUserId()
+                    ORDER BY Name
+                ];
+            }
+            when 'ALL_INTERNAL_SERVICE_RESOURCES' {
+                return [
+                    SELECT Id, Name, HOT_IsEmployedInterpreter__c, HOT_IsFreelanceInterpreter__c
+                    FROM ServiceResource
+                    WHERE
+                        IsActive = TRUE
+                        AND CRM_Domain__c = 'HOT'
+                        AND CRM_Subdomain__c = 'Tolketjenesten'
+                        AND (HOT_IsFreelanceInterpreter__c = TRUE
+                        OR HOT_IsEmployedInterpreter__c = TRUE)
+                    ORDER BY Name
+                ];
+            }
+            when 'FREELANCE' {
+                return [
+                    SELECT Id, Name, HOT_IsEmployedInterpreter__c, HOT_IsFreelanceInterpreter__c
+                    FROM ServiceResource
+                    WHERE
+                        IsActive = TRUE
+                        AND CRM_Domain__c = 'HOT'
+                        AND CRM_Subdomain__c = 'Tolketjenesten'
+                        AND HOT_IsFreelanceInterpreter__c = TRUE
+                    ORDER BY Name
+                ];
+            }
+            when 'EMPLOYEE' {
+                return [
+                    SELECT Id, Name, HOT_IsEmployedInterpreter__c, HOT_IsFreelanceInterpreter__c
+                    FROM ServiceResource
+                    WHERE
+                        IsActive = TRUE
+                        AND CRM_Domain__c = 'HOT'
+                        AND CRM_Subdomain__c = 'Tolketjenesten'
+                        AND HOT_IsEmployedInterpreter__c = TRUE
+                    ORDER BY Name
+                ];
+            }
+            when else {
+                return new List<ServiceResource>();
+            }
         }
-        if (searchEmployees == true) {
-            return [
-                SELECT Id, Name, HOT_IsEmployedInterpreter__c, HOT_IsFreelanceInterpreter__c
-                FROM ServiceResource
-                WHERE
-                    IsActive = TRUE
-                    AND CRM_Domain__c = 'HOT'
-                    AND CRM_Subdomain__c = 'Tolketjenesten'
-                    AND HOT_IsEmployedInterpreter__c = TRUE
-                ORDER BY Name
-            ];
-        }
-        return new List<ServiceResource>();
     }
 
     @AuraEnabled
@@ -47,14 +79,12 @@ public with sharing class HOT_ServiceResourceController {
             SELECT Id, Name, HOT_PreferredRegions__c, HOT_IsEmployedInterpreter__c, HOT_IsFreelanceInterpreter__c
             FROM ServiceResource
             WHERE Id = :resourceId
-            WITH USER_MODE
             LIMIT 1
         ];
         ServiceAppointment appointment = [
-            SELECT EarliestStartTime, DueDate, ServiceTerritory.Name
+            SELECT SchedStartTime, SchedEndTime, ServiceTerritory.Name
             FROM ServiceAppointment
             WHERE Id = :serviceAppointmentId
-            WITH USER_MODE
             LIMIT 1
         ];
 
@@ -93,28 +123,21 @@ public with sharing class HOT_ServiceResourceController {
             ];
             details.regionMatches = !matchingTerritoryMembers.isEmpty();
         }
-        details.hasOverlap = false;
-
-        if (appointment.EarliestStartTime != null && appointment.DueDate != null) {
-            for (HOT_InterestedResource__c assignedResource : [
-                SELECT ServiceAppointmentStartTime__c, ServiceAppointmentEndTime__c
-                FROM HOT_InterestedResource__c
-                WHERE
-                    ServiceResource__c = :resourceId
-                    AND ServiceAppointment__c != :serviceAppointmentId
-                    AND Status__c = 'Assigned'
-            ]) {
-                if (
-                    assignedResource.ServiceAppointmentStartTime__c != null &&
-                    assignedResource.ServiceAppointmentEndTime__c != null &&
-                    appointment.EarliestStartTime < assignedResource.ServiceAppointmentEndTime__c &&
-                    appointment.DueDate > assignedResource.ServiceAppointmentStartTime__c
-                ) {
-                    details.hasOverlap = true;
-                    break;
-                }
-            }
+        if (appointment.SchedStartTime == null || appointment.SchedEndTime == null) {
+            throw new AuraHandledException('Kan ikke vurdere tilgjengelighet fordi oppdraget mangler planlagte tider.');
         }
+
+        List<ServiceAppointment> overlappingAppointments = [
+            SELECT Id
+            FROM ServiceAppointment
+            WHERE
+                Id IN (SELECT ServiceAppointmentId FROM AssignedResource WHERE ServiceResourceId = :resourceId)
+                AND Id != :serviceAppointmentId
+                AND SchedStartTime < :appointment.SchedEndTime
+                AND SchedEndTime > :appointment.SchedStartTime
+            LIMIT 1
+        ];
+        details.hasOverlap = !overlappingAppointments.isEmpty();
 
         return details;
     }

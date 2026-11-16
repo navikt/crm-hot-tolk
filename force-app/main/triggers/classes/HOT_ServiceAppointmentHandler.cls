@@ -161,7 +161,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 serviceAppointmentsChangedOrderedTime.add(serviceAppointment);
             }
             if (
-                triggerOldMap.get(serviceAppointment.Id).get('HOT_DelPol_IsHideRecord__c') !==
+                triggerOldMap.get(serviceAppointment.Id).get('HOT_DelPol_IsHideRecord__c') !=
                 serviceAppointment.HOT_DelPol_IsHideRecord__c && serviceAppointment.HOT_DelPol_IsHideRecord__c
             ) {
                 serviceAppointmentsToChangeOwnerToArchive.add(serviceAppointment);

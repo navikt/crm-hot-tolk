@@ -16,6 +16,19 @@
         </itemInstances>
         <itemInstances>
             <componentInstance>
+                <componentName>hot_interpreterWantedChoice</componentName>
+                <identifier>c_hot_interpreterWantedChoice</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!$Client.formFactor}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Small</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
                 <componentInstanceProperties>
                     <name>actionNames</name>
                     <valueList>
@@ -173,27 +186,6 @@
             <componentInstance>
                 <componentInstanceProperties>
                     <name>message</name>
-                    <value>Oppdraget ble avslått av tjenesteleverandør og kan ikke sendes til tjenesteleverandør igjen.</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>type</name>
-                    <value>Warning</value>
-                </componentInstanceProperties>
-                <componentName>hot_alertBanner</componentName>
-                <identifier>hot_alertBannerTjenesteleverandorDeclined</identifier>
-                <visibilityRule>
-                    <criteria>
-                        <leftValue>{!Record.HOT_TjenesteleverandorStatus__c}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>Declined</rightValue>
-                    </criteria>
-                </visibilityRule>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>message</name>
                     <value>Fristen for tjenesteleverandør til å akseptere oppdraget er utløpt.</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
@@ -207,6 +199,19 @@
                         <leftValue>{!Record.HOT_TjenesteleverandorStatus__c}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>Expired</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>hot_interpreterWantedChoice</componentName>
+                <identifier>c_hot_interpreterWantedChoice2</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!$Client.formFactor}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Large</rightValue>
                     </criteria>
                 </visibilityRule>
             </componentInstance>
@@ -236,16 +241,6 @@
                         <rightValue>UGRADERT</rightValue>
                     </criteria>
                 </visibilityRule>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.HOT_UserPreferredGender__c</fieldItem>
-                <identifier>RecordHOT_UserPreferredGender__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-9a017f90-3719-4332-9f05-71415f7527f2</name>
@@ -1655,6 +1650,25 @@
         </itemInstances>
         <itemInstances>
             <componentInstance>
+                <componentName>hot_interestedResourceInternalList</componentName>
+                <identifier>c_hot_interestedResourceInternalList</identifier>
+                <visibilityRule>
+                    <booleanFilter>1 OR 2</booleanFilter>
+                    <criteria>
+                        <leftValue>{!Record.HOT_TjenesteleverandorStatus__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Transferred</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!Record.HOT_TjenesteleverandorStatus__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Accepted</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
                 <componentInstanceProperties>
                     <name>columns</name>
                     <value>Facet-4457c95c-b12b-4f9e-bdba-bc2e2ece732b</value>
@@ -1680,6 +1694,27 @@
                         <leftValue>{!Record.HOT_TjenesteleverandorStatus__c}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>Accepted</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>header</name>
+                    <value>Beskjed til tolk</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>isFormidlerView</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentName>hot_serviceAppointmentMessage</componentName>
+                <identifier>c_hot_serviceAppointmentMessage</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!$Client.formFactor}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Small</rightValue>
                     </criteria>
                 </visibilityRule>
             </componentInstance>
@@ -1731,6 +1766,60 @@
                         <leftValue>{!Record.HOT_IsReleasedToFreelance__c}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>false</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>header</name>
+                    <value>Beskjed fra formidler til tolk</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>isFormidlerView</name>
+                    <value>true</value>
+                </componentInstanceProperties>
+                <componentName>hot_serviceAppointmentMessage</componentName>
+                <identifier>c_hot_serviceAppointmentMessage3</identifier>
+                <visibilityRule>
+                    <booleanFilter>1 AND 2</booleanFilter>
+                    <criteria>
+                        <leftValue>{!$Client.formFactor}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Large</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!$User.Profile.Name}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>HOT Tolk Formidler</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>header</name>
+                    <value>Beskjed til tolk</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>isFormidlerView</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentName>hot_serviceAppointmentMessage</componentName>
+                <identifier>c_hot_serviceAppointmentMessage2</identifier>
+                <visibilityRule>
+                    <booleanFilter>1 AND 2</booleanFilter>
+                    <criteria>
+                        <leftValue>{!$Client.formFactor}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Large</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!$User.Profile.Name}</leftValue>
+                        <operator>NE</operator>
+                        <rightValue>HOT Tolk Formidler</rightValue>
                     </criteria>
                 </visibilityRule>
             </componentInstance>

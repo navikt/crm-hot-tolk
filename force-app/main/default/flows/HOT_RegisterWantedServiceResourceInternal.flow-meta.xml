@@ -1,5 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>Share_appointment</name>
+        <label>Share appointment</label>
+        <locationX>182</locationX>
+        <locationY>998</locationY>
+        <actionName>HOT_ServiceAppointmentsSharingService</actionName>
+        <actionType>apex</actionType>
+        <connector>
+            <targetReference>successScreen</targetReference>
+        </connector>
+        <flowTransactionModel>Automatic</flowTransactionModel>
+        <inputParameters>
+            <name>serviceResourceId</name>
+            <value>
+                <elementReference>wantedServiceResourceSearch.value</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>serviceAppointmentId</name>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>HOT_ServiceAppointmentsSharingService</nameSegment>
+    </actionCalls>
+    <actionCalls>
+        <name>Copy_1_of_Share_appointment</name>
+        <label>Copy 1 of Share appointment</label>
+        <locationX>710</locationX>
+        <locationY>998</locationY>
+        <actionName>HOT_ServiceAppointmentsSharingService</actionName>
+        <actionType>apex</actionType>
+        <connector>
+            <targetReference>Copy_1_of_successScreen</targetReference>
+        </connector>
+        <flowTransactionModel>Automatic</flowTransactionModel>
+        <inputParameters>
+            <name>serviceResourceId</name>
+            <value>
+                <elementReference>Copy_1_of_wantedServiceResourceSearch.value</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>serviceAppointmentId</name>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>HOT_ServiceAppointmentsSharingService</nameSegment>
+    </actionCalls>
     <apiVersion>58.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <assignments>
@@ -139,7 +189,7 @@
             <label>Change status on IR</label>
         </rules>
     </decisions>
-    <description>For bruk av Nav formidler</description>
+    <description>For bruk av Nav-formidler</description>
     <environments>Default</environments>
     <interviewLabel>HOT_Register wanted service resource Internal {!$Flow.CurrentDateTime}</interviewLabel>
     <label>HOT_Register wanted service resource Internal</label>
@@ -168,7 +218,7 @@
         <locationX>842</locationX>
         <locationY>782</locationY>
         <connector>
-            <targetReference>Copy_1_of_successScreen</targetReference>
+            <targetReference>Copy_1_of_Share_appointment</targetReference>
         </connector>
         <inputAssignments>
             <field>HOT_Wanted_by__c</field>
@@ -203,7 +253,7 @@
         <locationX>314</locationX>
         <locationY>782</locationY>
         <connector>
-            <targetReference>successScreen</targetReference>
+            <targetReference>Share_appointment</targetReference>
         </connector>
         <inputAssignments>
             <field>HOT_Wanted_by__c</field>
@@ -357,7 +407,7 @@
         <locationX>578</locationX>
         <locationY>890</locationY>
         <connector>
-            <targetReference>Copy_1_of_successScreen</targetReference>
+            <targetReference>Copy_1_of_Share_appointment</targetReference>
         </connector>
         <inputReference>Copy_1_of_get_IR</inputReference>
     </recordUpdates>
@@ -367,7 +417,7 @@
         <locationX>50</locationX>
         <locationY>890</locationY>
         <connector>
-            <targetReference>successScreen</targetReference>
+            <targetReference>Share_appointment</targetReference>
         </connector>
         <inputReference>get_IR</inputReference>
     </recordUpdates>
@@ -481,7 +531,7 @@
             <inputParameters>
                 <name>value</name>
                 <value>
-                    <elementReference>Formidler</elementReference>
+                    <elementReference>Tolkebruker</elementReference>
                 </value>
             </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
@@ -549,7 +599,7 @@
             <inputParameters>
                 <name>text</name>
                 <value>
-                    <stringValue>Supert! Tolken fikk nå et varsel om at den er ønsket til dette oppdraget.</stringValue>
+                    <stringValue>Tolken er registrert som ønsket til oppdraget.</stringValue>
                 </value>
             </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
@@ -626,7 +676,7 @@
             <inputParameters>
                 <name>text</name>
                 <value>
-                    <stringValue>Når du ønsker en tolk vil tolken få varsel om dette. Tolken kan da avslå eller melde interesse for oppdraget</stringValue>
+                    <stringValue>Når du registrerer en tolk som ønsket, får tolken et varsel. Tolken kan deretter avslå eller melde interesse for oppdraget.</stringValue>
                 </value>
             </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
@@ -718,7 +768,7 @@
             <inputParameters>
                 <name>value</name>
                 <value>
-                    <elementReference>Formidler</elementReference>
+                    <elementReference>Tolkebruker</elementReference>
                 </value>
             </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
@@ -786,7 +836,7 @@
             <inputParameters>
                 <name>text</name>
                 <value>
-                    <stringValue>Supert! Tolken fikk nå et varsel om at den er ønsket til dette oppdraget.</stringValue>
+                    <stringValue>Tolken er registrert som ønsket til oppdraget.</stringValue>
                 </value>
             </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>

@@ -1,15 +1,21 @@
+@import 'c/hot_sharedFonts';
+:host {
+    font-family: 'Source Sans 3', Arial, sans-serif;
+}
 .main-content {
     background-color: #fff;
     border-radius: 0.5rem;
     width: 100%;
-    font-family: 'Source Sans Pro', Arial, sans-serif;
     align-items: center;
     padding-top: 0.5rem;
     overflow: hidden;
 }
 
 span {
-    font-weight: normal;
+    font-weight: 400;
+}
+strong {
+    font-weight: 600;
 }
 .loader-container {
     display: flex;
@@ -23,9 +29,6 @@ lightning-button {
     justify-content: center;
 }
 /* MODAL CSS */
-dialog.modal-container h2 {
-    font-family: 'Source Sans Pro', Arial, sans-serif;
-}
 
 /* Backdrop */
 dialog::backdrop {
@@ -35,6 +38,7 @@ dialog::backdrop {
 
 /* Selve dialogen (default skjult) */
 dialog.modal-container {
+    font-family: inherit;
     z-index: 10001;
     background: white;
     border-radius: 0.5rem;

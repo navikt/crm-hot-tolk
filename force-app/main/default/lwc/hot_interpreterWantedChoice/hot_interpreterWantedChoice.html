@@ -1,4 +1,18 @@
 <template>
+    <template lwc:if={showInterestConfirmation}>
+        <c-hot_universal-alert-banner
+            type="Info"
+            show-icon
+            message="Du har meldt interesse til dette oppdraget"
+        ></c-hot_universal-alert-banner>
+    </template>
+    <template lwc:elseif={showDeclinedConfirmation}>
+        <c-hot_universal-alert-banner
+            type="Warning"
+            show-icon
+            message="Du har avslått dette oppdraget"
+        ></c-hot_universal-alert-banner>
+    </template>
     <template lwc:if={wantedResource}>
         <section class="slds-box slds-theme_default">
             <p class="slds-m-bottom_medium">{wantedMessage}</p>

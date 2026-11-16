@@ -1,11 +1,21 @@
 import { LightningElement, api } from 'lwc';
+import TOLK_CHRISTMASLOGO from '@salesforce/resourceUrl/tolketjenestenJulLogo';
 
 export default class Hot_welcomebannerV2 extends LightningElement {
     showNotificationList = false;
+    logoUrl = TOLK_CHRISTMASLOGO;
 
     @api personDetails;
     @api announcements;
     @api unreadAnnouncementIds;
+
+    get isChristmasSeason() {
+        const today = new Date();
+        const month = today.getMonth();
+        const day = today.getDate();
+
+        return (month === 10 && day === 30) || month === 11 || (month === 0 && day <= 2);
+    }
 
     get isMobilePublisher() {
         const ua = navigator.userAgent;

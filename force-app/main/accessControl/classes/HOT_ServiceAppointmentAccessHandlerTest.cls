@@ -78,7 +78,7 @@ private class HOT_ServiceAppointmentAccessHandlerTest {
     }
 
     @IsTest
-    private static void testChangingFromAcceptedToDeclinedRemovesTjenesteleverandorGroupShare() {
+    private static void testChangingFromAcceptedToExpiredRemovesTjenesteleverandorGroupShare() {
         Group tjenesteleverandorGroup = getTjenesteleverandorGroup();
         ServiceAppointment serviceAppointment = createServiceAppointment();
 
@@ -86,7 +86,7 @@ private class HOT_ServiceAppointmentAccessHandlerTest {
         update serviceAppointment;
 
         Test.startTest();
-        serviceAppointment.HOT_TjenesteleverandorStatus__c = 'Declined';
+        serviceAppointment.HOT_TjenesteleverandorStatus__c = 'Expired';
         update serviceAppointment;
         Test.stopTest();
 

@@ -41,15 +41,16 @@ public without sharing class HOT_TjenesteleverandorDeadlineService {
     )
     public static List<Result> calculate(List<Request> requests) {
         List<Result> results = new List<Result>();
-        if (requests == null) {
+        if (requests == null || requests.isEmpty()) {
             return results;
         }
 
+        List<Holiday> holidays = getHolidays();
         for (Request request : requests) {
             Result result = new Result();
             result.deadline = request?.transferDate == null
                 ? null
-                : calculateDeadline(request.transferDate, request.serviceAppointmentId);
+                : calculateDeadline(request.transferDate, request.serviceAppointmentId, holidays);
             results.add(result);
         }
         return results;
@@ -64,8 +65,13 @@ public without sharing class HOT_TjenesteleverandorDeadlineService {
             return null;
         }
 
+        return calculateDeadline(transferDate, serviceAppointmentId, getHolidays());
+    }
+
+    @TestVisible
+    private static Datetime calculateDeadline(Datetime transferDate, Id serviceAppointmentId, List<Holiday> holidays) {
         Config config = getConfig(serviceAppointmentId);
-        LocalMoment current = normalizeToOpenTime(toLocalMoment(transferDate, config.timezoneSidKey), config);
+        LocalMoment current = normalizeToOpenTime(toLocalMoment(transferDate, config.timezoneSidKey), config, holidays);
         Integer remainingMinutes = config.deadlineMinutes;
 
         while (remainingMinutes > 0) {
@@ -77,11 +83,15 @@ public without sharing class HOT_TjenesteleverandorDeadlineService {
                 remainingMinutes = 0;
             } else {
                 remainingMinutes -= availableMinutes;
-                current = firstOpenMomentAfter(current.localDate, config);
+                current = firstOpenMomentAfter(current.localDate, config, holidays);
             }
         }
 
         return localToUtc(current.localDate, current.minuteOfDay, config.timezoneSidKey);
+    }
+
+    private static List<Holiday> getHolidays() {
+        return [SELECT ActivityDate, RecurrenceType FROM Holiday];
     }
 
     @TestVisible
@@ -185,11 +195,11 @@ public without sharing class HOT_TjenesteleverandorDeadlineService {
         return parsedWeekdays;
     }
 
-    private static LocalMoment normalizeToOpenTime(LocalMoment moment, Config config) {
+    private static LocalMoment normalizeToOpenTime(LocalMoment moment, Config config, List<Holiday> holidays) {
         Integer startMinute = config.startHour * 60;
         Integer endMinute = config.endHour * 60;
 
-        while (!isOpenWeekday(moment.localDate, config)) {
+        while (!isOpenDay(moment.localDate, config, holidays)) {
             moment.localDate = moment.localDate.addDays(1);
             moment.minuteOfDay = startMinute;
         }
@@ -197,25 +207,41 @@ public without sharing class HOT_TjenesteleverandorDeadlineService {
         if (moment.minuteOfDay < startMinute) {
             moment.minuteOfDay = startMinute;
         } else if (moment.minuteOfDay >= endMinute) {
-            moment = firstOpenMomentAfter(moment.localDate, config);
+            moment = firstOpenMomentAfter(moment.localDate, config, holidays);
         }
 
         return moment;
     }
 
-    private static LocalMoment firstOpenMomentAfter(Date localDate, Config config) {
+    private static LocalMoment firstOpenMomentAfter(Date localDate, Config config, List<Holiday> holidays) {
         LocalMoment moment = new LocalMoment();
         moment.localDate = localDate.addDays(1);
         moment.minuteOfDay = config.startHour * 60;
 
-        while (!isOpenWeekday(moment.localDate, config)) {
+        while (!isOpenDay(moment.localDate, config, holidays)) {
             moment.localDate = moment.localDate.addDays(1);
         }
         return moment;
     }
 
-    private static Boolean isOpenWeekday(Date localDate, Config config) {
-        return config.weekdays.contains(weekdayNumber(localDate));
+    private static Boolean isOpenDay(Date localDate, Config config, List<Holiday> holidays) {
+        if (!config.weekdays.contains(weekdayNumber(localDate))) {
+            return false;
+        }
+        for (Holiday holiday : holidays) {
+            Date holidayDate = holiday.ActivityDate;
+            if (holidayDate == null) {
+                continue;
+            }
+            Boolean matchesHoliday = holiday.RecurrenceType == 'RecursYearly'
+                ? holidayDate.month() == localDate.month() && holidayDate.day() == localDate.day()
+                : holidayDate == localDate;
+
+            if (matchesHoliday) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private static Integer weekdayNumber(Date localDate) {

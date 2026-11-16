@@ -1,11 +1,12 @@
+@import 'c/hot_sharedFonts';
 :host {
+    font-family: 'Source Sans 3', Arial, sans-serif;
     --slds-modal-content-color-background: 100%, blue;
 }
 .main-content {
     background-color: #fff;
     border-radius: 0.5rem;
     width: 100%;
-    font-family: 'Source Sans Pro', Arial, sans-serif;
     align-items: center;
     padding-top: 0.5rem;
 }
@@ -17,11 +18,11 @@
 }
 
 span {
-    font-weight: normal;
+    font-weight: 400;
 }
 
-dialog.modal-container h2 {
-    font-family: 'Source Sans Pro', Arial, sans-serif;
+strong {
+    font-weight: 600;
 }
 
 /* Backdrop */
@@ -32,6 +33,7 @@ dialog::backdrop {
 
 /* Selve dialogen (default skjult) */
 dialog.modal-container {
+    font-family: inherit;
     z-index: 10001;
     background: white;
     border-radius: 0.5rem;

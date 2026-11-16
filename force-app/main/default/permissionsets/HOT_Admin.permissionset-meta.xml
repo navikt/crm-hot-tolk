@@ -990,6 +990,16 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_ServiceAppointmentMessage__c.Message__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_ServiceAppointmentMessage__c.Request__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>HOT_WageClaim__c.AssignmentType__c</field>
         <readable>true</readable>
@@ -2455,7 +2465,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>WorkOrder.ServiceAppointmentCount</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -2645,7 +2655,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>WorkOrderLineItem.ServiceAppointmentCount</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -2824,6 +2834,16 @@
         <modifyAllRecords>true</modifyAllRecords>
         <object>HOT_Resource__c</object>
         <viewAllFields>false</viewAllFields>
+        <viewAllRecords>true</viewAllRecords>
+    </objectPermissions>
+    <objectPermissions>
+        <allowCreate>true</allowCreate>
+        <allowDelete>true</allowDelete>
+        <allowEdit>true</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>true</modifyAllRecords>
+        <object>HOT_ServiceAppointmentMessage__c</object>
+        <viewAllFields>true</viewAllFields>
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
     <objectPermissions>

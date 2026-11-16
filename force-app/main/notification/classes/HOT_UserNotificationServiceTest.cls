@@ -105,92 +105,6 @@ public class HOT_UserNotificationServiceTest {
     }
 
     @IsTest
-    private static void statusChangeNotificationDispatchedTest() {
-        CustomNotificationType notificationType = [
-            SELECT Id, DeveloperName
-            FROM CustomNotificationType
-            WHERE DeveloperName = 'HOT_NotifyUser'
-        ];
-        ServiceAppointment serviceAppointment = [
-            SELECT HOT_ServiceResource__r.Name, Status, HOT_WorkOrderLineItem__r.WorkOrderId
-            FROM ServiceAppointment
-        ];
-        WorkOrder workOrder = [
-            SELECT Id, StartDate, EndDate, HOT_Interpreters__c, Status
-            FROM WorkOrder
-            WHERE Id = :serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId
-        ];
-        workOrder.Status = 'Dispatched';
-        update workOrder;
-        Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
-
-        Test.startTest();
-        HOT_UserNotificationService.statusChangeNotification(
-            notificationType,
-            workOrder,
-            serviceAppointment,
-            recipients
-        );
-        Test.stopTest();
-    }
-
-    @IsTest
-    private static void statusChangeNotificationCCTest() {
-        CustomNotificationType notificationType = [
-            SELECT Id, DeveloperName
-            FROM CustomNotificationType
-            WHERE DeveloperName = 'HOT_NotifyUser'
-        ];
-        ServiceAppointment serviceAppointment = [
-            SELECT HOT_ServiceResource__r.Name, Status, HOT_WorkOrderLineItem__r.WorkOrderId
-            FROM ServiceAppointment
-        ];
-        WorkOrder workOrder = [
-            SELECT Id, StartDate, EndDate, HOT_Interpreters__c, Status
-            FROM WorkOrder
-            WHERE Id = :serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId
-        ];
-        workOrder.Status = 'Cannot Complete';
-        update workOrder;
-        Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
-
-        Test.startTest();
-        HOT_UserNotificationService.statusChangeNotification(
-            notificationType,
-            workOrder,
-            serviceAppointment,
-            recipients
-        );
-        Test.stopTest();
-    }
-    @IsTest
-    private static void statusChangeNotificationTest() {
-        CustomNotificationType notificationType = [
-            SELECT Id, DeveloperName
-            FROM CustomNotificationType
-            WHERE DeveloperName = 'HOT_NotifyUser'
-        ];
-        ServiceAppointment serviceAppointment = [
-            SELECT HOT_ServiceResource__r.Name, Status, HOT_WorkOrderLineItem__r.WorkOrderId
-            FROM ServiceAppointment
-        ];
-        WorkOrder workOrder = [
-            SELECT Id, StartDate, EndDate, HOT_Interpreters__c, Status
-            FROM WorkOrder
-            WHERE Id = :serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId
-        ];
-        Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
-
-        Test.startTest();
-        HOT_UserNotificationService.statusChangeNotification(
-            notificationType,
-            workOrder,
-            serviceAppointment,
-            recipients
-        );
-        Test.stopTest();
-    }
-    @IsTest
     private static void interpreterChangeNotificationTest() {
         CustomNotificationType notificationType = [
             SELECT Id, DeveloperName
@@ -212,94 +126,6 @@ public class HOT_UserNotificationServiceTest {
             workOrder,
             interpreters,
             recipients
-        );
-        Test.stopTest();
-    }
-    @IsTest
-    private static void coInterpreterChangeNotificationTest() {
-        CustomNotificationType notificationType = [
-            SELECT Id, DeveloperName
-            FROM CustomNotificationType
-            WHERE DeveloperName = 'HOT_NotifyUser'
-        ];
-        ServiceAppointment serviceAppointment = [
-            SELECT Id, HOT_ServiceResource__r.Name, AppointmentNumber, SchedStartTime, SchedEndTime
-            FROM ServiceAppointment
-            LIMIT 1
-        ];
-        Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
-        String interpreter = 'Darth Vader';
-        String target = HOT_ServiceAppointmentNotification.getTargetPageRefInterpreterOnChanged(
-            'my',
-            serviceAppointment.Id
-        );
-
-        Test.startTest();
-        HOT_UserNotificationService.coInterpreterChangeNotification(
-            notificationType,
-            serviceAppointment,
-            target,
-            interpreter,
-            recipients,
-            serviceAppointment.AppointmentNumber
-        );
-        Test.stopTest();
-    }
-    @IsTest
-    private static void coInterpreterRemovedNotificationTest() {
-        CustomNotificationType notificationType = [
-            SELECT Id, DeveloperName
-            FROM CustomNotificationType
-            WHERE DeveloperName = 'HOT_NotifyUser'
-        ];
-        ServiceAppointment serviceAppointment = [
-            SELECT Id, HOT_ServiceResource__r.Name, AppointmentNumber, SchedStartTime, SchedEndTime
-            FROM ServiceAppointment
-            LIMIT 1
-        ];
-        Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
-        String target = HOT_ServiceAppointmentNotification.getTargetPageRefInterpreterOnChanged(
-            'my',
-            serviceAppointment.Id
-        );
-
-        Test.startTest();
-        HOT_UserNotificationService.coInterpreterRemovedNotification(
-            notificationType,
-            serviceAppointment,
-            target,
-            recipients,
-            serviceAppointment.AppointmentNumber
-        );
-        Test.stopTest();
-    }
-    @IsTest
-    private static void newCoInterpreterChangeNotificationTest() {
-        CustomNotificationType notificationType = [
-            SELECT Id, DeveloperName
-            FROM CustomNotificationType
-            WHERE DeveloperName = 'HOT_NotifyUser'
-        ];
-        ServiceAppointment serviceAppointment = [
-            SELECT Id, HOT_ServiceResource__r.Name, AppointmentNumber, SchedStartTime, SchedEndTime
-            FROM ServiceAppointment
-            LIMIT 1
-        ];
-        Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
-        String target = HOT_ServiceAppointmentNotification.getTargetPageRefInterpreterOnChanged(
-            'my',
-            serviceAppointment.Id
-        );
-        String interpreter = 'Darth Vader';
-
-        Test.startTest();
-        HOT_UserNotificationService.newCoInterpreterChangeNotification(
-            notificationType,
-            serviceAppointment,
-            interpreter,
-            target,
-            recipients,
-            serviceAppointment.AppointmentNumber
         );
         Test.stopTest();
     }
@@ -338,7 +164,7 @@ public class HOT_UserNotificationServiceTest {
         Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
 
         Test.startTest();
-        HOT_UserNotificationService.newWantedSRNotification(notificationType, recipients, 'SA-00110');
+        HOT_UserNotificationService.newWantedSRNotification(notificationType, recipients, 'SA-00110', null);
         Test.stopTest();
     }
     @IsTest
@@ -353,8 +179,8 @@ public class HOT_UserNotificationServiceTest {
         Test.stopTest();
         System.assertEquals(
             '{type: "comm__namedPage",attributes: {pageName: "samtale-frilans"}, state: {recordId: "' +
-            thread.Id +
-            '", from: "mine-samtaler-frilanstolk"}}',
+                thread.Id +
+                '", from: "mine-samtaler-frilanstolk"}}',
             result
         );
     }

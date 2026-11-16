@@ -20,7 +20,7 @@ export let columns = [
         type: 'String'
     },
     {
-        label: 'Kompensert forberedelse',
+        label: 'Kompensasjonssats antall',
         name: 'HOT_PreparationTime__c',
         type: 'String'
     }
@@ -66,8 +66,8 @@ export let mobileColumns = [
         name: 'HOT_FreelanceSubject__c',
         type: 'String'
     },
-       {
-        label: 'Kompensert forberedelse',
+    {
+        label: 'Kompensasjonssats antall',
         name: 'HOT_PreparationTime__c',
         type: 'String'
     }

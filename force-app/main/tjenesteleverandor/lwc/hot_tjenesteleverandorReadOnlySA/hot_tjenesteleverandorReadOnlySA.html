@@ -81,7 +81,42 @@
                                 <lightning-output-field field-name="OwnerId"></lightning-output-field>
                                 <lightning-output-field field-name="ServiceTerritoryId"></lightning-output-field>
                                 <lightning-output-field field-name="HOT_DispatcherNew__c"></lightning-output-field>
+                                <div
+                                    class="slds-form-element slds-form-element_horizontal slds-form-element_readonly readonly-field-style"
+                                    data-id="wanted-resource"
+                                >
+                                    <span class="slds-form-element__label">Ønsket tolk</span>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-form-element__static">
+                                            <template lwc:if={wantedResourceError}>
+                                                <span role="alert">Kunne ikke laste ønsket tolk.</span>
+                                            </template>
+                                            <template lwc:elseif={wantedResourceNames}>
+                                                {wantedResourceNames}
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
                                 <lightning-output-field field-name="Status"></lightning-output-field>
+                                <div
+                                    class="slds-form-element slds-form-element_horizontal slds-form-element_readonly readonly-field-style"
+                                    data-id="assigned-resource"
+                                >
+                                    <span class="slds-form-element__label">Tildelt ressurs</span>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-form-element__static">
+                                            <template lwc:if={assignedResourceError}>
+                                                <span role="alert">Kunne ikke laste tildelt ressurs.</span>
+                                            </template>
+                                            <template lwc:elseif={assignedResourceName}>
+                                                {assignedResourceName}
+                                            </template>
+                                            <template lwc:elseif={hasLoadedAssignedResource}>
+                                                Ingen tildelt ressurs ennå
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
                                 <lightning-output-field
                                     field-name="HOT_TjenesteleverandorStatus__c"
                                 ></lightning-output-field>

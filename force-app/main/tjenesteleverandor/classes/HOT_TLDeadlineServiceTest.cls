@@ -61,6 +61,85 @@ private class HOT_TLDeadlineServiceTest {
     }
 
     @IsTest
+    static void holidayTransfersAreSkippedWithOneQueryForBulkRequests() {
+        setDefaultConfig();
+        insert new Holiday(Name = 'Public holiday', ActivityDate = Date.newInstance(2026, 1, 5), IsAllDay = true);
+        List<HOT_TjenesteleverandorDeadlineService.Request> requests = new List<HOT_TjenesteleverandorDeadlineService.Request>();
+        for (Integer index = 0; index < 200; index++) {
+            HOT_TjenesteleverandorDeadlineService.Request request = new HOT_TjenesteleverandorDeadlineService.Request();
+            request.transferDate = Datetime.newInstanceGmt(2026, 1, 5, 9, 0, 0);
+            requests.add(request);
+        }
+
+        Test.startTest();
+        Integer queriesBefore = Limits.getQueries();
+        List<HOT_TjenesteleverandorDeadlineService.Result> results = HOT_TjenesteleverandorDeadlineService.calculate(
+            requests
+        );
+        System.assertEquals(1, Limits.getQueries() - queriesBefore);
+        Test.stopTest();
+
+        System.assertEquals(200, results.size());
+        for (HOT_TjenesteleverandorDeadlineService.Result result : results) {
+            System.assertEquals(Datetime.newInstanceGmt(2026, 1, 6, 11, 0, 0), result.deadline);
+        }
+    }
+
+    @IsTest
+    static void remainingHoursSkipWeekendAndHoliday() {
+        setDefaultConfig();
+        Datetime deadline = HOT_TjenesteleverandorDeadlineService.calculateDeadline(
+            Datetime.newInstanceGmt(2026, 1, 9, 13, 0, 0),
+            null,
+            new List<Holiday>{ new Holiday(ActivityDate = Date.newInstance(2026, 1, 12)) }
+        );
+
+        System.assertEquals(Datetime.newInstanceGmt(2026, 1, 13, 9, 0, 0), deadline);
+    }
+
+    @IsTest
+    static void consecutiveHolidaysAndWeekendAreSkippedInSummerTime() {
+        setDefaultConfig();
+        Datetime deadline = HOT_TjenesteleverandorDeadlineService.calculateDeadline(
+            Datetime.newInstanceGmt(2026, 4, 1, 12, 0, 0),
+            null,
+            new List<Holiday>{
+                new Holiday(ActivityDate = Date.newInstance(2026, 4, 2)),
+                new Holiday(ActivityDate = Date.newInstance(2026, 4, 3)),
+                new Holiday(ActivityDate = Date.newInstance(2026, 4, 6))
+            }
+        );
+
+        System.assertEquals(Datetime.newInstanceGmt(2026, 4, 7, 8, 0, 0), deadline);
+    }
+
+    @IsTest
+    static void yearlyHolidayMatchesMonthAndDayAcrossYears() {
+        setDefaultConfig();
+        Datetime deadline = HOT_TjenesteleverandorDeadlineService.calculateDeadline(
+            Datetime.newInstanceGmt(2026, 1, 6, 9, 0, 0),
+            null,
+            new List<Holiday>{
+                new Holiday(ActivityDate = Date.newInstance(2020, 1, 6), RecurrenceType = 'RecursYearly')
+            }
+        );
+
+        System.assertEquals(Datetime.newInstanceGmt(2026, 1, 7, 11, 0, 0), deadline);
+    }
+
+    @IsTest
+    static void nonRecurringHolidayDoesNotRepeatInAnotherYear() {
+        setDefaultConfig();
+        Datetime deadline = HOT_TjenesteleverandorDeadlineService.calculateDeadline(
+            Datetime.newInstanceGmt(2026, 1, 6, 9, 0, 0),
+            null,
+            new List<Holiday>{ new Holiday(ActivityDate = Date.newInstance(2025, 1, 6)) }
+        );
+
+        System.assertEquals(Datetime.newInstanceGmt(2026, 1, 6, 13, 0, 0), deadline);
+    }
+
+    @IsTest
     static void deployedDefaultConfigurationIsPresent() {
         HOT_TL_Deadline_Config__mdt metadata = HOT_TL_Deadline_Config__mdt.getInstance('Default');
 

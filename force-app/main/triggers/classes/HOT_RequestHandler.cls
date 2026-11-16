@@ -187,15 +187,15 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
                 notifyDispatcherRequests.add(request);
             }
             if (
-                triggerOldMap.get(request.Id).get('HOT_DelPol_IsHideRecord__c') !==
-                request.HOT_DelPol_IsHideRecord__c && request.HOT_DelPol_IsHideRecord__c
+                triggerOldMap.get(request.Id).get('HOT_DelPol_IsHideRecord__c') != request.HOT_DelPol_IsHideRecord__c &&
+                request.HOT_DelPol_IsHideRecord__c
             ) {
                 requestsToChangeOwnerToArchive.add(request);
             }
             // Notify user on order
             if (
                 triggerOldMap.get(request.Id).get('Status__c') == 'Åpen' &&
-                triggerOldMap.get(request.Id).get('Status__c') !== request.Status__c &&
+                triggerOldMap.get(request.Id).get('Status__c') != request.Status__c &&
                 request.Status__c == 'Godkjent' &&
                 !request.IsAccountEqualOrderer__c
             ) {
@@ -245,10 +245,10 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             if (triggerOldMap.get(request.Id).get('Status__c') == 'Åpen' && request.Status__c == 'Godkjent') {
                 godkjentRequests.add(request);
             }
-            if (triggerOldMap.get(request.Id).get('Subject__c') !== request.Subject__c) {
+            if (triggerOldMap.get(request.Id).get('Subject__c') != request.Subject__c) {
                 requestsWithNewSubject.add(request);
             }
-            if (triggerOldMap.get(request.Id).get('Account__c') !== request.Account__c) {
+            if (triggerOldMap.get(request.Id).get('Account__c') != request.Account__c) {
                 requestsWithNewAccount.add(request);
             }
             if (
@@ -260,21 +260,21 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             ) {
                 requestsWithUpdatedDispatcher.add(request);
             }
-            if (triggerOldMap.get(request.Id).get('Company__c') !== request.Company__c) {
+            if (triggerOldMap.get(request.Id).get('Company__c') != request.Company__c) {
                 requestsWithUpdatedCompany.add(request);
             }
             if (
-                triggerOldMap.get(request.Id).get('MeetingStreet__c') !== request.MeetingStreet__c ||
-                triggerOldMap.get(request.Id).get('MeetingPostalCode__c') !== request.MeetingPostalCode__c ||
-                triggerOldMap.get(request.Id).get('MeetingPostalCity__c') !== request.MeetingPostalCity__c
+                triggerOldMap.get(request.Id).get('MeetingStreet__c') != request.MeetingStreet__c ||
+                triggerOldMap.get(request.Id).get('MeetingPostalCode__c') != request.MeetingPostalCode__c ||
+                triggerOldMap.get(request.Id).get('MeetingPostalCity__c') != request.MeetingPostalCity__c
             ) {
                 requestsWithUpdatedMeetingAddress.add(request);
             }
             if (
-                triggerOldMap.get(request.Id).get('InterpretationStreet__c') !== request.InterpretationStreet__c ||
-                triggerOldMap.get(request.Id).get('InterpretationPostalCode__c') !==
+                triggerOldMap.get(request.Id).get('InterpretationStreet__c') != request.InterpretationStreet__c ||
+                triggerOldMap.get(request.Id).get('InterpretationPostalCode__c') !=
                 request.InterpretationPostalCode__c ||
-                triggerOldMap.get(request.Id).get('InterpretationPostalCity__c') !== request.InterpretationPostalCity__c
+                triggerOldMap.get(request.Id).get('InterpretationPostalCity__c') != request.InterpretationPostalCity__c
             ) {
                 requestsWithUpdatedInterpretationAddress.add(request);
             }
@@ -701,14 +701,12 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
                 request.UserInterpretationMethod__c != null &&
                 request.InterpretationMethodType__c == null &&
                 request.InterpretationMethod__c == null;
-            Boolean shouldSyncPrimaryType =
-                isInsert
-                    ? request.InterpretationMethodType__c != null
-                    : request.InterpretationMethodType__c != oldRequest.InterpretationMethodType__c;
-            Boolean shouldSyncSecondaryType =
-                isInsert
-                    ? request.InterpretationMethodSecondaryType__c != null
-                    : request.InterpretationMethodSecondaryType__c != oldRequest.InterpretationMethodSecondaryType__c;
+            Boolean shouldSyncPrimaryType = isInsert
+                ? request.InterpretationMethodType__c != null
+                : request.InterpretationMethodType__c != oldRequest.InterpretationMethodType__c;
+            Boolean shouldSyncSecondaryType = isInsert
+                ? request.InterpretationMethodSecondaryType__c != null
+                : request.InterpretationMethodSecondaryType__c != oldRequest.InterpretationMethodSecondaryType__c;
 
             if (shouldSyncFromUserField) {
                 workTypeDeveloperNames.add(request.UserInterpretationMethod__c);
