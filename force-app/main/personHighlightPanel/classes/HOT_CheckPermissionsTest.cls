@@ -29,6 +29,7 @@ public without sharing class HOT_CheckPermissionsTest {
         System.runAs(u) {
             Test.startTest();
             Map<String, Boolean> perms = HOT_CheckPermissions.getAllPermissions();
+            System.assertEquals(false, HOT_CheckPermissions.isFormidlerOrAdmin());
             Test.stopTest();
 
             System.assertEquals(false, perms.get('hasFreelancePermission'));
@@ -64,6 +65,7 @@ public without sharing class HOT_CheckPermissionsTest {
 
                 Map<String, Boolean> afterPerms = HOT_CheckPermissions.getAllPermissions();
                 System.assertEquals(true, afterPerms.get('hasFreelancePermission'));
+                System.assertEquals(false, HOT_CheckPermissions.isFormidlerOrAdmin());
             }
 
             Test.stopTest();
@@ -85,12 +87,14 @@ public without sharing class HOT_CheckPermissionsTest {
 
             Map<String, Boolean> beforePerms = HOT_CheckPermissions.getAllPermissions();
             System.assertEquals(false, beforePerms.get('isAdmin'));
+            System.assertEquals(false, HOT_CheckPermissions.isFormidlerOrAdmin());
 
             if (ps != null) {
                 insert new PermissionSetAssignment(AssigneeId = u.Id, PermissionSetId = ps.Id);
 
                 Map<String, Boolean> afterPerms = HOT_CheckPermissions.getAllPermissions();
                 System.assertEquals(true, afterPerms.get('isAdmin'));
+                System.assertEquals(true, HOT_CheckPermissions.isFormidlerOrAdmin());
             }
 
             Test.stopTest();

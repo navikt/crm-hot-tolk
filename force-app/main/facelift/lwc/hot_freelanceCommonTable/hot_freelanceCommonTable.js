@@ -77,7 +77,7 @@ export default class Hot_freelanceCommonTable extends LightningElement {
 
                 if (column.name === 'HOT_PreparationTime__c' && value) {
                     field.statusBadgeClass = 'badge-blue';
-                    field.statusBadgeLabel = 'Kompensert forberedelse';
+                    field.statusBadgeLabel = 'Kompensasjonssats antall';
                 }
 
                 // Apply bold font weight and size to date columns
