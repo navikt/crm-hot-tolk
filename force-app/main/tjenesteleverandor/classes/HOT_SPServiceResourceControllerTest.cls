@@ -8,7 +8,7 @@ private class HOT_SPServiceResourceControllerTest {
         Skill sk = [
             SELECT Id, MasterLabel
             FROM Skill
-            WHERE DeveloperName = 'Tegnspraktolk'
+            WHERE MasterLabel = 'Tegnspråktolk'
             LIMIT 1
         ];
         ServiceResourceSkill srs = HOT_TestDataFactory.createServiceResourceSkill(sr, sk);
@@ -18,7 +18,7 @@ private class HOT_SPServiceResourceControllerTest {
     @isTest
     static void getServiceResourceDetailsReturnsSRObject() {
         ServiceResource sr = [SELECT Id FROM ServiceResource LIMIT 1];
-        
+
         ServiceResource output = HOT_SPServiceResourceController.getServiceResourceDetails(sr.Id);
         Assert.areNotEqual(null, output);
     }
