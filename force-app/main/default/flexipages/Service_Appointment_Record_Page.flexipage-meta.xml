@@ -1442,7 +1442,7 @@
                     <criteria>
                         <leftValue>{!$User.Profile.Name}</leftValue>
                         <operator>EQUAL</operator>
-                        <rightValue>HOT Tolk Formidler</rightValue>
+                        <rightValue>HOT Tolk Tjenesteleverandør</rightValue>
                     </criteria>
                 </visibilityRule>
             </componentInstance>
