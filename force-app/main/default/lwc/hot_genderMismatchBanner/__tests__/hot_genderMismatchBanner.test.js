@@ -11,14 +11,22 @@ function appointment(preferredGender, resourceGender, resourceId = RESOURCE_ID) 
         apiName: 'ServiceAppointment',
         id: RECORD_ID,
         fields: {
-            HOT_Gender__c: { value: preferredGender },
+            HOT_UserPreferredGender__c: { value: preferredGender },
             HOT_ServiceResource__c: { value: resourceId },
             HOT_ServiceResource__r: {
                 value: resourceId
                     ? {
                           apiName: 'ServiceResource',
                           id: resourceId,
-                          fields: { HOT_Gender__c: { value: resourceGender } }
+                          fields: {
+                              Account: {
+                                  value: {
+                                      apiName: 'Account',
+                                      id: '001000000000001AAA',
+                                      fields: { HOT_Gender__c: { value: resourceGender } }
+                                  }
+                              }
+                          }
                       }
                     : null
             }
