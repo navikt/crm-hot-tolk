@@ -1436,6 +1436,19 @@
         </itemInstances>
         <itemInstances>
             <componentInstance>
+                <componentName>hot_genderMismatchBanner</componentName>
+                <identifier>c_hot_genderMismatchBanner</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!$User.Profile.Name}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>HOT Tolk Formidler</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
                 <componentInstanceProperties>
                     <name>header</name>
                     <value>Beskjed til tolk</value>
