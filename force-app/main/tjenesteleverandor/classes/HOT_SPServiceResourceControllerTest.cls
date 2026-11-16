@@ -2,17 +2,28 @@
 private class HOT_SPServiceResourceControllerTest {
     @TestSetup
     static void makeData() {
-        ServiceResource sr = HOT_TestDataFactory.createServiceResource(userInfo.getUserId());
-        insert sr;
-
-        Skill sk = [
+        List<Skill> skills = [
             SELECT Id, MasterLabel
             FROM Skill
-            WHERE MasterLabel = 'Tegnspråktolk'
-            LIMIT 1
+            WHERE DeveloperName = 'Tegnspraktolk'
         ];
-        ServiceResourceSkill srs = HOT_TestDataFactory.createServiceResourceSkill(sr, sk);
-        insert srs;
+
+        if (skills.isEmpty()) {
+            skills = (List<Skill>) Test.loadData(
+                Skill.SObjectType,
+                'TegnspraktolkSkill'
+            );
+        }
+
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            ServiceResource sr =
+                HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
+            insert sr;
+
+            ServiceResourceSkill srs =
+                HOT_TestDataFactory.createServiceResourceSkill(sr, skills[0]);
+            insert srs;
+        }
     }
 
     @isTest
