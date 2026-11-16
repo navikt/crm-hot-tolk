@@ -4,7 +4,7 @@ import USER_ID from '@salesforce/user/Id';
 
 const PREFERRED_GENDER = 'ServiceAppointment.HOT_UserPreferredGender__c';
 const SERVICE_RESOURCE = 'ServiceAppointment.HOT_ServiceResource__c';
-const RESOURCE_GENDER = 'ServiceAppointment.HOT_ServiceResource__r.HOT_Gender__c';
+const RESOURCE_GENDER = 'ServiceAppointment.HOT_ServiceResource__r.Account.HOT_Gender__c';
 
 export default class Hot_genderMismatchBanner extends LightningElement {
     @api recordId;
