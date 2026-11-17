@@ -19,6 +19,14 @@
     font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
 }
 
+.detail-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
 .back-button {
     display: inline-flex;
     align-items: center;

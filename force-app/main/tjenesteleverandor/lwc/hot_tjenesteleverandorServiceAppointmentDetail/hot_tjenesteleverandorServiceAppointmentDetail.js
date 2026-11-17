@@ -2,6 +2,8 @@ import { LightningElement, api, wire } from 'lwc';
 import { getRecord, getFieldValue, getFieldDisplayValue } from 'lightning/uiRecordApi';
 import { NavigationMixin, CurrentPageReference } from 'lightning/navigation';
 import { notifyRecordUpdateAvailable } from 'lightning/uiRecordApi';
+import { RefreshEvent } from 'lightning/refresh';
+import HotFlowModal from 'c/hot_flowModal';
 import canAcceptAppointments from '@salesforce/customPermission/HOT_AcceptTjenesteleverandorOppdrag';
 import acceptServiceAppointments from '@salesforce/apex/HOT_TjenesteleverandorAcceptanceService.acceptServiceAppointments';
 
@@ -97,6 +99,7 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
     hasError = false;
     hasCancellationDetails = false;
     isResponding = false;
+    isAssignmentOpen = false;
     isAcceptanceEligible = false;
     acceptanceDeadline;
     responseFeedback;
@@ -127,6 +130,15 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
 
     get showAcceptAction() {
         return Boolean(canAcceptAppointments && this.isAcceptanceEligible);
+    }
+
+    get showAssignOrReserveAction() {
+        const status = this.getFieldValue(STATUS_FIELD);
+        return (
+            this.getFieldValue(HOT_TJENESTELEVERANDOR_STATUS_FIELD) === 'Accepted' &&
+            Boolean(status) &&
+            !['Completed', 'Canceled', 'Annul', 'In Progress', 'Cannot Complete'].includes(status)
+        );
     }
 
     get hasRecordData() {
@@ -344,6 +356,31 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
             this.responseFeedback = { type: 'error', message: error?.body?.message || fallbackErrorMessage };
         } finally {
             this.isResponding = false;
+        }
+    }
+
+    async handleAssignOrReserve() {
+        this.isAssignmentOpen = true;
+        this.responseFeedback = undefined;
+        try {
+            const status = await HotFlowModal.open({
+                size: 'small',
+                flowApiName: 'HOT_SPAssignOrReserveSAService',
+                flowLabel: 'Reserver eller tildel tolk',
+                recordId: this.effectiveRecordId
+            });
+            if (status === 'FINISHED' || status === 'FINISHED_SCREEN') {
+                this.markListsForRefresh();
+                await notifyRecordUpdateAvailable([{ recordId: this.effectiveRecordId }]);
+                this.dispatchEvent(new RefreshEvent());
+            }
+        } catch (error) {
+            this.responseFeedback = {
+                type: 'error',
+                message: error?.body?.message || error?.message || 'Kunne ikke åpne eller oppdatere tildelingen.'
+            };
+        } finally {
+            this.isAssignmentOpen = false;
         }
     }
 

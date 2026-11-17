@@ -1,6 +1,6 @@
 <template>
     <article class="detail-page">
-        <nav class="slds-m-bottom_medium" aria-label="Navigasjon for oppdragsdetaljer">
+        <nav class="detail-actions slds-m-bottom_medium" aria-label="Navigasjon for oppdragsdetaljer">
             <button class="back-button" type="button" onclick={handleBack}>
                 <lightning-icon
                     class="back-button-icon"
@@ -11,6 +11,14 @@
                 ></lightning-icon>
                 <span>Tilbake til oppdrag</span>
             </button>
+            <template lwc:if={showAssignOrReserveAction}>
+                <c-button
+                    button-styling="primary"
+                    button-label="Reserver eller tildel tolk"
+                    disabled={isAssignmentOpen}
+                    onbuttonclick={handleAssignOrReserve}
+                ></c-button>
+            </template>
         </nav>
 
         <header class="slds-assistive-text">
