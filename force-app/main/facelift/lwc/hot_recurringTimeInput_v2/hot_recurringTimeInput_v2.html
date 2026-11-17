@@ -1,6 +1,6 @@
 <template>
     <div style="margin-bottom: 0.5rem">
-        <template iterator:it={times}>
+        <template iterator:it={timesWithDeleteLabels}>
             <div key={it.value.id} class="listClass">
                 <h2 class="sr-only">
                     Dato: {it.value.date}. Tid: {it.value.startTimeString} - {it.value.endTimeString}
@@ -44,10 +44,11 @@
                 <div style="padding-top: 4.5%; padding-left: 1vw">
                     <c-button
                         if:false={isOnlyOneTime}
+                        data-id="removeTime"
                         type="button"
                         button-styling="danger"
                         onbuttonclick={removeTime}
-                        aria-label="Fjern tid"
+                        aria-label={it.value.deleteLabel}
                         name={it.value.id}
                         button-label="Slett"
                     >
@@ -57,6 +58,7 @@
             </div>
         </template>
 
+        <p class="sr-only" role="status" aria-atomic="true">{previewStatusMessage}</p>
         <template lwc:if={hideGjentagende}>
             <!-- Show nothing -->
         </template>
@@ -67,12 +69,7 @@
                 name="Gjentagende"
                 aria-label="Gjentagende bestilling?"
             ></c-checkbox>
-            <div
-                if:true={isAdvancedTimes}
-                class="time-inputs-container"
-                style="margin-bottom: 0.5rem"
-                aria-live="polite"
-            >
+            <div if:true={isAdvancedTimes} class="time-inputs-container" style="margin-bottom: 0.5rem">
                 <c-picklist
                     name="Gjenta"
                     choices={repeatingOptions}
@@ -84,7 +81,7 @@
                 >
                 </c-picklist>
                 <br />
-                <div lwc:if={showWeekDays} aria-live="polite">
+                <div lwc:if={showWeekDays}>
                     <c-checkboxgroup
                         data-id="recurringDays"
                         checkboxes={days}
@@ -93,7 +90,7 @@
                         error-text="Du må velge minst én dag tolkebehovet gjentas."
                     ></c-checkboxgroup>
                 </div>
-                <div aria-live="polite" if:true={isRepeating}>
+                <div if:true={isRepeating}>
                     <c-input
                         label="Sluttdato"
                         data-id="recurringEndDate"
@@ -105,10 +102,78 @@
                         desktop-style="width: 30%"
                     ></c-input>
                 </div>
+                <div lwc:if={recurringDateError} class="recurring-date-error" role="alert">{recurringDateError}</div>
+                <p lwc:if={previewLoading}>Henter forhåndsvisning...</p>
+                <template lwc:elseif={previewValidationError}>
+                    <div class="recurring-date-error" role={previewErrorRole}>{previewValidationError}</div>
+                    <c-button
+                        lwc:if={previewError}
+                        type="button"
+                        button-styling="secondary"
+                        button-label="Prøv igjen"
+                        onbuttonclick={refreshRecurringPreview}
+                    ></c-button>
+                </template>
+                <div lwc:if={hasPreviewIntervals} class="recurring-preview">
+                    <h3 class="recurring-preview-heading">Forhåndsvisning av tidspunkter</h3>
+                    <p class="recurring-preview-count">{previewCountLabel}</p>
+                    <dl class="recurring-preview-dates">
+                        <div>
+                            <dt>Første tidspunkt:</dt>
+                            <dd>{previewFirstDate}</dd>
+                        </div>
+                        <div>
+                            <dt>Siste tidspunkt:</dt>
+                            <dd>{previewLastDate}</dd>
+                        </div>
+                    </dl>
+                    <p lwc:if={recurringBoundaryWarning} class="recurring-boundary-warning">
+                        {recurringBoundaryWarning}
+                    </p>
+                    <details ontoggle={handlePreviewToggle}>
+                        <summary>
+                            <span class="recurring-preview-chevron" aria-hidden="true"></span>
+                            <span>{previewToggleLabel}</span>
+                        </summary>
+                        <div
+                            class="recurring-preview-list"
+                            tabindex="0"
+                            role="region"
+                            aria-label="Tidspunkter i serien"
+                        >
+                            <table>
+                                <caption class="sr-only">
+                                    Tidspunkter i serien
+                                </caption>
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Dato</th>
+                                        <th scope="col">Fra</th>
+                                        <th scope="col">Til</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template for:each={previewIntervals} for:item="interval">
+                                        <tr key={interval.startTime}>
+                                            <td>{interval.dateLabel}</td>
+                                            <td>{interval.startLabel}</td>
+                                            <td>{interval.endLabel}</td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+                    </details>
+                    <p lwc:if={showPreviewTimeZoneNotice} class="recurring-preview-timezone">
+                        Alle datoer og klokkeslett i forhåndsvisningen er oppgitt i norsk tid.
+                    </p>
+                    <p class="recurring-preview-hint">Kontroller datoene og klokkeslettene før du sender inn.</p>
+                </div>
             </div>
         </template>
         <c-button
             if:false={isAdvancedTimes}
+            data-id="addTime"
             type="button"
             button-styling="secondary"
             onbuttonclick={addTime}

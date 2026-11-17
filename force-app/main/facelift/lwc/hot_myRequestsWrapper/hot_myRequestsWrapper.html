@@ -273,9 +273,6 @@
             role="dialog"
             aria-labelledby="details-header-id"
         >
-            <div class="loader-container" lwc:if={showLoader}>
-                <c-hot_loader size="3xlarge"></c-hot_loader>
-            </div>
             <div lwc:if={showUploadFilesComponent}>
                 <h2 style="font-size: 1.25rem; text-align: center">{uploadFileTitle}</h2>
                 <br />
@@ -313,15 +310,6 @@
             <br />
             <br />
             <div style="text-align: center" aria-live="polite">
-                <c-button
-                    lwc:if={hasFiles}
-                    button-styling="primary"
-                    button-label="Lagre"
-                    onbuttonclick={uploadFilesOnSave}
-                    style="padding-right: 1vw"
-                    desktop-style="width: 8rem; justify-content: center"
-                    mobile-style="width: 8rem; justify-content: center"
-                ></c-button>
                 <c-button
                     lwc:if={showCancelUploadButton}
                     button-styling="secondary"
