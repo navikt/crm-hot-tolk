@@ -50,10 +50,12 @@ public without sharing class HOT_InterestedResourcesListController {
                 AppointmentServiceTerritory__c,
                 AppointmentServiceTerritoryDeveloperName__c,
                 WorkOrderCanceledDate__c,
-                HOT_TermsOfAgreement__c
+                HOT_TermsOfAgreement__c,
+                HOT_DelPol_ToHideRecord__c
             FROM HOT_InterestedResource__c
             WHERE
                 ServiceResource__c IN :(new Map<Id, ServiceResource>(serviceResource)).keySet()
+                AND HOT_DelPol_ToHideRecord__c = FALSE
                 AND Status__c IN :interestedResourceStatusesOfInterest
             ORDER BY ServiceAppointmentStartTime__c ASC
         ];
