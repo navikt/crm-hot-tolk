@@ -82,6 +82,12 @@ export default class Hot_tlLoginBanner extends NavigationMixin(LightningElement)
             label: 'Samtaler',
             url: '/s/samtaler',
             pageName: 'samtaler'
+        },
+        {
+            id: '5',
+            label: 'Tjenesteressurser',
+            url: '/s/tjenesteressurser',
+            pageName: 'tjenesteressurser'
         }
     ];
 
