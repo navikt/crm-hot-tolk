@@ -72,7 +72,6 @@ public without sharing class HOT_MyServiceAppointmentListController {
                     HOT_AssignmentType__c,
                     HOT_DegreeOfHearingAndVisualImpairment__c,
                     HOT_DelPol_IsHideFilesFromFreelance__c,
-                    HOT_DelPol_ToHideRecord__c,
                     HOT_Dispatcher__c,
                     HOT_Escort__c,
                     HOT_FreelanceSubject__c,
@@ -144,7 +143,6 @@ public without sharing class HOT_MyServiceAppointmentListController {
                 HOT_AssignmentType__c,
                 HOT_DegreeOfHearingAndVisualImpairment__c,
                 HOT_DelPol_IsHideFilesFromFreelance__c,
-                HOT_DelPol_ToHideRecord__c,
                 HOT_Dispatcher__c,
                 HOT_Escort__c,
                 HOT_FreelanceSubject__c,
@@ -188,7 +186,7 @@ public without sharing class HOT_MyServiceAppointmentListController {
             WHERE
                 Id IN :serviceAppointmentIds
                 AND Status IN ('Dispatched', 'Completed')
-                AND HOT_DelPol_ToHideRecord__c = FALSE
+                AND HOT_DelPol_IsHideRecord__c = FALSE
             ORDER BY SchedStartTime ASC
         ];
         return serviceAppointments;
