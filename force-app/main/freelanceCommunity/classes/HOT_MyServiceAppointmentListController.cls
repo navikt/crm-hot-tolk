@@ -187,6 +187,7 @@ public without sharing class HOT_MyServiceAppointmentListController {
                 Id IN :serviceAppointmentIds
                 AND Status IN ('Dispatched', 'Completed')
                 AND HOT_DelPol_IsHideRecord__c = FALSE
+                AND HOT_DelPol_ToHideRecord__c = FALSE
             ORDER BY SchedStartTime ASC
         ];
         return serviceAppointments;
