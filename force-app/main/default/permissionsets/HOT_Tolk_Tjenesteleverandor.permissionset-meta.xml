@@ -1079,6 +1079,10 @@
     </fieldPermissions>
     <flowAccesses>
         <enabled>true</enabled>
+        <flow>HOT_SPAssignOrReserveSAService</flow>
+    </flowAccesses>
+    <flowAccesses>
+        <enabled>true</enabled>
         <flow>HOT_ServiceProviderTransferSADispatcher</flow>
     </flowAccesses>
     <hasActivationRequired>false</hasActivationRequired>
