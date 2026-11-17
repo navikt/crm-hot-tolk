@@ -259,6 +259,74 @@ private class HOT_AssignOrReserveSAServiceTest {
         System.assertEquals(0, assignedResourceCount, 'No assigned resource should be created');
     }
 
+    @IsTest
+    static void serviceProviderAssignsAcceptedAppointment() {
+        ServiceAppointment appointment = getServiceAppointment();
+        ServiceResource resource = getServiceResources()[0];
+        update new ServiceAppointment(Id = appointment.Id, HOT_TjenesteleverandorStatus__c = 'Accepted');
+
+        Test.startTest();
+        HOT_AssignOrReserveSAService.Result result = new HOT_AssignOrReserveSAService(
+                new List<HOT_AssignOrReserveSAService.Input>{
+                    createRequest(appointment.Id, resource.Id, 'Dispatched')
+                },
+                true
+            )
+            .process()[0];
+        Test.stopTest();
+
+        ServiceAppointment actual = [
+            SELECT Status, HOT_TjenesteleverandorStatus__c, HOT_ServiceResource__c, HOT_AssignedResourceId__c
+            FROM ServiceAppointment
+            WHERE Id = :appointment.Id
+        ];
+        Assert.isTrue(result.success, result.message);
+        Assert.areEqual('Dispatched', actual.Status);
+        Assert.areEqual('Accepted', actual.HOT_TjenesteleverandorStatus__c);
+        Assert.areEqual(resource.Id, actual.HOT_ServiceResource__c);
+        Assert.areEqual(resource.RelatedRecordId, actual.HOT_AssignedResourceId__c);
+        Assert.areEqual(1, [SELECT COUNT() FROM AssignedResource WHERE ServiceAppointmentId = :appointment.Id]);
+    }
+
+    @IsTest
+    static void serviceProviderRejectsUnacceptedAppointment() {
+        ServiceAppointment appointment = getServiceAppointment();
+        ServiceResource resource = getServiceResources()[0];
+        update new ServiceAppointment(Id = appointment.Id, HOT_TjenesteleverandorStatus__c = 'Transferred');
+
+        Test.startTest();
+        HOT_AssignOrReserveSAService.Result result = new HOT_AssignOrReserveSAService(
+                new List<HOT_AssignOrReserveSAService.Input>{ createRequest(appointment.Id, resource.Id, 'Scheduled') },
+                true
+            )
+            .process()[0];
+        Test.stopTest();
+
+        Assert.isFalse(result.success);
+        Assert.areEqual('Oppdraget må være akseptert av tjenesteleverandør.', result.message);
+        Assert.areEqual(0, [SELECT COUNT() FROM AssignedResource WHERE ServiceAppointmentId = :appointment.Id]);
+    }
+
+    @IsTest
+    static void serviceProviderRejectsInactiveInterpreter() {
+        ServiceAppointment appointment = getServiceAppointment();
+        ServiceResource resource = getServiceResources()[0];
+        update new ServiceAppointment(Id = appointment.Id, HOT_TjenesteleverandorStatus__c = 'Accepted');
+        update new ServiceResource(Id = resource.Id, IsActive = false);
+
+        Test.startTest();
+        HOT_AssignOrReserveSAService.Result result = new HOT_AssignOrReserveSAService(
+                new List<HOT_AssignOrReserveSAService.Input>{ createRequest(appointment.Id, resource.Id, 'Scheduled') },
+                true
+            )
+            .process()[0];
+        Test.stopTest();
+
+        Assert.isFalse(result.success);
+        Assert.areEqual('Du må velge en aktiv frilanstolk.', result.message);
+        Assert.areEqual(0, [SELECT COUNT() FROM AssignedResource WHERE ServiceAppointmentId = :appointment.Id]);
+    }
+
     private static HOT_AssignOrReserveSAService.Input createRequest(
         Id serviceAppointmentId,
         Id serviceResourceId,
