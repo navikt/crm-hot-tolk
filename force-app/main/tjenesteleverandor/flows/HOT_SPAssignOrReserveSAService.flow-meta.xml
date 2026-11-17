@@ -11,6 +11,7 @@
             <targetReference>Was_Action_Successful</targetReference>
         </connector>
         <faultConnector>
+            <isGoTo>true</isGoTo>
             <targetReference>FaultScreen</targetReference>
         </faultConnector>
         <flowTransactionModel>Automatic</flowTransactionModel>
@@ -43,6 +44,49 @@
             <name>success</name>
         </outputParameters>
     </actionCalls>
+    <actionCalls>
+        <name>Dispatch_Reserved_Interpreter</name>
+        <label>Dispatch Reserved Interpreter</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <actionName>HOT_SPAssignOrReserveSAService</actionName>
+        <actionType>apex</actionType>
+        <connector>
+            <targetReference>Was_Action_Successful</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>FaultScreen</targetReference>
+        </faultConnector>
+        <flowTransactionModel>Automatic</flowTransactionModel>
+        <inputParameters>
+            <name>serviceAppointmentId</name>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>serviceResourceId</name>
+            <value>
+                <elementReference>Get_Existing_Assigned_Resource.ServiceResourceId</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>targetStatus</name>
+            <value>
+                <stringValue>Dispatched</stringValue>
+            </value>
+        </inputParameters>
+        <nameSegment>HOT_SPAssignOrReserveSAService</nameSegment>
+        <offset>0</offset>
+        <outputParameters>
+            <assignToReference>ActionMessage</assignToReference>
+            <name>message</name>
+        </outputParameters>
+        <outputParameters>
+            <assignToReference>ActionSuccess</assignToReference>
+            <name>success</name>
+        </outputParameters>
+    </actionCalls>
     <apiVersion>66.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <choices>
@@ -54,6 +98,22 @@
         </value>
     </choices>
     <choices>
+        <name>DispatchReservedChoice</name>
+        <choiceText>Tildel tolken</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Dispatch</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>KeepReservationChoice</name>
+        <choiceText>Behold reservasjonen</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>KeepReservation</stringValue>
+        </value>
+    </choices>
+    <choices>
         <name>ReserveChoice</name>
         <choiceText>Reservert</choiceText>
         <dataType>String</dataType>
@@ -61,6 +121,45 @@
             <stringValue>Scheduled</stringValue>
         </value>
     </choices>
+    <decisions>
+        <name>Can_Dispatch_Reserved_Interpreter</name>
+        <label>Can Dispatch Reserved Interpreter</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Can_Show_Assignment_Screen</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>No Reservation</defaultConnectorLabel>
+        <rules>
+            <name>Has_Reservation</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Service_Appointment.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Scheduled</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Existing_Assigned_Resource.Id</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Service_Appointment.HOT_TjenesteleverandorStatus__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Accepted</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>ConfirmDispatchInterpreter</targetReference>
+            </connector>
+            <label>Has Reservation</label>
+        </rules>
+    </decisions>
     <decisions>
         <name>Can_Show_Assignment_Screen</name>
         <label>Can Show Assignment Screen</label>
@@ -146,6 +245,28 @@
             <label>Success</label>
         </rules>
     </decisions>
+    <decisions>
+        <name>Was_Dispatch_Confirmed</name>
+        <label>Was Dispatch Confirmed</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>Keep Reservation</defaultConnectorLabel>
+        <rules>
+            <name>Dispatch_Confirmed</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>DispatchConfirmation</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Dispatch</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Dispatch_Reserved_Interpreter</targetReference>
+            </connector>
+            <label>Dispatch Confirmed</label>
+        </rules>
+    </decisions>
     <environments>Default</environments>
     <interviewLabel>HOT_SPAssignOrReserveSAService {!$Flow.CurrentDateTime}</interviewLabel>
     <label>HOT_SPAssignOrReserveSAService</label>
@@ -169,7 +290,7 @@
         <locationY>0</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Can_Show_Assignment_Screen</targetReference>
+            <targetReference>Can_Dispatch_Reserved_Interpreter</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -205,6 +326,53 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <screens>
+        <name>ConfirmDispatchInterpreter</name>
+        <label>Tildel reservert tolk</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <connector>
+            <targetReference>Was_Dispatch_Confirmed</targetReference>
+        </connector>
+        <fields>
+            <name>DispatchIntroText</name>
+            <fieldText>&lt;p&gt;Oppdraget har allerede en reservert tolk. Vil du tildele oppdraget til denne tolken?&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <fields>
+            <name>DispatchConfirmation</name>
+            <choiceReferences>DispatchReservedChoice</choiceReferences>
+            <choiceReferences>KeepReservationChoice</choiceReferences>
+            <dataType>String</dataType>
+            <defaultSelectedChoiceReference>KeepReservationChoice</defaultSelectedChoiceReference>
+            <fieldText>Vil du tildele den reserverte tolken?</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <nextOrFinishButtonLabel>Fortsett</nextOrFinishButtonLabel>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
         <name>ErrorScreen</name>
         <label>Error</label>
         <locationX>0</locationX>
@@ -216,6 +384,14 @@
             <name>ErrorText</name>
             <fieldText>&lt;p&gt;{!ActionMessage}&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>false</showHeader>
@@ -232,6 +408,14 @@
             <name>FaultText</name>
             <fieldText>&lt;p&gt;{!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>false</showHeader>
@@ -246,8 +430,16 @@
         <allowPause>false</allowPause>
         <fields>
             <name>NotAvailableText</name>
-            <fieldText>&lt;p&gt;Oppdraget må være akseptert av tjenesteleverandør og ha status Åpen eller Frigitt til frilanstolker. Det kan ikke allerede være reservert eller tildelt en tolk.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;Oppdraget må være akseptert av tjenesteleverandør. Du kan reservere eller tildele en tolk når status er Åpen eller Frigitt til frilanstolker og ingen tolk allerede er valgt. &lt;/p&gt;&lt;p&gt;Har oppdraget status Reservert og en reservert tolk, kan du tildele denne tolken.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>false</showHeader>
@@ -265,8 +457,16 @@
         </connector>
         <fields>
             <name>IntroText</name>
-            <fieldText>&lt;p&gt;Velg en frilanstolk og om oppdraget skal settes til &lt;strong&gt;Reservert&lt;/strong&gt; eller &lt;strong&gt;Tildelt&lt;/strong&gt;. Oppdraget må være akseptert av tjenesteleverandør og ha status Åpen eller Frigitt til frilanstolker.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;Velg en tjenesteressurs og om oppdraget skal settes til &lt;strong&gt;Reservert&lt;/strong&gt; eller &lt;strong&gt;Tildelt&lt;/strong&gt;. &lt;/p&gt;&lt;p&gt;Oppdraget må være akseptert av tjenesteleverandør og ha status Åpen eller Frigitt til frilanstolker.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <fields>
             <name>SelectedResource</name>
@@ -305,6 +505,14 @@
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <storeOutputAutomatically>true</storeOutputAutomatically>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <fields>
             <name>DesiredStatus</name>
@@ -314,10 +522,19 @@
             <defaultSelectedChoiceReference>AssignChoice</defaultSelectedChoiceReference>
             <fieldText>Ny status</fieldText>
             <fieldType>RadioButtons</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <showFooter>true</showFooter>
-        <showHeader>true</showHeader>
+        <showHeader>false</showHeader>
     </screens>
     <screens>
         <name>SuccessScreen</name>
@@ -331,6 +548,14 @@
             <name>SuccessText</name>
             <fieldText>&lt;p&gt;{!ActionMessage}&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>false</showHeader>

@@ -178,7 +178,24 @@ public without sharing class HOT_AssignOrReserveSAService {
                 throw new FlowHandledException('Valgt tolk ble ikke funnet.');
             }
 
-            validateServiceAppointment(serviceAppointment, getAssignedResources(req.serviceAppointmentId));
+            List<AssignedResource> existingAssignedResources = getAssignedResources(req.serviceAppointmentId);
+            Boolean dispatchingReservation =
+                this.serviceProviderAssignment &&
+                serviceAppointment.Status == 'Scheduled' &&
+                req.targetStatus == 'Dispatched';
+
+            if (dispatchingReservation) {
+                if (
+                    existingAssignedResources.size() != 1 ||
+                    existingAssignedResources[0].ServiceResourceId != req.serviceResourceId
+                ) {
+                    throw new FlowHandledException(
+                        'Den reserverte tolken finnes ikke eller er endret. Last inn oppdraget på nytt.'
+                    );
+                }
+            } else {
+                validateServiceAppointment(serviceAppointment, existingAssignedResources);
+            }
 
             if (this.serviceProviderAssignment) {
                 if (serviceAppointment.HOT_TjenesteleverandorStatus__c != 'Accepted') {
@@ -190,18 +207,22 @@ public without sharing class HOT_AssignOrReserveSAService {
                 assignmentSavepoint = Database.setSavepoint();
             }
 
-            AssignedResource assignedResource = new AssignedResource(
-                ServiceAppointmentId = req.serviceAppointmentId,
-                ServiceResourceId = req.serviceResourceId
-            );
-            insert assignedResource;
+            if (dispatchingReservation) {
+                update new ServiceAppointment(Id = serviceAppointment.Id, Status = req.targetStatus);
+            } else {
+                AssignedResource assignedResource = new AssignedResource(
+                    ServiceAppointmentId = req.serviceAppointmentId,
+                    ServiceResourceId = req.serviceResourceId
+                );
+                insert assignedResource;
 
-            update new ServiceAppointment(
-                Id = serviceAppointment.Id,
-                Status = req.targetStatus,
-                HOT_ServiceResource__c = serviceResource.Id,
-                HOT_AssignedResourceId__c = serviceResource.RelatedRecordId
-            );
+                update new ServiceAppointment(
+                    Id = serviceAppointment.Id,
+                    Status = req.targetStatus,
+                    HOT_ServiceResource__c = serviceResource.Id,
+                    HOT_AssignedResourceId__c = serviceResource.RelatedRecordId
+                );
+            }
 
             if (this.serviceProviderAssignment) {
                 serviceAppointment.Status = req.targetStatus;
