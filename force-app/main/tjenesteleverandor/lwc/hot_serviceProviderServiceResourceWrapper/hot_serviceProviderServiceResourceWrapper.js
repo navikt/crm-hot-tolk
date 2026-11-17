@@ -3,6 +3,7 @@ import { NavigationMixin } from 'lightning/navigation';
 import getServiceResources from '@salesforce/apex/HOT_TjenesteleverandorListController.getServiceResources';
 import searchIcon from '@salesforce/resourceUrl/MagnifyingGlass';
 import { createDefaultFilters, filterRecords } from 'c/hot_tjenesteleverandorFilters';
+import { columns } from './columns'
 
 export default class Hot_serviceProviderServiceResourceWrapper extends NavigationMixin(LightningElement) {
     allInterpretersList = [];
@@ -12,6 +13,7 @@ export default class Hot_serviceProviderServiceResourceWrapper extends Navigatio
     filters = [];
     previewFilters;
     searchText = '';
+    columns = columns;
 
     error = null;
 
