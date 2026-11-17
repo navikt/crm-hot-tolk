@@ -41,8 +41,7 @@ export default class Hot_serviceProviderServiceResourceWrapper extends Navigatio
     }
 
     goToRecordDetails(event) {
-        console.log("Pressed: ")
-        const recordId = this.tolkerList.find((tolk) => tolk.Id === event.detail.Id)?.Id;
+        const recordId = this.interpretersList.find((interpreter) => interpreter.Id === event.detail.Id)?.Id;
         this[NavigationMixin.Navigate]({
             type: 'comm__namedPage',
             attributes: {
@@ -78,8 +77,8 @@ export default class Hot_serviceProviderServiceResourceWrapper extends Navigatio
     }
 
     getFilteredRecords(filters) {
-        return filterRecords(this.allInterpretersList, filters).filter((tolk) =>
-            tolk.Name.toLowerCase().includes(this.searchText)
+        return filterRecords(this.allInterpretersList, filters).filter((interpreter) =>
+            interpreter.Name.toLowerCase().includes(this.searchText)
         );
     }
 
