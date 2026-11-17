@@ -257,6 +257,16 @@
     margin: 0;
 }
 
+.assignment-status-tag[data-color='info'] {
+    background-color: #99c3ff;
+    border-radius: 0.25rem;
+}
+
+.assignment-status-tag[data-color='info'] .assignment-status-label {
+    color: #000000;
+    font-weight: 400;
+}
+
 .loading-container {
     position: relative;
     min-height: 8rem;

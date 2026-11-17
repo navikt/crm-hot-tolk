@@ -235,6 +235,34 @@
                 </div>
 
                 <aside class="side-column">
+                    <section class="detail-card compact-card" aria-labelledby="assigned-resource-heading">
+                        <h2 id="assigned-resource-heading" class="card-heading">Tjenesteressurs</h2>
+                        <dl class="time-grid">
+                            <div class="data-row">
+                                <dt>Tolk</dt>
+                                <dd>
+                                    <template lwc:if={assignedResourceError}>
+                                        <span role="alert">Kunne ikke laste tjenesteressurs.</span>
+                                    </template>
+                                    <template lwc:else>{assignedResourceName}</template>
+                                </dd>
+                            </div>
+                            <div lwc:if={showStatusTag} class="data-row">
+                                <dt>Status</dt>
+                                <dd>
+                                    <c-hot_tag
+                                        class="assignment-status-tag"
+                                        data-color={statusTagColor}
+                                        label={status}
+                                        color={statusTagColor}
+                                        variant={statusTagVariant}
+                                    >
+                                        <span class="assignment-status-label">{status}</span>
+                                    </c-hot_tag>
+                                </dd>
+                            </div>
+                        </dl>
+                    </section>
                     <section class="detail-card compact-card" aria-labelledby="ordered-time-heading">
                         <h2 id="ordered-time-heading" class="card-heading">Bestilt tid</h2>
                         <dl class="time-grid">

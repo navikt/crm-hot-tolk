@@ -2,6 +2,8 @@ import { LightningElement, api, wire } from 'lwc';
 import { getRecord, getFieldValue, getFieldDisplayValue } from 'lightning/uiRecordApi';
 import { NavigationMixin, CurrentPageReference } from 'lightning/navigation';
 import { notifyRecordUpdateAvailable } from 'lightning/uiRecordApi';
+import { getRelatedListRecords } from 'lightning/uiRelatedListApi';
+import { refreshApex } from '@salesforce/apex';
 import { RefreshEvent } from 'lightning/refresh';
 import HotFlowModal from 'c/hot_flowModal';
 import canAcceptAppointments from '@salesforce/customPermission/HOT_AcceptTjenesteleverandorOppdrag';
@@ -128,6 +130,23 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
         return this.recordId || this.routeRecordId;
     }
 
+    @wire(getRelatedListRecords, {
+        parentRecordId: '$effectiveRecordId',
+        relatedListId: 'ServiceResources',
+        fields: ['AssignedResource.Id', 'AssignedResource.ServiceResource.Name'],
+        pageSize: 1
+    })
+    assignedResourceResult;
+
+    get assignedResourceName() {
+        const record = this.assignedResourceResult?.data?.records[0];
+        return this.displayValue(getFieldValue(record, 'AssignedResource.ServiceResource.Name'));
+    }
+
+    get assignedResourceError() {
+        return this.assignedResourceResult?.error;
+    }
+
     get showAcceptAction() {
         return Boolean(canAcceptAppointments && this.isAcceptanceEligible);
     }
@@ -201,6 +220,22 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
 
     get status() {
         return this.displayValue(this.getFieldLabel(STATUS_FIELD));
+    }
+
+    get showStatusTag() {
+        return ['Scheduled', 'Dispatched'].includes(this.getFieldValue(STATUS_FIELD));
+    }
+
+    get statusTagColor() {
+        const status = this.getFieldValue(STATUS_FIELD);
+        if (status === 'Scheduled') {
+            return 'warning';
+        }
+        return status === 'Dispatched' ? 'info' : 'neutral';
+    }
+
+    get statusTagVariant() {
+        return this.getFieldValue(STATUS_FIELD) === 'Dispatched' ? 'outline' : 'moderate';
     }
 
     get providerStatus() {
@@ -372,6 +407,7 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
             if (status === 'FINISHED' || status === 'FINISHED_SCREEN') {
                 this.markListsForRefresh();
                 await notifyRecordUpdateAvailable([{ recordId: this.effectiveRecordId }]);
+                await refreshApex(this.assignedResourceResult);
                 this.dispatchEvent(new RefreshEvent());
             }
         } catch (error) {
