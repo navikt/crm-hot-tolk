@@ -1,0 +1,103 @@
+<template>
+    <div class="detail-page">
+        <nav class="slds-m-bottom_medium" aria-label="Navigasjon for tjenesteressursdetaljer">
+            <button class="back-button" type="button" onclick={handleBack}>
+                <lightning-icon
+                    class="back-button-icon"
+                    icon-name="utility:back"
+                    size="small"
+                    alternative-text=""
+                    aria-hidden="true"
+                ></lightning-icon>
+                <span>Tilbake til tjenesteressurser</span>
+            </button>
+        </nav>
+
+        <header class="slds-assistive-text">
+            <h1 class="slds-text-heading_large">Tjenesteressursdetaljer</h1>
+        </header>
+
+        <template lwc:if={isLoading}>
+            <div class="loading-container" role="status">
+                <c-hot_loader size="3xlarge"></c-hot_loader>
+            </div>
+        </template>
+
+        <template lwc:if={hasError}>
+            <div class="slds-notify slds-notify_alert slds-alert_error error-message" role="alert">
+                <span class="slds-assistive-text">Feil</span>
+                <lightning-icon
+                    icon-name="utility:error"
+                    size="x-small"
+                    variant="inverse"
+                    class="slds-m-right_x-small"
+                ></lightning-icon>
+                <p>Du har ikke tilgang til tjenesteressursen, eller tjenesteressursen finnes ikke.</p>
+            </div>
+        </template>
+
+        <template lwc:if={hasRecordData}>
+            <div class="detail-layout">
+                <section class="detail-card" aria-labelledby="resource-details-heading">
+                    <h2 id="resource-details-heading" class="card-heading">Tjenesteressursdetaljer</h2>
+                    <dl class="detail-columns data-list">
+                        <template for:each={resourceFields} for:item="field">
+                            <div key={field.label} class="data-row">
+                                <dt>{field.label}</dt>
+                                <dd class="multiline-value">{field.value}</dd>
+                            </div>
+                        </template>
+                        <div class="data-row preferred-regions">
+                            <dt>Foretrukne regioner</dt>
+                            <dd>
+                                <template lwc:if={hasPreferredRegionTags}>
+                                    <ul class="tag-list" aria-label="Foretrukne regioner">
+                                        <template for:each={preferredRegionTags} for:item="tag">
+                                            <li key={tag.id}>
+                                                <c-hot_tag
+                                                    label={tag.label}
+                                                    variant="moderate"
+                                                    size="small"
+                                                    color="info"
+                                                ></c-hot_tag>
+                                            </li>
+                                        </template>
+                                    </ul>
+                                </template>
+                                <template lwc:else>{dashForNoPreferredRegionTags}</template>
+                            </dd>
+                        </div>
+                    </dl>
+                </section>
+                <section class="detail-card" aria-labelledby="contact-information-heading">
+                    <h2 id="contact-information-heading" class="card-heading">Kontaktinformasjon</h2>
+                    <dl class="detail-columns data-list">
+                        <template for:each={contactFields} for:item="field">
+                            <div key={field.label} class="data-row">
+                                <dt>{field.label}</dt>
+                                <dd class="multiline-value">{field.value}</dd>
+                            </div>
+                        </template>
+                    </dl>
+                </section>
+                <template lwc:if={hasQualifications}>
+                    <section class="detail-card" aria-labelledby="resource-skills-heading">
+                        <h2 id="resource-skills-heading" class="card-heading">Kvalifikasjoner</h2>
+                        <ul class="tag-list">
+                            <template for:each={activeQualifications} for:item="qualification">
+                                <li key={qualification.Id}>
+                                    <c-hot_tag
+                                        label={qualification.label}
+                                        variant="moderate"
+                                        size="large"
+                                        color="success"
+                                    ></c-hot_tag>
+                                </li>
+                            </template>
+                        </ul>
+                    </section>
+                </template>
+            </div>
+        </template>
+    </div>
+</template>
