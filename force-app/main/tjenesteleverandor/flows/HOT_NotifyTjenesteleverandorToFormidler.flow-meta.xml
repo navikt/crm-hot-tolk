@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
-    <apiVersion>66.0</apiVersion>
     <actionCalls>
         <name>Notify_Formidler_Group</name>
         <label>Notify Formidler Group</label>
@@ -28,24 +27,27 @@
             </value>
         </inputParameters>
         <nameSegment>HOT_SAOwnerGroupNotification</nameSegment>
+        <offset>0</offset>
     </actionCalls>
+    <apiVersion>66.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <assignments>
-        <name>Set_Declined_Notification</name>
-        <label>Set Declined Notification</label>
+        <name>Set_Cannot_Complete_Notification</name>
+        <label>Set Cannot Complete Notification</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
         <assignmentItems>
             <assignToReference>NotificationBody</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>DeclinedNotificationBody</elementReference>
+                <elementReference>CannotCompleteNotificationBody</elementReference>
             </value>
         </assignmentItems>
         <assignmentItems>
             <assignToReference>NotificationTitle</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>DeclinedNotificationTitle</elementReference>
+                <elementReference>CannotCompleteNotificationTitle</elementReference>
             </value>
         </assignmentItems>
         <connector>
@@ -92,39 +94,37 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Set_Declined_Notification</targetReference>
+                <targetReference>Set_Cannot_Complete_Notification</targetReference>
             </connector>
             <label>Declined</label>
         </rules>
         <rules>
-            <name>Expired</name>
+            <name>CannotComplete</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
                 <leftValueReference>Reason</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
-                    <stringValue>Expired</stringValue>
+                    <stringValue>Cannot Complete</stringValue>
                 </rightValue>
             </conditions>
             <connector>
                 <targetReference>Set_Expired_Notification</targetReference>
             </connector>
-            <label>Expired</label>
+            <label>Cannot Complete</label>
         </rules>
     </decisions>
-    <description
-    >Builds notification text for supported supplier outcomes and queues a notification to the formidler group derived from the appointment owner. Supported reasons are Declined and Expired.</description>
+    <description>Builds notification text for supported supplier outcomes and queues a notification to the formidler group derived from the appointment owner. Supported reasons are Cannot Complete and Expired.</description>
     <environments>Default</environments>
     <formulas>
-        <name>DeclinedNotificationBody</name>
+        <name>CannotCompleteNotificationBody</name>
         <dataType>String</dataType>
-        <expression>&quot;Oppdraget ble avslått av tjenesteleverandør. Oppdraget er satt til åpent.&quot;</expression>
+        <expression>&quot;Oppdraget ble markert som udekket av tjenesteleverandør&quot;</expression>
     </formulas>
     <formulas>
-        <name>DeclinedNotificationTitle</name>
+        <name>CannotCompleteNotificationTitle</name>
         <dataType>String</dataType>
-        <expression
-        >&quot;Tjenesteleverandør avslo oppdraget &quot; &amp; {!Get_ServiceAppointment.AppointmentNumber}</expression>
+        <expression>&quot;Tjenesteleverandør markerte oppdraget &quot; &amp; {!Get_ServiceAppointment.AppointmentNumber} &amp; &quot; som udekket&quot;</expression>
     </formulas>
     <formulas>
         <name>ExpiredNotificationBody</name>
@@ -134,8 +134,7 @@
     <formulas>
         <name>ExpiredNotificationTitle</name>
         <dataType>String</dataType>
-        <expression
-        >&quot;Akseptfrist utløpt for oppdrag &quot; &amp; {!Get_ServiceAppointment.AppointmentNumber}</expression>
+        <expression>&quot;Akseptfrist utløpt for oppdrag &quot; &amp; {!Get_ServiceAppointment.AppointmentNumber}</expression>
     </formulas>
     <interviewLabel>HOT_NotifyTjenesteleverandorToFormidler {!$Flow.CurrentDateTime}</interviewLabel>
     <label>HOT_NotifyTjenesteleverandorToFormidler</label>
@@ -167,6 +166,7 @@
         <connector>
             <targetReference>Determine_Notification_Reason</targetReference>
         </connector>
+        <filterLogic>and</filterLogic>
         <filters>
             <field>Id</field>
             <operator>EqualTo</operator>
