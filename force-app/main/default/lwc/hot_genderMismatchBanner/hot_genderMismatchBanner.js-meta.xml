@@ -4,13 +4,12 @@
     <isExposed>true</isExposed>
     <masterLabel>Interpreter Gender Mismatch Notification</masterLabel>
     <targets>
-        <target>lightning__RecordPage</target>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
     </targets>
     <targetConfigs>
-        <targetConfig targets="lightning__RecordPage">
-            <objects>
-                <object>ServiceAppointment</object>
-            </objects>
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="recordId" type="String" label="ServiceAppointment ID" />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>
