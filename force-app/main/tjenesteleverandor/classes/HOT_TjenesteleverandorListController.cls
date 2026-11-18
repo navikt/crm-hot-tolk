@@ -8,7 +8,6 @@ public with sharing class HOT_TjenesteleverandorListController {
                 HOT_IsReleasedToTjenesteleverandor__c = TRUE
                 AND HOT_TjenesteleverandorStatus__c = 'Transferred'
                 AND Status = 'None'
-            WITH USER_MODE
         ];
     }
 
