@@ -21,6 +21,38 @@
             </template>
         </nav>
 
+        <dialog
+            data-id="assignment-dialog"
+            class="modal-container"
+            aria-label="Reserver eller tildel tolk"
+            aria-modal="true"
+            onclose={closeAssignmentModal}
+        >
+            <template lwc:if={isAssignmentOpen}>
+                <div class="modal-header">
+                    <h2>Reserver eller tildel tolk</h2>
+                    <button class="close-btn" onclick={closeAssignmentModal} aria-label="Lukk">
+                        <img src={exitCrossIcon} alt="" aria-hidden="true" />
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <template lwc:if={assignmentError}>
+                        <c-hot_local-alert
+                            type="error"
+                            content-view="title-only"
+                            title={assignmentError}
+                        ></c-hot_local-alert>
+                    </template>
+                    <lightning-flow
+                        flow-api-name="HOT_SPAssignOrReserveSAService"
+                        flow-input-variables={assignmentInputVariables}
+                        flow-finish-behavior="NONE"
+                        onstatuschange={handleAssignmentStatusChange}
+                    ></lightning-flow>
+                </div>
+            </template>
+        </dialog>
+
         <header class="slds-assistive-text">
             <h1 class="slds-text-heading_large">Oppdragsdetaljer</h1>
             <p class="slds-text-body_regular slds-text-color_weak">Informasjonen er skrivebeskyttet.</p>
