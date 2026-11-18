@@ -215,7 +215,7 @@ public without sharing class HOT_SPAssignOrReserveSAService {
     ) {
         if (!SUPPORTED_SOURCE_STATUSES.contains(serviceAppointment.Status)) {
             throw new FlowHandledException(
-                'Denne handlingen kan bare brukes når oppdraget har status Åpen eller Frigitt til frilanstolker. Nåværende status er ' +
+                'Denne handlingen kan bare brukes når oppdraget har status Åpen eller Frigitt til tolker. Nåværende status er ' +
                     serviceAppointment.Status +
                     '.'
             );
