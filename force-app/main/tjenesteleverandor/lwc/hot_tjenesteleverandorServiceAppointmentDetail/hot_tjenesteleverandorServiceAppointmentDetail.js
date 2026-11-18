@@ -2,6 +2,10 @@ import { LightningElement, api, wire } from 'lwc';
 import { getRecord, getFieldValue, getFieldDisplayValue } from 'lightning/uiRecordApi';
 import { NavigationMixin, CurrentPageReference } from 'lightning/navigation';
 import { notifyRecordUpdateAvailable } from 'lightning/uiRecordApi';
+import { getRelatedListRecords } from 'lightning/uiRelatedListApi';
+import { refreshApex } from '@salesforce/apex';
+import { RefreshEvent } from 'lightning/refresh';
+import icons from '@salesforce/resourceUrl/ikoner';
 import canAcceptAppointments from '@salesforce/customPermission/HOT_AcceptTjenesteleverandorOppdrag';
 import acceptServiceAppointments from '@salesforce/apex/HOT_TjenesteleverandorAcceptanceService.acceptServiceAppointments';
 
@@ -49,10 +53,10 @@ const ACCEPTED_LIST_REFRESH_KEY = 'tjenesteleverandorAcceptedListRefresh';
 const PERSON_INFORMATION_FIELDS = [HOT_PERSON_RESERVATIONS_FIELD, HOT_PERSON_LANGUAGE_AND_COMMUNICATION_METHODS_FIELD];
 
 const TAG_DEFINITIONS = [
-    { id: 'acute',  field: HOT_IS_ACUTE_FIELD,                label: 'Akuttvaktoppdrag', color: 'danger' },
-    { id: 'image',  field: HOT_IS_IMAGE_INTERPRETER_FIELD,    label: 'Bildetolk',        color: 'info' },
-    { id: 'screen', field: HOT_IS_SCREEN_INTERPRETER_NEW_FIELD, label: 'Skjermtolk',     color: 'success' },
-    { id: 'series', field: HOT_IS_SERIEOPPDRAG_FIELD,         label: 'Serieoppdrag',     color: 'warning' }
+    { id: 'acute', field: HOT_IS_ACUTE_FIELD, label: 'Akuttvaktoppdrag', color: 'danger' },
+    { id: 'image', field: HOT_IS_IMAGE_INTERPRETER_FIELD, label: 'Bildetolk', color: 'info' },
+    { id: 'screen', field: HOT_IS_SCREEN_INTERPRETER_NEW_FIELD, label: 'Skjermtolk', color: 'success' },
+    { id: 'series', field: HOT_IS_SERIEOPPDRAG_FIELD, label: 'Serieoppdrag', color: 'warning' }
 ];
 
 const FIELDS = [
@@ -97,9 +101,52 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
     hasError = false;
     hasCancellationDetails = false;
     isResponding = false;
+    isAssignmentOpen = false;
+    assignmentError;
+    pageScrollLock;
+    exitCrossIcon = icons + '/Close/Close.svg';
     isAcceptanceEligible = false;
     acceptanceDeadline;
     responseFeedback;
+
+    renderedCallback() {
+        if (!this.isAssignmentOpen) {
+            return;
+        }
+        if (!this.pageScrollLock) {
+            const element = document.scrollingElement;
+            this.pageScrollLock = {
+                element,
+                overflow: element.style.getPropertyValue('overflow'),
+                priority: element.style.getPropertyPriority('overflow')
+            };
+            element.style.setProperty('overflow', 'hidden', 'important');
+        }
+        const dialog = this.template.querySelector('[data-id="assignment-dialog"]');
+        if (dialog && !dialog.open) {
+            dialog.showModal();
+        }
+    }
+
+    disconnectedCallback() {
+        this.unlockPageScroll();
+    }
+
+    unlockPageScroll() {
+        if (this.pageScrollLock) {
+            const { element, overflow, priority } = this.pageScrollLock;
+            if (overflow) {
+                element.style.setProperty('overflow', overflow, priority);
+            } else {
+                element.style.removeProperty('overflow');
+            }
+            this.pageScrollLock = undefined;
+        }
+    }
+
+    get assignmentInputVariables() {
+        return [{ name: 'recordId', type: 'String', value: this.effectiveRecordId }];
+    }
 
     @wire(CurrentPageReference)
     handlePageReference(pageReference) {
@@ -125,8 +172,34 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
         return this.recordId || this.routeRecordId;
     }
 
+    @wire(getRelatedListRecords, {
+        parentRecordId: '$effectiveRecordId',
+        relatedListId: 'ServiceResources',
+        fields: ['AssignedResource.Id', 'AssignedResource.ServiceResource.Name'],
+        pageSize: 1
+    })
+    assignedResourceResult;
+
+    get assignedResourceName() {
+        const record = this.assignedResourceResult?.data?.records[0];
+        return this.displayValue(getFieldValue(record, 'AssignedResource.ServiceResource.Name'));
+    }
+
+    get assignedResourceError() {
+        return this.assignedResourceResult?.error;
+    }
+
     get showAcceptAction() {
         return Boolean(canAcceptAppointments && this.isAcceptanceEligible);
+    }
+
+    get showAssignOrReserveAction() {
+        const status = this.getFieldValue(STATUS_FIELD);
+        return (
+            this.getFieldValue(HOT_TJENESTELEVERANDOR_STATUS_FIELD) === 'Accepted' &&
+            Boolean(status) &&
+            !['Completed', 'Canceled', 'Annul', 'In Progress', 'Cannot Complete'].includes(status)
+        );
     }
 
     get hasRecordData() {
@@ -136,7 +209,7 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
     get appointmentTags() {
         return TAG_DEFINITIONS.filter(({ field }) => this.getFieldValue(field) === true);
     }
-    
+
     get hasAppointmentTags() {
         return this.appointmentTags.length > 0;
     }
@@ -189,6 +262,22 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
 
     get status() {
         return this.displayValue(this.getFieldLabel(STATUS_FIELD));
+    }
+
+    get showStatusTag() {
+        return ['Scheduled', 'Dispatched'].includes(this.getFieldValue(STATUS_FIELD));
+    }
+
+    get statusTagColor() {
+        const status = this.getFieldValue(STATUS_FIELD);
+        if (status === 'Scheduled') {
+            return 'warning';
+        }
+        return status === 'Dispatched' ? 'info' : 'neutral';
+    }
+
+    get statusTagVariant() {
+        return this.getFieldValue(STATUS_FIELD) === 'Dispatched' ? 'outline' : 'moderate';
     }
 
     get providerStatus() {
@@ -344,6 +433,44 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
             this.responseFeedback = { type: 'error', message: error?.body?.message || fallbackErrorMessage };
         } finally {
             this.isResponding = false;
+        }
+    }
+
+    handleAssignOrReserve() {
+        this.isAssignmentOpen = true;
+        this.assignmentError = undefined;
+        this.responseFeedback = undefined;
+    }
+
+    closeAssignmentModal() {
+        this.isAssignmentOpen = false;
+        const dialog = this.template.querySelector('[data-id="assignment-dialog"]');
+        if (dialog?.open) {
+            dialog.close();
+        }
+        this.unlockPageScroll();
+    }
+
+    async handleAssignmentStatusChange(event) {
+        const { status } = event.detail;
+        if (status === 'ERROR') {
+            this.assignmentError = 'Tildelingen kunne ikke fullføres. Lukk vinduet og prøv igjen.';
+            return;
+        }
+        if (status !== 'FINISHED' && status !== 'FINISHED_SCREEN') {
+            return;
+        }
+        this.closeAssignmentModal();
+        try {
+            this.markListsForRefresh();
+            await notifyRecordUpdateAvailable([{ recordId: this.effectiveRecordId }]);
+            await refreshApex(this.assignedResourceResult);
+            this.dispatchEvent(new RefreshEvent());
+        } catch (error) {
+            this.responseFeedback = {
+                type: 'error',
+                message: error?.body?.message || error?.message || 'Kunne ikke åpne eller oppdatere tildelingen.'
+            };
         }
     }
 
