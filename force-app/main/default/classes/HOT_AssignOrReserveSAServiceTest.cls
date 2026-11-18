@@ -336,7 +336,7 @@ private class HOT_AssignOrReserveSAServiceTest {
                 new List<HOT_AssignOrReserveSAService.Input>{ createRequest(appointment.Id, resource.Id, 'Dispatched') }
             )[0];
             Assert.isFalse(result.success);
-            Assert.areEqual('Du må velge en aktiv frilanstolk.', result.message);
+            Assert.areEqual('Du må velge en aktiv tolk.', result.message);
         }
         Test.stopTest();
 

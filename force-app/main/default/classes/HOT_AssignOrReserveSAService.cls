@@ -202,7 +202,7 @@ public without sharing class HOT_AssignOrReserveSAService {
                     throw new FlowHandledException('Oppdraget må være akseptert av tjenesteleverandør.');
                 }
                 if (!serviceResource.HOT_IsFreelanceInterpreter__c || !serviceResource.IsActive) {
-                    throw new FlowHandledException('Du må velge en aktiv frilanstolk.');
+                    throw new FlowHandledException('Du må velge en aktiv tolk.');
                 }
                 assignmentSavepoint = Database.setSavepoint();
             }
