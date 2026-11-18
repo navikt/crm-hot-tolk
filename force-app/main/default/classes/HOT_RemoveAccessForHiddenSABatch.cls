@@ -12,7 +12,6 @@ public without sharing class HOT_RemoveAccessForHiddenSABatch implements Databas
                 FROM ServiceAppointment
                 WHERE
                     HOT_DelPol_IsHideRecord__c = TRUE
-                    AND HOT_DelPol_ToHideRecord__c = TRUE
                     AND (HOT_DelPol_ProcessedHidden__c = FALSE
                     OR HOT_DelPol_ProcessedHidden__c = NULL)
             ]
