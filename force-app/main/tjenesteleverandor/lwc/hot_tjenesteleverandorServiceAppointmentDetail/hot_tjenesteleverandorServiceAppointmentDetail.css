@@ -27,6 +27,10 @@
     gap: 1rem;
 }
 
+.flow-content {
+    margin-left: -1rem;
+}
+
 dialog.modal-container h2 {
     font-family: 'Source Sans Pro', Arial, sans-serif;
 }

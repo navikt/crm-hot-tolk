@@ -43,12 +43,14 @@
                             title={assignmentError}
                         ></c-hot_local-alert>
                     </template>
-                    <lightning-flow
-                        flow-api-name="HOT_SPAssignOrReserveSAService"
-                        flow-input-variables={assignmentInputVariables}
-                        flow-finish-behavior="NONE"
-                        onstatuschange={handleAssignmentStatusChange}
-                    ></lightning-flow>
+                    <div class="flow-content">
+                        <lightning-flow
+                            flow-api-name="HOT_SPAssignOrReserveSAService"
+                            flow-input-variables={assignmentInputVariables}
+                            flow-finish-behavior="NONE"
+                            onstatuschange={handleAssignmentStatusChange}
+                        ></lightning-flow>
+                    </div>
                 </div>
             </template>
         </dialog>

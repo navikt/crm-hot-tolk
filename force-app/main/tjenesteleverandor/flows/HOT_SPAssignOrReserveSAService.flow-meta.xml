@@ -30,7 +30,7 @@
         <inputParameters>
             <name>targetStatus</name>
             <value>
-                <elementReference>DesiredStatus</elementReference>
+                <elementReference>DesiredStatus.value</elementReference>
             </value>
         </inputParameters>
         <nameSegment>HOT_SPAssignOrReserveSAService</nameSegment>
@@ -89,38 +89,6 @@
     </actionCalls>
     <apiVersion>66.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
-    <choices>
-        <name>AssignChoice</name>
-        <choiceText>Tildelt</choiceText>
-        <dataType>String</dataType>
-        <value>
-            <stringValue>Dispatched</stringValue>
-        </value>
-    </choices>
-    <choices>
-        <name>DispatchReservedChoice</name>
-        <choiceText>Tildel tolken</choiceText>
-        <dataType>String</dataType>
-        <value>
-            <stringValue>Dispatch</stringValue>
-        </value>
-    </choices>
-    <choices>
-        <name>KeepReservationChoice</name>
-        <choiceText>Behold reservasjonen</choiceText>
-        <dataType>String</dataType>
-        <value>
-            <stringValue>KeepReservation</stringValue>
-        </value>
-    </choices>
-    <choices>
-        <name>ReserveChoice</name>
-        <choiceText>Reservert</choiceText>
-        <dataType>String</dataType>
-        <value>
-            <stringValue>Scheduled</stringValue>
-        </value>
-    </choices>
     <decisions>
         <name>Can_Dispatch_Reserved_Interpreter</name>
         <label>Can Dispatch Reserved Interpreter</label>
@@ -255,7 +223,7 @@
             <name>Dispatch_Confirmed</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>DispatchConfirmation</leftValueReference>
+                <leftValueReference>DispatchConfirmation.value</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <stringValue>Dispatch</stringValue>
@@ -338,7 +306,7 @@
         </connector>
         <fields>
             <name>DispatchIntroText</name>
-            <fieldText>&lt;p&gt;Oppdraget har allerede en reservert tolk. Vil du tildele oppdraget til denne tolken?&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Oppdraget har allerede en reservert tolk. Vil du tildele oppdraget til denne tolken?&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>
@@ -351,14 +319,47 @@
         </fields>
         <fields>
             <name>DispatchConfirmation</name>
-            <choiceReferences>DispatchReservedChoice</choiceReferences>
-            <choiceReferences>KeepReservationChoice</choiceReferences>
-            <dataType>String</dataType>
-            <defaultSelectedChoiceReference>KeepReservationChoice</defaultSelectedChoiceReference>
-            <fieldText>Vil du tildele den reserverte tolken?</fieldText>
-            <fieldType>RadioButtons</fieldType>
+            <extensionName>c:hot_flowRadioButton</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>groupLabel</name>
+                <value>
+                    <stringValue>Vil du tildele den reserverte tolken?</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>rbOneLabel</name>
+                <value>
+                    <stringValue>Tildel tolken</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>rbOneValue</name>
+                <value>
+                    <stringValue>Dispatch</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>rbTwoLabel</name>
+                <value>
+                    <stringValue>Behold reservasjonen</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>rbTwoValue</name>
+                <value>
+                    <stringValue>KeepReservation</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>value</name>
+                <value>
+                    <stringValue>KeepReservation</stringValue>
+                </value>
+            </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
             <styleProperties>
                 <verticalAlignment>
                     <stringValue>top</stringValue>
@@ -368,8 +369,47 @@
                 </width>
             </styleProperties>
         </fields>
-        <nextOrFinishButtonLabel>Fortsett</nextOrFinishButtonLabel>
-        <showFooter>true</showFooter>
+        <fields>
+            <name>DispatchFooter</name>
+            <extensionName>c:hot_flowFooterButtons</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>showNext</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>nextLabel</name>
+                <value>
+                    <stringValue>Fortsett</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>showFinish</name>
+                <value>
+                    <booleanValue>false</booleanValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>size</name>
+                <value>
+                    <stringValue>small</stringValue>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <showFooter>false</showFooter>
         <showHeader>false</showHeader>
     </screens>
     <screens>
@@ -382,7 +422,7 @@
         <allowPause>false</allowPause>
         <fields>
             <name>ErrorText</name>
-            <fieldText>&lt;p&gt;{!ActionMessage}&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;{!ActionMessage}&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>
@@ -393,7 +433,41 @@
                 </width>
             </styleProperties>
         </fields>
-        <showFooter>true</showFooter>
+        <fields>
+            <name>ErrorFooter</name>
+            <extensionName>c:hot_flowFooterButtons</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>showBack</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>showFinish</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>size</name>
+                <value>
+                    <stringValue>small</stringValue>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <showFooter>false</showFooter>
         <showHeader>false</showHeader>
     </screens>
     <screens>
@@ -406,7 +480,7 @@
         <allowPause>false</allowPause>
         <fields>
             <name>FaultText</name>
-            <fieldText>&lt;p&gt;{!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;{!$Flow.FaultMessage}&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>
@@ -417,7 +491,41 @@
                 </width>
             </styleProperties>
         </fields>
-        <showFooter>true</showFooter>
+        <fields>
+            <name>FaultFooter</name>
+            <extensionName>c:hot_flowFooterButtons</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>showBack</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>showFinish</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>size</name>
+                <value>
+                    <stringValue>small</stringValue>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <showFooter>false</showFooter>
         <showHeader>false</showHeader>
     </screens>
     <screens>
@@ -430,7 +538,7 @@
         <allowPause>false</allowPause>
         <fields>
             <name>NotAvailableText</name>
-            <fieldText>&lt;p&gt;Oppdraget må være akseptert av tjenesteleverandør. Du kan reservere eller tildele en tolk når status er Åpen eller Frigitt til frilanstolker og ingen tolk allerede er valgt. &lt;/p&gt;&lt;p&gt;Har oppdraget status Reservert og en reservert tolk, kan du tildele denne tolken.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Oppdraget må være akseptert av tjenesteleverandør. Du kan reservere eller tildele en tolk når status er Åpen eller Frigitt til tolker og ingen tolk allerede er valgt.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Har oppdraget status Reservert og en reservert tolk, kan du tildele denne tolken.&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>
@@ -441,7 +549,35 @@
                 </width>
             </styleProperties>
         </fields>
-        <showFooter>true</showFooter>
+        <fields>
+            <name>NotAvailableFooter</name>
+            <extensionName>c:hot_flowFooterButtons</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>showFinish</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>size</name>
+                <value>
+                    <stringValue>small</stringValue>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <showFooter>false</showFooter>
         <showHeader>false</showHeader>
     </screens>
     <screens>
@@ -457,7 +593,7 @@
         </connector>
         <fields>
             <name>IntroText</name>
-            <fieldText>&lt;p&gt;Velg en tjenesteressurs og om oppdraget skal settes til &lt;strong&gt;Reservert&lt;/strong&gt; eller &lt;strong&gt;Tildelt&lt;/strong&gt;. &lt;/p&gt;&lt;p&gt;Oppdraget må være akseptert av tjenesteleverandør og ha status Åpen eller Frigitt til frilanstolker.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Velg en tjenesteressurs og om oppdraget skal settes til &lt;/span&gt;&lt;strong style=&quot;font-size: 16px;&quot;&gt;Reservert&lt;/strong&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt; eller &lt;/span&gt;&lt;strong style=&quot;font-size: 16px;&quot;&gt;Tildelt&lt;/strong&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Oppdraget må være akseptert av tjenesteleverandør og ha status Åpen eller Frigitt til tolker.&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>
@@ -516,14 +652,47 @@
         </fields>
         <fields>
             <name>DesiredStatus</name>
-            <choiceReferences>ReserveChoice</choiceReferences>
-            <choiceReferences>AssignChoice</choiceReferences>
-            <dataType>String</dataType>
-            <defaultSelectedChoiceReference>AssignChoice</defaultSelectedChoiceReference>
-            <fieldText>Ny status</fieldText>
-            <fieldType>RadioButtons</fieldType>
+            <extensionName>c:hot_flowRadioButton</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>groupLabel</name>
+                <value>
+                    <stringValue>Ny status</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>rbOneLabel</name>
+                <value>
+                    <stringValue>Reservert</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>rbOneValue</name>
+                <value>
+                    <stringValue>Scheduled</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>rbTwoLabel</name>
+                <value>
+                    <stringValue>Tildelt</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>rbTwoValue</name>
+                <value>
+                    <stringValue>Dispatched</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>value</name>
+                <value>
+                    <stringValue>Dispatched</stringValue>
+                </value>
+            </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
             <styleProperties>
                 <verticalAlignment>
                     <stringValue>top</stringValue>
@@ -533,7 +702,41 @@
                 </width>
             </styleProperties>
         </fields>
-        <showFooter>true</showFooter>
+        <fields>
+            <name>AssignmentFooter</name>
+            <extensionName>c:hot_flowFooterButtons</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>showNext</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>showFinish</name>
+                <value>
+                    <booleanValue>false</booleanValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>size</name>
+                <value>
+                    <stringValue>small</stringValue>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <showFooter>false</showFooter>
         <showHeader>false</showHeader>
     </screens>
     <screens>
@@ -546,7 +749,7 @@
         <allowPause>false</allowPause>
         <fields>
             <name>SuccessText</name>
-            <fieldText>&lt;p&gt;{!ActionMessage}&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;{!ActionMessage}&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>
@@ -557,7 +760,35 @@
                 </width>
             </styleProperties>
         </fields>
-        <showFooter>true</showFooter>
+        <fields>
+            <name>SuccessFooter</name>
+            <extensionName>c:hot_flowFooterButtons</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>showFinish</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>size</name>
+                <value>
+                    <stringValue>small</stringValue>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <showFooter>false</showFooter>
         <showHeader>false</showHeader>
     </screens>
     <start>
