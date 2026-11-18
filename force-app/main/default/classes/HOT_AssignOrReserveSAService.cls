@@ -48,15 +48,9 @@ public without sharing class HOT_AssignOrReserveSAService {
     private Map<Id, ServiceAppointment> serviceAppointmentsById;
     private Map<Id, ServiceResource> serviceResourcesById;
     private Map<Id, List<AssignedResource>> assignedResourcesByServiceAppointmentId;
-    private Boolean serviceProviderAssignment;
 
     public HOT_AssignOrReserveSAService(List<Input> reqs) {
-        this(reqs, false);
-    }
-
-    public HOT_AssignOrReserveSAService(List<Input> reqs, Boolean serviceProviderAssignment) {
         this.reqs = reqs;
-        this.serviceProviderAssignment = serviceProviderAssignment;
         this.results = new List<Result>();
         this.serviceAppointmentIds = new Set<Id>();
         this.serviceResourceIds = new Set<Id>();
@@ -105,36 +99,18 @@ public without sharing class HOT_AssignOrReserveSAService {
     private void loadData() {
         this.serviceAppointmentsById = this.serviceAppointmentIds.isEmpty()
             ? new Map<Id, ServiceAppointment>()
-            : this.serviceProviderAssignment
-                  ? new Map<Id, ServiceAppointment>(
-                        [
-                            SELECT
-                                Id,
-                                Status,
-                                HOT_ServiceResource__c,
-                                HOT_AssignedResourceId__c,
-                                HOT_TjenesteleverandorStatus__c
-                            FROM ServiceAppointment
-                            WHERE Id IN :this.serviceAppointmentIds
-                            FOR UPDATE
-                        ]
-                    )
-                  : new Map<Id, ServiceAppointment>(
-                        [
-                            SELECT Id, Status, HOT_ServiceResource__c, HOT_AssignedResourceId__c
-                            FROM ServiceAppointment
-                            WHERE Id IN :this.serviceAppointmentIds
-                        ]
-                    );
+            : new Map<Id, ServiceAppointment>(
+                  [
+                      SELECT Id, Status, HOT_ServiceResource__c, HOT_AssignedResourceId__c
+                      FROM ServiceAppointment
+                      WHERE Id IN :this.serviceAppointmentIds
+                  ]
+              );
 
         this.serviceResourcesById = this.serviceResourceIds.isEmpty()
             ? new Map<Id, ServiceResource>()
             : new Map<Id, ServiceResource>(
-                  [
-                      SELECT Id, RelatedRecordId, IsActive, HOT_IsFreelanceInterpreter__c
-                      FROM ServiceResource
-                      WHERE Id IN :this.serviceResourceIds
-                  ]
+                  [SELECT Id, RelatedRecordId FROM ServiceResource WHERE Id IN :this.serviceResourceIds]
               );
 
         if (this.serviceAppointmentIds.isEmpty()) {
@@ -164,7 +140,6 @@ public without sharing class HOT_AssignOrReserveSAService {
     }
 
     private void processRequest(Input req, Result result) {
-        Savepoint assignmentSavepoint;
         try {
             validateRequest(req);
 
@@ -178,68 +153,27 @@ public without sharing class HOT_AssignOrReserveSAService {
                 throw new FlowHandledException('Valgt tolk ble ikke funnet.');
             }
 
-            List<AssignedResource> existingAssignedResources = getAssignedResources(req.serviceAppointmentId);
-            Boolean dispatchingReservation =
-                this.serviceProviderAssignment &&
-                serviceAppointment.Status == 'Scheduled' &&
-                req.targetStatus == 'Dispatched';
+            validateServiceAppointment(serviceAppointment, getAssignedResources(req.serviceAppointmentId));
 
-            if (dispatchingReservation) {
-                if (
-                    existingAssignedResources.size() != 1 ||
-                    existingAssignedResources[0].ServiceResourceId != req.serviceResourceId
-                ) {
-                    throw new FlowHandledException(
-                        'Den reserverte tolken finnes ikke eller er endret. Last inn oppdraget på nytt.'
-                    );
-                }
-            } else {
-                validateServiceAppointment(serviceAppointment, existingAssignedResources);
-            }
+            AssignedResource assignedResource = new AssignedResource(
+                ServiceAppointmentId = req.serviceAppointmentId,
+                ServiceResourceId = req.serviceResourceId
+            );
+            insert assignedResource;
 
-            if (this.serviceProviderAssignment) {
-                if (serviceAppointment.HOT_TjenesteleverandorStatus__c != 'Accepted') {
-                    throw new FlowHandledException('Oppdraget må være akseptert av tjenesteleverandør.');
-                }
-                if (!serviceResource.HOT_IsFreelanceInterpreter__c || !serviceResource.IsActive) {
-                    throw new FlowHandledException('Du må velge en aktiv tolk.');
-                }
-                assignmentSavepoint = Database.setSavepoint();
-            }
+            update new ServiceAppointment(
+                Id = serviceAppointment.Id,
+                Status = req.targetStatus,
+                HOT_ServiceResource__c = serviceResource.Id,
+                HOT_AssignedResourceId__c = serviceResource.RelatedRecordId
+            );
 
-            if (dispatchingReservation) {
-                update new ServiceAppointment(Id = serviceAppointment.Id, Status = req.targetStatus);
-            } else {
-                AssignedResource assignedResource = new AssignedResource(
-                    ServiceAppointmentId = req.serviceAppointmentId,
-                    ServiceResourceId = req.serviceResourceId
-                );
-                insert assignedResource;
-
-                update new ServiceAppointment(
-                    Id = serviceAppointment.Id,
-                    Status = req.targetStatus,
-                    HOT_ServiceResource__c = serviceResource.Id,
-                    HOT_AssignedResourceId__c = serviceResource.RelatedRecordId
-                );
-            }
-
-            if (this.serviceProviderAssignment) {
-                serviceAppointment.Status = req.targetStatus;
-            }
             result.success = true;
             result.message = req.targetStatus == 'Dispatched'
                 ? 'Tolken ble tildelt oppdraget.'
                 : 'Tolken ble reservert til oppdraget.';
         } catch (Exception ex) {
-            if (assignmentSavepoint != null) {
-                Database.rollback(assignmentSavepoint);
-            }
             result.message = ex.getMessage();
-        } finally {
-            if (assignmentSavepoint != null) {
-                Database.releaseSavepoint(assignmentSavepoint);
-            }
         }
     }
 
@@ -265,8 +199,8 @@ public without sharing class HOT_AssignOrReserveSAService {
         if (!SUPPORTED_SOURCE_STATUSES.contains(serviceAppointment.Status)) {
             throw new FlowHandledException(
                 'Denne handlingen kan bare brukes når oppdraget har status Åpen eller Frigitt til frilanstolker. Nåværende status er ' +
-                    serviceAppointment.Status +
-                    '.'
+                serviceAppointment.Status +
+                '.'
             );
         }
 
