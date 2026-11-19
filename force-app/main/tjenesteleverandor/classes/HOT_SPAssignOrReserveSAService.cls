@@ -163,7 +163,11 @@ public without sharing class HOT_SPAssignOrReserveSAService {
             }
             assignmentSavepoint = Database.setSavepoint();
             if (dispatchingReservation) {
-                update new ServiceAppointment(Id = serviceAppointment.Id, Status = req.targetStatus);
+                update new ServiceAppointment(
+                    Id = serviceAppointment.Id,
+                    Status = req.targetStatus,
+                    HOT_IsReleasedToFreelance__c = true
+                );
             } else {
                 AssignedResource assignedResource = new AssignedResource(
                     ServiceAppointmentId = req.serviceAppointmentId,
@@ -173,6 +177,7 @@ public without sharing class HOT_SPAssignOrReserveSAService {
                 update new ServiceAppointment(
                     Id = serviceAppointment.Id,
                     Status = req.targetStatus,
+                    HOT_IsReleasedToFreelance__c = true,
                     HOT_ServiceResource__c = serviceResource.Id,
                     HOT_AssignedResourceId__c = serviceResource.RelatedRecordId
                 );
