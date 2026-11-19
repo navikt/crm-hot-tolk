@@ -278,6 +278,11 @@
                                     <template lwc:if={assignedResourceError}>
                                         <span role="alert">Kunne ikke laste tjenesteressurs.</span>
                                     </template>
+                                    <template lwc:elseif={assignedResourceUrl}>
+                                        <a class="assigned-resource-link" href={assignedResourceUrl}
+                                            >{assignedResourceName}</a
+                                        >
+                                    </template>
                                     <template lwc:else>{assignedResourceName}</template>
                                 </dd>
                             </div>
