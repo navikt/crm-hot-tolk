@@ -505,7 +505,10 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
             if (this.urlStateParameters.level === 'R') {
                 const now = Date.now();
                 const futureWorkOrders = this.allRecords.filter(
-                    (record) => record.HOT_Request__c === this.request.Id && new Date(record.StartDate).getTime() > now
+                    (record) =>
+                        record.HOT_Request__c === this.request.Id &&
+                        record.Status !== 'Canceled' &&
+                        new Date(record.StartDate).getTime() > now
                 );
                 this.modalContent =
                     futureWorkOrders.length === 1
