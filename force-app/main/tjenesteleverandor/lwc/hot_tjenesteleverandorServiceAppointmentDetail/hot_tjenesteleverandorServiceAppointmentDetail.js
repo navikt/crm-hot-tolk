@@ -172,13 +172,44 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
         return this.recordId || this.routeRecordId;
     }
 
+    assignedResourceResult;
+    assignedResourceUrl;
+    assignedResourceUrlError;
+
     @wire(getRelatedListRecords, {
         parentRecordId: '$effectiveRecordId',
         relatedListId: 'ServiceResources',
-        fields: ['AssignedResource.Id', 'AssignedResource.ServiceResource.Name'],
+        fields: ['AssignedResource.Id', 'AssignedResource.ServiceResourceId', 'AssignedResource.ServiceResource.Name'],
         pageSize: 1
     })
-    assignedResourceResult;
+    async wiredAssignedResource(result) {
+        this.assignedResourceResult = result;
+        this.assignedResourceUrl = undefined;
+        this.assignedResourceUrlError = undefined;
+        const record = result.data?.records[0];
+        const recordId = getFieldValue(record, 'AssignedResource.ServiceResourceId');
+        if (!recordId) {
+            return;
+        }
+        try {
+            const url = await this[NavigationMixin.GenerateUrl]({
+                type: 'comm__namedPage',
+                attributes: { name: 'Tjenesteressursdetaljer__c' },
+                state: {
+                    c__recordId: recordId,
+                    c__serviceAppointmentId: this.effectiveRecordId
+                }
+            });
+            if (this.assignedResourceResult === result) {
+                this.assignedResourceUrl = url;
+            }
+        } catch (error) {
+            if (this.assignedResourceResult === result) {
+                console.error('Error generating service resource URL:', error);
+                this.assignedResourceUrlError = error;
+            }
+        }
+    }
 
     get assignedResourceName() {
         const record = this.assignedResourceResult?.data?.records[0];
@@ -186,7 +217,7 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
     }
 
     get assignedResourceError() {
-        return this.assignedResourceResult?.error;
+        return this.assignedResourceResult?.error || this.assignedResourceUrlError;
     }
 
     get showAcceptAction() {

@@ -37,6 +37,7 @@ const TAG_DEFINITIONS = [
 
 export default class Hot_serviceProviderServiceResourceDetails extends NavigationMixin(LightningElement) {
     routeRecordId;
+    serviceAppointmentId;
     recordData;
     qualifications;
 
@@ -50,14 +51,14 @@ export default class Hot_serviceProviderServiceResourceDetails extends Navigatio
         }
 
         const isDetailsPage =
-        pageReference.type === 'comm__namedPage' &&
-        pageReference.attributes?.name === 'Tjenesteressursdetaljer__c';
+            pageReference.type === 'comm__namedPage' && pageReference.attributes?.name === 'Tjenesteressursdetaljer__c';
 
         if (!isDetailsPage) {
             this.hasError = false;
             return;
         }
 
+        this.serviceAppointmentId = pageReference.state?.c__serviceAppointmentId;
         const recordId = pageReference.state?.c__recordId;
         if (recordId !== this.routeRecordId || !recordId) {
             this.recordData = undefined;
@@ -83,15 +84,14 @@ export default class Hot_serviceProviderServiceResourceDetails extends Navigatio
     // So-called qualifications live in the ServiceResourceSkill sObject
     @wire(getServiceResourceSkills, { resourceId: '$recordId' })
     wiredServiceResourceSkills({ data, error }) {
-        if (data){
+        if (data) {
             this.qualifications = data.map((qualification) => ({
                 Id: qualification.Id,
                 label: qualification.Skill.MasterLabel
             }));
             this.hasError = false;
             this.isLoading = false;
-        }
-        else if (error) {
+        } else if (error) {
             this.qualifications = undefined;
             this.hasError = true;
             this.isLoading = false;
@@ -119,7 +119,7 @@ export default class Hot_serviceProviderServiceResourceDetails extends Navigatio
     }
 
     get activeQualifications() {
-        return this.qualifications?.filter(q => !q.EffectiveEndDate);
+        return this.qualifications?.filter((q) => !q.EffectiveEndDate);
     }
 
     get dashForNoPreferredRegionTags() {
@@ -133,7 +133,8 @@ export default class Hot_serviceProviderServiceResourceDetails extends Navigatio
             .map((value) => value.trim())
             .filter(Boolean);
         const tags = values.map(
-            (value) => TAG_DEFINITIONS.find(({ id, label }) => id === value || label === value) || { id: value, label: value }
+            (value) =>
+                TAG_DEFINITIONS.find(({ id, label }) => id === value || label === value) || { id: value, label: value }
         );
         return [...new Map(tags.map((tag) => [tag.id, tag])).values()];
     }
@@ -153,9 +154,22 @@ export default class Hot_serviceProviderServiceResourceDetails extends Navigatio
         });
     }
 
+    get backButtonLabel() {
+        return this.serviceAppointmentId ? 'Tilbake til oppdragsdetaljer' : 'Tilbake til tjenesteressurser';
+    }
+
     handleBack() {
         if (window.history && window.history.length > 1) {
             window.history.back();
+            return;
+        }
+
+        if (this.serviceAppointmentId) {
+            this[NavigationMixin.Navigate]({
+                type: 'comm__namedPage',
+                attributes: { name: 'Oppdragsdetaljer__c' },
+                state: { c__recordId: this.serviceAppointmentId }
+            });
             return;
         }
 

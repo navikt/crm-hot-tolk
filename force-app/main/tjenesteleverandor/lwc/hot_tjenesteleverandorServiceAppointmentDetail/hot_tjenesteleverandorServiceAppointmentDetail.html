@@ -62,7 +62,7 @@
 
         <template lwc:if={isLoading}>
             <div class="loading-container" role="status" aria-live="polite">
-                <lightning-spinner alternative-text="Laster oppdragsdetaljer" size="medium"></lightning-spinner>
+                <c-hot_loader title="Laster oppdragsdetaljer" size="3xlarge"></c-hot_loader>
                 <span class="slds-assistive-text">Laster oppdragsdetaljer</span>
             </div>
         </template>
@@ -277,6 +277,11 @@
                                 <dd>
                                     <template lwc:if={assignedResourceError}>
                                         <span role="alert">Kunne ikke laste tjenesteressurs.</span>
+                                    </template>
+                                    <template lwc:elseif={assignedResourceUrl}>
+                                        <a class="assigned-resource-link" href={assignedResourceUrl}
+                                            >{assignedResourceName}</a
+                                        >
                                     </template>
                                     <template lwc:else>{assignedResourceName}</template>
                                 </dd>

@@ -198,6 +198,15 @@ dialog.modal-container .close-btn:hover {
     margin-bottom: 1rem;
 }
 
+.assigned-resource-link {
+    text-decoration: underline;
+    text-decoration-style: dotted;
+}
+
+.assigned-resource-link:hover {
+    text-decoration-style: solid;
+}
+
 .wanted-resource-heading-row {
     display: flex;
     align-items: center;
@@ -361,8 +370,11 @@ dialog.modal-container .close-btn:hover {
 }
 
 .loading-container {
-    position: relative;
-    min-height: 8rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 60vh;
 }
 
 .error-message {
