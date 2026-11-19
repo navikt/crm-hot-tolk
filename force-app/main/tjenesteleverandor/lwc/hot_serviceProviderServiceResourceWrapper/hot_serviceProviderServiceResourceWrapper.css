@@ -53,8 +53,9 @@
 .loader-container {
     display: flex;
     justify-content: center;
-    align-items: flex-start;
-    padding-top: 5rem;
+    align-items: center;
+    width: 100%;
+    min-height: 60vh;
 }
 
 .search-field {
