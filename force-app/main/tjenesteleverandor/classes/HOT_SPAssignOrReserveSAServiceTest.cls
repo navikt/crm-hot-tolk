@@ -24,10 +24,12 @@ private class HOT_SPAssignOrReserveSAServiceTest {
 
         ServiceResource firstResource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
         firstResource.HOT_IsFreelanceInterpreter__c = true;
+        firstResource.HOT_IsEmployedInterpreter__c = false;
         firstResource.HOT_ServiceTerritory__c = serviceTerritory.Id;
         ServiceResource secondResource = HOT_TestDataFactory.createServiceResource(secondUser.Id);
         secondResource.Name = 'Another Resource';
         secondResource.HOT_IsFreelanceInterpreter__c = true;
+        secondResource.HOT_IsEmployedInterpreter__c = false;
         secondResource.HOT_ServiceTerritory__c = serviceTerritory.Id;
         insert new List<ServiceResource>{ firstResource, secondResource };
         insert new List<ServiceTerritoryMember>{
@@ -36,7 +38,12 @@ private class HOT_SPAssignOrReserveSAServiceTest {
         };
 
         ServiceAppointment appointment = getServiceAppointment();
-        update new ServiceAppointment(Id = appointment.Id, ServiceTerritoryId = serviceTerritory.Id);
+        update new ServiceAppointment(
+            Id = appointment.Id,
+            ServiceTerritoryId = serviceTerritory.Id,
+            HOT_IsEmployedInterpreter__c = false,
+            HOT_IsReleasedToFreelance__c = false
+        );
         insert new List<HOT_InterestedResource__c>{
             HOT_TestDataFactory.createInterestedResource(appointment.Id, firstResource.Id),
             HOT_TestDataFactory.createInterestedResource(appointment.Id, secondResource.Id)
@@ -74,12 +81,14 @@ private class HOT_SPAssignOrReserveSAServiceTest {
         Test.stopTest();
 
         ServiceAppointment actual = [
-            SELECT Status, HOT_TjenesteleverandorStatus__c, HOT_ServiceResource__c, HOT_AssignedResourceId__c
+            SELECT Status, HOT_TjenesteleverandorStatus__c, HOT_ServiceResource__c, HOT_AssignedResourceId__c,
+                HOT_IsReleasedToFreelance__c
             FROM ServiceAppointment
             WHERE Id = :appointment.Id
         ];
         Assert.isTrue(result.success, result.message);
         Assert.areEqual(targetStatus, actual.Status);
+        Assert.isTrue(actual.HOT_IsReleasedToFreelance__c, 'Reserving or assigning must release to freelance');
         Assert.areEqual('Accepted', actual.HOT_TjenesteleverandorStatus__c, 'Provider status must be preserved');
         Assert.areEqual(resource.Id, actual.HOT_ServiceResource__c);
         Assert.areEqual(resource.RelatedRecordId, actual.HOT_AssignedResourceId__c);
@@ -157,6 +166,7 @@ private class HOT_SPAssignOrReserveSAServiceTest {
         ServiceAppointment appointment = getServiceAppointment();
         ServiceResource resource = getServiceResources()[0];
         reserveForServiceProvider(appointment.Id, resource.Id);
+        update new ServiceAppointment(Id = appointment.Id, HOT_IsReleasedToFreelance__c = false);
         AssignedResource reservation = [
             SELECT Id
             FROM AssignedResource
@@ -170,12 +180,14 @@ private class HOT_SPAssignOrReserveSAServiceTest {
         Test.stopTest();
 
         ServiceAppointment actual = [
-            SELECT Status, HOT_TjenesteleverandorStatus__c, HOT_ServiceResource__c, HOT_AssignedResourceId__c
+            SELECT Status, HOT_TjenesteleverandorStatus__c, HOT_ServiceResource__c, HOT_AssignedResourceId__c,
+                HOT_IsReleasedToFreelance__c
             FROM ServiceAppointment
             WHERE Id = :appointment.Id
         ];
         Assert.isTrue(result.success, result.message);
         Assert.areEqual('Dispatched', actual.Status);
+        Assert.isTrue(actual.HOT_IsReleasedToFreelance__c, 'Dispatching a reservation must release to freelance');
         Assert.areEqual('Accepted', actual.HOT_TjenesteleverandorStatus__c);
         Assert.areEqual(resource.Id, actual.HOT_ServiceResource__c);
         Assert.areEqual(resource.RelatedRecordId, actual.HOT_AssignedResourceId__c);
