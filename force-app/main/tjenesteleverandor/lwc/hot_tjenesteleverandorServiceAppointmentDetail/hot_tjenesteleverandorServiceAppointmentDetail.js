@@ -50,6 +50,7 @@ const CANCELLATION_FIELDS = [
 ];
 const TRANSFERRED_LIST_REFRESH_KEY = 'tjenesteleverandorTransferredListRefresh';
 const ACCEPTED_LIST_REFRESH_KEY = 'tjenesteleverandorAcceptedListRefresh';
+const RESERVED_LIST_REFRESH_KEY = 'tjenesteleverandorReservedListRefresh';
 const PERSON_INFORMATION_FIELDS = [HOT_PERSON_RESERVATIONS_FIELD, HOT_PERSON_LANGUAGE_AND_COMMUNICATION_METHODS_FIELD];
 
 const TAG_DEFINITIONS = [
@@ -509,6 +510,7 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
         const marker = JSON.stringify({ recordId: this.effectiveRecordId, timestamp: Date.now() });
         sessionStorage.setItem(TRANSFERRED_LIST_REFRESH_KEY, marker);
         sessionStorage.setItem(ACCEPTED_LIST_REFRESH_KEY, marker);
+        sessionStorage.setItem(RESERVED_LIST_REFRESH_KEY, marker);
     }
 
     handleBack() {
