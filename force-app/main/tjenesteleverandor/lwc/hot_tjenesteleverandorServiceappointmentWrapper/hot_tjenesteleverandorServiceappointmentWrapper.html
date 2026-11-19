@@ -64,6 +64,15 @@
                         ></c-hot_tjenesteleverandor-sa-released-list>
                     </div>
                 </template>
+                <template lwc:if={isReservedTab}>
+                    <div class="tab-content">
+                        <c-hot_service-provider-sa-reserved-list
+                            record-id={recordId}
+                            data-name="reserved"
+                            onsendfilters={handleFilters}
+                        ></c-hot_service-provider-sa-reserved-list>
+                    </div>
+                </template>
                 <template lwc:if={isDispatchedTab}>
                     <div class="tab-content">
                         <c-hot_tjenesteleverandor-sa-dispatched-list
