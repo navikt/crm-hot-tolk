@@ -9,6 +9,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
     Map<Id, Map<Id, ServiceAppointment>> serviceAppointmentByWorkOrderIdMap;
     Map<Id, String> interpreterNamesByWorkOrderIdMap;
     Map<Id, ServiceResource> serviceResourceMap;
+    private static Set<Id> serviceProviderUserIds;
 
     private static void handleException(Exception e) {
         LoggerUtility logger = new LoggerUtility();
@@ -303,7 +304,9 @@ public without sharing class HOT_ServiceAppointmentNotification {
         CustomNotificationType notifyDispatcherNotificationType = saN.getCustomNotificationTypeByName(
             'HOT_NotifyDispatcher'
         );
+        List<HOT_Notification__c> notificationsToInsert = new List<HOT_Notification__c>();
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
+            Boolean isEmployedInterpreter = serviceAppointment.HOT_IsEmployedInterpreter__c;
             ServiceAppointment oldServiceAppointment = (ServiceAppointment) triggerOldMap.get(serviceAppointment.Id);
 
             Set<String> recipients = new Set<String>{ (String) groupByQueue.get(serviceAppointment.OwnerId) };
@@ -313,30 +316,41 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 oldServiceAppointment.HOT_CanceledByInterpreter__c == false &&
                 serviceAppointment.HOT_CanceledByInterpreter__c == true
             ) {
-                resourceCanceled(
-                    notifyDispatcherNotificationType,
-                    serviceAppointment,
-                    recipients,
-                    oldServiceAppointment
-                );
+                NotificationContent content = getResourceCanceledContent(serviceAppointment, oldServiceAppointment);
+                if (isEmployedInterpreter) {
+                    notifyDispatcher(notifyDispatcherNotificationType, serviceAppointment, recipients, content);
+                } else {
+                    notificationsToInsert.addAll(notifyServiceProvider(serviceAppointment, content));
+                }
             }
 
             // Varsel ved avlyst på vegne av bruker
             if (serviceAppointment.Status == 'Canceled' && oldServiceAppointment.Status != 'Canceled') {
-                saN.canceledByUser(
-                    notifyDispatcherNotificationType,
-                    serviceAppointment,
-                    oldServiceAppointment.HOT_ServiceResource__c,
-                    recipients
-                );
+                NotificationContent content = getCanceledByUserContent(serviceAppointment);
+                if (isEmployedInterpreter) {
+                    notifyDispatcher(notifyDispatcherNotificationType, serviceAppointment, recipients, content);
+                } else {
+                    notificationsToInsert.addAll(notifyServiceProvider(serviceAppointment, content));
+                }
             }
+        }
+        if (!notificationsToInsert.isEmpty()) {
+            insert notificationsToInsert;
         }
     }
 
-    public static void resourceCanceled(
-        CustomNotificationType notificationType,
+    private class NotificationContent {
+        String title;
+        String body;
+
+        NotificationContent(String title, String body) {
+            this.title = title;
+            this.body = body;
+        }
+    }
+
+    private static NotificationContent getResourceCanceledContent(
         ServiceAppointment serviceAppointment,
-        Set<String> recipients,
         ServiceAppointment oldServiceAppointment
     ) {
         ServiceResource oldResource = [
@@ -345,24 +359,85 @@ public without sharing class HOT_ServiceAppointmentNotification {
             WHERE Id = :oldServiceAppointment.HOT_ServiceResource__c
             LIMIT 1
         ];
-        Messaging.CustomNotification notification = new Messaging.CustomNotification();
-        notification.setTitle('Tolk tar seg av: ' + '\n' + serviceAppointment.AppointmentNumber);
-        notification.setBody(
+        String title = 'Tolk tar seg av: ' + '\n' + serviceAppointment.AppointmentNumber;
+        String body =
             'Tolk ' +
-                oldResource.Name +
-                ' meldte seg av\n' +
-                serviceAppointment.AppointmentNumber +
-                ' den ' +
-                Datetime.now().format('d.M.yyyy HH:mm') +
-                ',\n\n' +
-                serviceAppointment.Subject +
-                '\nsom starter ' +
-                serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm')
-        );
+            oldResource.Name +
+            ' meldte seg av\n' +
+            serviceAppointment.AppointmentNumber +
+            ' den ' +
+            Datetime.now().format('d.M.yyyy HH:mm') +
+            ',\n\n' +
+            serviceAppointment.Subject +
+            '\nsom starter ' +
+            serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm');
+        return new NotificationContent(title, body);
+    }
+
+    private static void notifyDispatcher(
+        CustomNotificationType notificationType,
+        ServiceAppointment serviceAppointment,
+        Set<String> recipients,
+        NotificationContent content
+    ) {
+        Messaging.CustomNotification notification = new Messaging.CustomNotification();
+        notification.setTitle(content.title);
+        notification.setBody(content.body);
         notification.setNotificationTypeId(notificationType.Id);
         notification.setTargetId(serviceAppointment.Id);
 
         HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
+    }
+
+    private static NotificationContent getCanceledByUserContent(ServiceAppointment serviceAppointment) {
+        String title =
+            serviceAppointment.AppointmentNumber +
+            ' - ' +
+            serviceAppointment.EarliestStartTime?.format('d.M.yyyy') +
+            ' - ' +
+            ' Avlyst';
+        String body =
+            'Oppdraget ' +
+            serviceAppointment.AppointmentNumber +
+            ' som skulle vært gjennomført ' +
+            serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
+            ' er avlyst.';
+        return new NotificationContent(title, body);
+    }
+
+    private static List<HOT_Notification__c> notifyServiceProvider(
+        ServiceAppointment serviceAppointment,
+        NotificationContent content
+    ) {
+        Set<Id> recipientIds = new Set<Id>();
+        if (serviceAppointment.HOT_TLDispatcher__c != null) {
+            recipientIds.add(serviceAppointment.HOT_TLDispatcher__c);
+        } else {
+            if (serviceProviderUserIds == null) {
+                serviceProviderUserIds = new Set<Id>();
+                for (GroupMember member : [
+                    SELECT UserOrGroupId
+                    FROM GroupMember
+                    WHERE Group.DeveloperName = 'HOT_Tolk_Tjenesteleverandor' AND Group.Type = 'Regular'
+                ]) {
+                    if (member.UserOrGroupId.getSObjectType() == User.SObjectType) {
+                        serviceProviderUserIds.add(member.UserOrGroupId);
+                    }
+                }
+            }
+            recipientIds.addAll(serviceProviderUserIds);
+        }
+        List<HOT_Notification__c> notifications = new List<HOT_Notification__c>();
+        for (Id recipientId : recipientIds) {
+            HOT_Notification__c notification = new HOT_Notification__c();
+            notification.HOT_Subject__c = content.title;
+            notification.HOT_NotificationText__c = content.body;
+            notification.HOT_RelatedObject__c = serviceAppointment.Id;
+            notification.HOT_RelatedObjectType__c = 'serviceAppointment';
+            notification.Tjenesteleverandor__c = recipientId;
+            notifications.add(notification);
+        }
+        return notifications;
     }
 
     public void canceledByUser(
