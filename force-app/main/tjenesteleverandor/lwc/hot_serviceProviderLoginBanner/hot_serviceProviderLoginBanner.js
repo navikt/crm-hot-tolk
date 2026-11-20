@@ -13,7 +13,7 @@ import { formatDatetime } from 'c/datetimeFormatterNorwegianTime';
 const USER_FIELDS = [FIRST_NAME_FIELD, LAST_NAME_FIELD];
 const THREAD_NOTIFICATION_TYPE = 'threadTjenesteleverandor';
 
-export default class Hot_tlLoginBanner extends NavigationMixin(LightningElement) {
+export default class hot_serviceProviderLoginBanner extends NavigationMixin(LightningElement) {
     LeaveIcon = icons + '/Law_and_security/Leave.svg';
     PeopleIcon = icons + '/People/Person.svg';
     ChevronUpIcon = icons + '/Arrows/ChevronUp.svg';
