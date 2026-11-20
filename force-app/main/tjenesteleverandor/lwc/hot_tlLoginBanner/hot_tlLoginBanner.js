@@ -11,7 +11,6 @@ import { refreshApex } from '@salesforce/apex';
 import { formatDatetime } from 'c/datetimeFormatterNorwegianTime';
 
 const USER_FIELDS = [FIRST_NAME_FIELD, LAST_NAME_FIELD];
-const THREAD_NOTIFICATION_TYPE = 'threadTjenesteleverandor';
 
 export default class Hot_tlLoginBanner extends NavigationMixin(LightningElement) {
     LeaveIcon = icons + '/Law_and_security/Leave.svg';
@@ -28,23 +27,15 @@ export default class Hot_tlLoginBanner extends NavigationMixin(LightningElement)
         this.wiredNotificationsResult = result;
         const { error, data } = result;
         if (data) {
-            this.notifications = data.map((notification) => {
-                const relatedObjectId = notification.HOT_RelatedObject__c;
-                const isThreadNotification =
-                    notification.HOT_RelatedObjectType__c === THREAD_NOTIFICATION_TYPE && Boolean(relatedObjectId);
-
-                return {
-                    id: notification.Id,
-                    title: notification.HOT_Subject__c,
-                    text: notification.HOT_NotificationText__c,
-                    relatedObjectId,
-                    relatedObjectType: notification.HOT_RelatedObjectType__c,
-                    createdDate: formatDatetime(notification.CreatedDate),
-                    isRead: notification.HOT_IsRead__c,
-                    isThreadNotification,
-                    url: isThreadNotification ? `samtaler?recordId=${encodeURIComponent(relatedObjectId)}` : undefined
-                };
-            });
+            this.notifications = data.map((notification) => ({
+                id: notification.Id,
+                title: notification.HOT_Subject__c,
+                text: notification.HOT_NotificationText__c,
+                relatedObjectId: notification.HOT_RelatedObject__c,
+                relatedObjectType: notification.HOT_RelatedObjectType__c,
+                createdDate: formatDatetime(notification.CreatedDate),
+                isRead: notification.HOT_IsRead__c
+            }));
         } else if (error) {
             console.error('Error fetching notifications:', error);
         }
@@ -193,19 +184,35 @@ export default class Hot_tlLoginBanner extends NavigationMixin(LightningElement)
     }
 
     handleNotificationClick(event) {
-        const threadId = event.currentTarget?.dataset?.threadId;
-        if (!threadId) {
+        const { relatedObjectId, relatedObjectType } = event.currentTarget.dataset;
+        if (!relatedObjectId) {
+            console.error('Missing related object ID for notification');
             return;
         }
 
         event.preventDefault();
         this.closeAllDropdowns();
-        this[NavigationMixin.Navigate]({
-            type: 'standard__webPage',
-            attributes: {
-                url: `/samtaler?recordId=${encodeURIComponent(threadId)}`
-            }
-        });
+
+        if (relatedObjectType === 'threadTjenesteleverandor') {
+            this[NavigationMixin.Navigate]({
+                type: 'standard__webPage',
+                attributes: {
+                    url: `/samtaler?recordId=${relatedObjectId}`
+                }
+            });
+        } else if (relatedObjectType === 'serviceAppointment') {
+            this[NavigationMixin.Navigate]({
+                type: 'comm__namedPage',
+                attributes: {
+                    name: 'Oppdragsdetaljer__c'
+                },
+                state: {
+                    c__recordId: relatedObjectId
+                }
+            });
+        } else {
+            console.error('Unsupported notification type:', relatedObjectType);
+        }
     }
 
     toggleDropdown() {
