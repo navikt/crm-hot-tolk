@@ -1,0 +1,48 @@
+:host {
+    display: block;
+}
+
+.bulk-page {
+    position: relative;
+    min-height: 20rem;
+    padding: 1rem 0;
+    text-align: left;
+}
+
+.review-table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.review-table {
+    min-width: 62rem;
+    background: var(--slds-g-color-neutral-base-100, #ffffff);
+}
+
+.review-table th {
+    font-weight: 600;
+}
+
+.bulk-footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.processing-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.55);
+}
+
+@media (max-width: 48rem) {
+    .bulk-footer {
+        align-items: stretch;
+        flex-direction: column-reverse;
+    }
+
+    .bulk-footer c-button {
+        display: block;
+        width: 100%;
+    }
+}

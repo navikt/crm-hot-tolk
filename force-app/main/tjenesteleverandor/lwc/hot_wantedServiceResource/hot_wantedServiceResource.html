@@ -1,0 +1,12 @@
+<template>
+    <div class="main-container">
+        <template lwc:if={showFlow}>
+            <lightning-flow></lightning-flow>
+        </template>
+        <template lwc:else>
+            <div class="button-container">
+                <c-hot_button button-label="Ønsk en tolk" onclick={handleWantedInterpreter} size="small"></c-hot_button>
+            </div>
+        </template>
+    </div>
+</template>
