@@ -4,7 +4,7 @@ import getNumberOfUnreadThreads from '@salesforce/apex/HOT_TLThreadlistControlle
 
 const ANIMATION_DURATION_MS = 1000;
 
-export default class Hot_tjenesteleverandorStatistics extends LightningElement {
+export default class Hot_serviceProviderStatistics extends LightningElement {
     statistics = [
         {
             id: 'assignments',
