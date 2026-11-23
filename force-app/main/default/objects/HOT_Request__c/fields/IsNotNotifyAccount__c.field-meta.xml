@@ -3,11 +3,10 @@
     <fullName>IsNotNotifyAccount__c</fullName>
     <defaultValue>false</defaultValue>
     <deprecated>false</deprecated>
-    <externalId>false</externalId>
     <inlineHelpText>Om det er huket av her, er bestillingen skjult for bruker. Bruker får heller
         ingen varsel om bestillingen.</inlineHelpText>
     <label>Not Notify Account?</label>
-    <trackHistory>false</trackHistory>
+    <trackHistory>true</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Checkbox</type>
 </CustomField>
