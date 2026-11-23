@@ -268,6 +268,15 @@
         </rules>
     </decisions>
     <environments>Default</environments>
+    <formulas>
+        <name>IsUncoveredAppointmentEnded</name>
+        <dataType>Boolean</dataType>
+        <expression>AND(
+    ISPICKVAL({!Get_Service_Appointment.Status}, "Cannot Complete"),
+    NOT(ISBLANK({!Get_Service_Appointment.SchedEndTime})),
+    {!Get_Service_Appointment.SchedEndTime} &lt;= {!$Flow.CurrentDateTime}
+)</expression>
+    </formulas>
     <interviewLabel>HOT_SPAssignOrReserveSAService {!$Flow.CurrentDateTime}</interviewLabel>
     <label>HOT_SPAssignOrReserveSAService</label>
     <processMetadataValues>
@@ -572,6 +581,30 @@
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <fields>
+            <name>UncoveredAppointmentEndedText</name>
+            <fieldText
+            >&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Du kan ikke reservere eller tildele tolk etter oppdragets sluttid.&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>IsUncoveredAppointmentEnded</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <booleanValue>true</booleanValue>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
+        </fields>
+        <fields>
             <name>NotAvailableText</name>
             <fieldText
             >&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Du kan reservere eller tildele en tolk frem til oppdragets sluttid. Oppdraget må være akseptert av tjenesteleverandør. Du kan reservere eller tildele en tolk når status er Åpen, Udekket eller Frigitt til tolker og ingen tolk allerede er valgt.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Har oppdraget status Reservert og en reservert tolk, kan du tildele denne tolken.&lt;/span&gt;&lt;/p&gt;</fieldText>
@@ -584,6 +617,16 @@
                     <stringValue>12</stringValue>
                 </width>
             </styleProperties>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>IsUncoveredAppointmentEnded</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <booleanValue>false</booleanValue>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
         </fields>
         <fields>
             <name>NotAvailableFooter</name>
