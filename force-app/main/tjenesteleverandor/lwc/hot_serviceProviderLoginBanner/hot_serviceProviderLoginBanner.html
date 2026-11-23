@@ -46,13 +46,6 @@
 
         <!-- HØYRE SIDE -->
         <div class="user-section">
-            <c-hot_search
-                class="banner-search"
-                label="Søk"
-                placeholder="Søk"
-                variant="secondary"
-                size="small"
-            ></c-hot_search>
             <div class="menu-section notification-menu-section">
                 <button
                     class="user-button notification-button"
@@ -70,18 +63,27 @@
                 <div class={notificationDropdownClass}>
                     <template lwc:if={hasNotifications}>
                         <template for:each={notifications} for:item="notification">
-                            <button
-                                key={notification.id}
-                                type="button"
-                                class="notification-item notification-link"
-                                data-related-object-id={notification.relatedObjectId}
-                                data-related-object-type={notification.relatedObjectType}
-                                onclick={handleNotificationClick}
-                            >
-                                <span class="notification-title">{notification.title}</span>
-                                <span class="notification-text">{notification.text}</span>
-                                <span class="notification-meta">{notification.createdDate}</span>
-                            </button>
+                            <div key={notification.id}>
+                                <template lwc:if={notification.isThreadNotification}>
+                                    <a
+                                        class="notification-item notification-link"
+                                        href={notification.url}
+                                        data-thread-id={notification.relatedObjectId}
+                                        onclick={handleNotificationClick}
+                                    >
+                                        <span class="notification-title">{notification.title}</span>
+                                        <span class="notification-text">{notification.text}</span>
+                                        <span class="notification-meta">{notification.createdDate}</span>
+                                    </a>
+                                </template>
+                                <template lwc:else>
+                                    <div class="notification-item">
+                                        <span class="notification-title">{notification.title}</span>
+                                        <span class="notification-text">{notification.text}</span>
+                                        <span class="notification-meta">{notification.createdDate}</span>
+                                    </div>
+                                </template>
+                            </div>
                         </template>
                     </template>
 

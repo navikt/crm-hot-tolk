@@ -46,8 +46,8 @@
     </decisions>
     <description>At the configured supplier deadline, rechecks the appointment, marks an unanswered transfer as expired, clears the supplier release and deadline, and notifies the formidler group.</description>
     <environments>Default</environments>
-    <interviewLabel>HOT_HandleTjenesteleverandorDeadline {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>HOT_HandleTjenesteleverandorDeadline</label>
+    <interviewLabel>HOT_HandleServiceProviderDeadline {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>HOT_HandleServiceProviderDeadline</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
