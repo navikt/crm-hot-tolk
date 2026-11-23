@@ -31,6 +31,23 @@
     margin-left: -1rem;
 }
 
+.assignment-actions,
+.removal-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+}
+
+.removal-actions {
+    margin-top: 1.5rem;
+}
+
+.removal-confirmation {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+}
+
 dialog.modal-container h2 {
     font-family: 'Source Sans Pro', Arial, sans-serif;
 }

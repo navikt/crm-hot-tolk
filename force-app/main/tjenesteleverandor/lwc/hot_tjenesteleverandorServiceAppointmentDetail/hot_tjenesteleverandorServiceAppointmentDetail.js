@@ -1,7 +1,12 @@
 import { LightningElement, api, wire } from 'lwc';
-import { getRecord, getFieldValue, getFieldDisplayValue } from 'lightning/uiRecordApi';
+import {
+    getRecord,
+    getFieldValue,
+    getFieldDisplayValue,
+    deleteRecord,
+    notifyRecordUpdateAvailable
+} from 'lightning/uiRecordApi';
 import { NavigationMixin, CurrentPageReference } from 'lightning/navigation';
-import { notifyRecordUpdateAvailable } from 'lightning/uiRecordApi';
 import { getRelatedListRecords } from 'lightning/uiRelatedListApi';
 import { refreshApex } from '@salesforce/apex';
 import { RefreshEvent } from 'lightning/refresh';
@@ -102,8 +107,9 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
     hasError = false;
     hasCancellationDetails = false;
     isResponding = false;
-    isAssignmentOpen = false;
-    assignmentError;
+    activeDialog;
+    isRemoving = false;
+    actionError;
     pageScrollLock;
     exitCrossIcon = icons + '/Close/Close.svg';
     isAcceptanceEligible = false;
@@ -111,7 +117,7 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
     responseFeedback;
 
     renderedCallback() {
-        if (!this.isAssignmentOpen) {
+        if (!this.activeDialog) {
             return;
         }
         if (!this.pageScrollLock) {
@@ -123,7 +129,7 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
             };
             element.style.setProperty('overflow', 'hidden', 'important');
         }
-        const dialog = this.template.querySelector('[data-id="assignment-dialog"]');
+        const dialog = this.template.querySelector('[data-id="action-dialog"]');
         if (dialog && !dialog.open) {
             dialog.showModal();
         }
@@ -215,6 +221,34 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
     get assignedResourceName() {
         const record = this.assignedResourceResult?.data?.records[0];
         return this.displayValue(getFieldValue(record, 'AssignedResource.ServiceResource.Name'));
+    }
+
+    get assignedResourceId() {
+        return this.assignedResourceResult?.data?.records[0]?.id;
+    }
+
+    get showRemoveInterpreterAction() {
+        return this.showAssignOrReserveAction && Boolean(this.assignedResourceId);
+    }
+
+    get isAssignmentOpen() {
+        return this.activeDialog === 'assignment';
+    }
+
+    get isRemovalOpen() {
+        return this.activeDialog === 'removal';
+    }
+
+    get actionDialogTitle() {
+        return this.isAssignmentOpen ? 'Reserver eller tildel tolk' : 'Fjern tolk';
+    }
+
+    get areAssignmentActionsDisabled() {
+        return Boolean(this.activeDialog) || this.isRemoving;
+    }
+
+    get removalConfirmation() {
+        return `Er du sikker på at du vil fjerne ${this.assignedResourceName} fra oppdraget?`;
     }
 
     get assignedResourceError() {
@@ -469,41 +503,89 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
     }
 
     handleAssignOrReserve() {
-        this.isAssignmentOpen = true;
-        this.assignmentError = undefined;
+        this.activeDialog = 'assignment';
+        this.actionError = undefined;
         this.responseFeedback = undefined;
     }
 
-    closeAssignmentModal() {
-        this.isAssignmentOpen = false;
-        const dialog = this.template.querySelector('[data-id="assignment-dialog"]');
+    handleRemoveInterpreter() {
+        this.activeDialog = 'removal';
+        this.actionError = undefined;
+        this.responseFeedback = undefined;
+    }
+
+    closeActionModal() {
+        this.activeDialog = undefined;
+        const dialog = this.template.querySelector('[data-id="action-dialog"]');
         if (dialog?.open) {
             dialog.close();
         }
         this.unlockPageScroll();
     }
 
+    handleDialogCancel(event) {
+        if (this.isRemoving) {
+            event.preventDefault();
+        }
+    }
+
+    async confirmRemoveInterpreter() {
+        if (!this.isRemovalOpen || this.isRemoving) {
+            return;
+        }
+        if (!this.showRemoveInterpreterAction) {
+            this.actionError = 'Tildelingen er endret. Lukk vinduet og last inn siden på nytt.';
+            return;
+        }
+
+        this.isRemoving = true;
+        this.actionError = undefined;
+        let interpreterRemoved = false;
+        try {
+            await deleteRecord(this.assignedResourceId);
+            interpreterRemoved = true;
+            this.closeActionModal();
+            await this.refreshAssignment();
+            this.responseFeedback = { type: 'success', message: 'Tolken er fjernet fra oppdraget.' };
+        } catch (error) {
+            if (interpreterRemoved) {
+                this.responseFeedback = {
+                    type: 'error',
+                    message: 'Tolken er fjernet, men siden kunne ikke oppdateres. Last inn siden på nytt.'
+                };
+            } else {
+                this.actionError = error?.body?.message || error?.message || 'Tolken kunne ikke fjernes. Prøv igjen.';
+            }
+        } finally {
+            this.isRemoving = false;
+        }
+    }
+
     async handleAssignmentStatusChange(event) {
         const { status } = event.detail;
         if (status === 'ERROR') {
-            this.assignmentError = 'Tildelingen kunne ikke fullføres. Lukk vinduet og prøv igjen.';
+            this.actionError = 'Tildelingen kunne ikke fullføres. Lukk vinduet og prøv igjen.';
             return;
         }
         if (status !== 'FINISHED' && status !== 'FINISHED_SCREEN') {
             return;
         }
-        this.closeAssignmentModal();
+        this.closeActionModal();
         try {
-            this.markListsForRefresh();
-            await notifyRecordUpdateAvailable([{ recordId: this.effectiveRecordId }]);
-            await refreshApex(this.assignedResourceResult);
-            this.dispatchEvent(new RefreshEvent());
+            await this.refreshAssignment();
         } catch (error) {
             this.responseFeedback = {
                 type: 'error',
                 message: error?.body?.message || error?.message || 'Kunne ikke åpne eller oppdatere tildelingen.'
             };
         }
+    }
+
+    async refreshAssignment() {
+        this.markListsForRefresh();
+        await notifyRecordUpdateAvailable([{ recordId: this.effectiveRecordId }]);
+        await refreshApex(this.assignedResourceResult);
+        this.dispatchEvent(new RefreshEvent());
     }
 
     markListsForRefresh() {

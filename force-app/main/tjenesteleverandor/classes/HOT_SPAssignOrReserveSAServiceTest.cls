@@ -70,6 +70,68 @@ private class HOT_SPAssignOrReserveSAServiceTest {
         assertServiceProviderAssignment(createReleasedToFreelanceServiceAppointment(), 'Dispatched');
     }
 
+    @IsTest
+    static void removingReservedInterpreterPreservesProviderAcceptance() {
+        assertRemovingInterpreterPreservesProviderAcceptance('Scheduled');
+    }
+
+    @IsTest
+    static void removingAssignedInterpreterPreservesProviderAcceptance() {
+        assertRemovingInterpreterPreservesProviderAcceptance('Dispatched');
+    }
+
+    private static void assertRemovingInterpreterPreservesProviderAcceptance(String targetStatus) {
+        ServiceAppointment appointment = getServiceAppointment();
+        AssignedResource assignment = new AssignedResource(
+            ServiceAppointmentId = appointment.Id,
+            ServiceResourceId = getServiceResources()[0].Id
+        );
+        insert assignment;
+        update new ServiceAppointment(
+            Id = appointment.Id,
+            Status = targetStatus,
+            HOT_IsReleasedToTjenesteleverandor__c = true,
+            HOT_IsReleasedToFreelance__c = true,
+            HOT_TjenesteleverandorStatus__c = 'Accepted',
+            HOT_TjenesteleverandorTransferDate__c = System.now().addHours(-1)
+        );
+        ServiceAppointment beforeRemoval = [
+            SELECT HOT_TjenesteleverandorTransferDate__c, HOT_TjenesteleverandorAcceptDate__c
+            FROM ServiceAppointment
+            WHERE Id = :appointment.Id
+        ];
+
+        Test.startTest();
+        delete assignment;
+        Test.stopTest();
+
+        ServiceAppointment actual = [
+            SELECT
+                Status,
+                HOT_TjenesteleverandorStatus__c,
+                HOT_IsReleasedToTjenesteleverandor__c,
+                HOT_TjenesteleverandorTransferDate__c,
+                HOT_TjenesteleverandorAcceptDate__c,
+                HOT_TjenesteleverandorDeadline__c,
+                HOT_ServiceResource__c,
+                HOT_AssignedResourceId__c
+            FROM ServiceAppointment
+            WHERE Id = :appointment.Id
+        ];
+        Assert.areEqual('None', actual.Status);
+        Assert.areEqual('Accepted', actual.HOT_TjenesteleverandorStatus__c);
+        Assert.isTrue(actual.HOT_IsReleasedToTjenesteleverandor__c);
+        Assert.areEqual(
+            beforeRemoval.HOT_TjenesteleverandorTransferDate__c,
+            actual.HOT_TjenesteleverandorTransferDate__c
+        );
+        Assert.areEqual(beforeRemoval.HOT_TjenesteleverandorAcceptDate__c, actual.HOT_TjenesteleverandorAcceptDate__c);
+        Assert.isNull(actual.HOT_TjenesteleverandorDeadline__c);
+        Assert.isNull(actual.HOT_ServiceResource__c);
+        Assert.isNull(actual.HOT_AssignedResourceId__c);
+        Assert.areEqual(0, [SELECT COUNT() FROM AssignedResource WHERE ServiceAppointmentId = :appointment.Id]);
+    }
+
     private static void assertServiceProviderAssignment(ServiceAppointment appointment, String targetStatus) {
         update new ServiceAppointment(Id = appointment.Id, HOT_TjenesteleverandorStatus__c = 'Accepted');
         ServiceResource resource = getServiceResources()[0];
@@ -81,7 +143,11 @@ private class HOT_SPAssignOrReserveSAServiceTest {
         Test.stopTest();
 
         ServiceAppointment actual = [
-            SELECT Status, HOT_TjenesteleverandorStatus__c, HOT_ServiceResource__c, HOT_AssignedResourceId__c,
+            SELECT
+                Status,
+                HOT_TjenesteleverandorStatus__c,
+                HOT_ServiceResource__c,
+                HOT_AssignedResourceId__c,
                 HOT_IsReleasedToFreelance__c
             FROM ServiceAppointment
             WHERE Id = :appointment.Id
@@ -180,7 +246,11 @@ private class HOT_SPAssignOrReserveSAServiceTest {
         Test.stopTest();
 
         ServiceAppointment actual = [
-            SELECT Status, HOT_TjenesteleverandorStatus__c, HOT_ServiceResource__c, HOT_AssignedResourceId__c,
+            SELECT
+                Status,
+                HOT_TjenesteleverandorStatus__c,
+                HOT_ServiceResource__c,
+                HOT_AssignedResourceId__c,
                 HOT_IsReleasedToFreelance__c
             FROM ServiceAppointment
             WHERE Id = :appointment.Id
