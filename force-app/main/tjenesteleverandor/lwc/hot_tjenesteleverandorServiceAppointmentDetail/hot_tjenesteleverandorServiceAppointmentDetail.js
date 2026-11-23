@@ -170,7 +170,7 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
     }
 
     get effectiveRecordId() {
-        return this.recordId || this.routeRecordId;
+        return this.routeRecordId || this.recordId;
     }
 
     assignedResourceResult;
