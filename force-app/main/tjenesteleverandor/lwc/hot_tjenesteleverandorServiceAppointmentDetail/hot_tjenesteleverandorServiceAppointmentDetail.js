@@ -266,7 +266,9 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
     get showAssignOrReserveAction() {
         return (
             this.getFieldValue(HOT_TJENESTELEVERANDOR_STATUS_FIELD) === 'Accepted' &&
-            ['None', 'Scheduled', 'Dispatched', 'Cannot Complete'].includes(this.getFieldValue(STATUS_FIELD))
+            ['None', 'Scheduled', 'Dispatched', 'Cannot Complete', 'Released to Freelance'].includes(
+                this.getFieldValue(STATUS_FIELD)
+            )
         );
     }
 
