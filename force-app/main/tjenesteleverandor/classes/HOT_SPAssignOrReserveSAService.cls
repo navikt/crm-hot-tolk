@@ -1,5 +1,9 @@
 public without sharing class HOT_SPAssignOrReserveSAService {
-    private static final Set<String> SUPPORTED_SOURCE_STATUSES = new Set<String>{ 'None', 'Released to Freelance' };
+    private static final Set<String> SUPPORTED_SOURCE_STATUSES = new Set<String>{
+        'None',
+        'Released to Freelance',
+        'Cannot Complete'
+    };
     private static final Set<String> SUPPORTED_TARGET_STATUSES = new Set<String>{ 'Scheduled', 'Dispatched' };
 
     public class Input {
@@ -88,6 +92,7 @@ public without sharing class HOT_SPAssignOrReserveSAService {
                       SELECT
                           Id,
                           Status,
+                          SchedEndTime,
                           HOT_ServiceResource__c,
                           HOT_AssignedResourceId__c,
                           HOT_TjenesteleverandorStatus__c
@@ -158,6 +163,16 @@ public without sharing class HOT_SPAssignOrReserveSAService {
             if (serviceAppointment.HOT_TjenesteleverandorStatus__c != 'Accepted') {
                 throw new FlowHandledException('Oppdraget må være akseptert av tjenesteleverandør.');
             }
+            if (serviceAppointment.SchedEndTime == null) {
+                throw new FlowHandledException(
+                    'Oppdraget mangler sluttid. Du kan ikke reservere eller tildele en tolk.'
+                );
+            }
+            if (serviceAppointment.SchedEndTime <= Datetime.now()) {
+                throw new FlowHandledException(
+                    'Oppdragets sluttid er passert. Du kan ikke reservere eller tildele en tolk.'
+                );
+            }
             if (!serviceResource.HOT_IsFreelanceInterpreter__c || !serviceResource.IsActive) {
                 throw new FlowHandledException('Du må velge en aktiv tolk.');
             }
@@ -169,6 +184,9 @@ public without sharing class HOT_SPAssignOrReserveSAService {
                     HOT_IsReleasedToFreelance__c = true
                 );
             } else {
+                if (serviceAppointment.Status == 'Cannot Complete') {
+                    update new ServiceAppointment(Id = serviceAppointment.Id, Status = 'None');
+                }
                 AssignedResource assignedResource = new AssignedResource(
                     ServiceAppointmentId = req.serviceAppointmentId,
                     ServiceResourceId = req.serviceResourceId
@@ -220,7 +238,7 @@ public without sharing class HOT_SPAssignOrReserveSAService {
     ) {
         if (!SUPPORTED_SOURCE_STATUSES.contains(serviceAppointment.Status)) {
             throw new FlowHandledException(
-                'Denne handlingen kan bare brukes når oppdraget har status Åpen eller Frigitt til tolker. Nåværende status er ' +
+                'Denne handlingen kan bare brukes når oppdraget har status Åpen, Udekket eller Frigitt til tolker. Nåværende status er ' +
                     serviceAppointment.Status +
                     '.'
             );

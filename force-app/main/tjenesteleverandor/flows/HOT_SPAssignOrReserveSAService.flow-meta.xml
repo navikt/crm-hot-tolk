@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionCalls>
         <name>Assign_Or_Reserve</name>
@@ -90,6 +90,31 @@
     <apiVersion>66.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <decisions>
+        <name>Check_Appointment_End_Time</name>
+        <label>Check Appointment End Time</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>NotAvailableScreen</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>End Time Passed or Missing</defaultConnectorLabel>
+        <rules>
+            <name>Appointment_Has_Not_Ended</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Service_Appointment.SchedEndTime</leftValueReference>
+                <operator>GreaterThan</operator>
+                <rightValue>
+                    <elementReference>$Flow.CurrentDateTime</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_Existing_Assigned_Resource</targetReference>
+            </connector>
+            <label>Appointment Has Not Ended</label>
+        </rules>
+    </decisions>
+    <decisions>
         <name>Can_Dispatch_Reserved_Interpreter</name>
         <label>Can Dispatch Reserved Interpreter</label>
         <locationX>0</locationX>
@@ -139,7 +164,7 @@
         <defaultConnectorLabel>Not Available</defaultConnectorLabel>
         <rules>
             <name>Allowed</name>
-            <conditionLogic>(1 OR 2) AND 3 AND 4 AND 5 AND 6</conditionLogic>
+            <conditionLogic>(1 OR 2 OR 7) AND 3 AND 4 AND 5 AND 6</conditionLogic>
             <conditions>
                 <leftValueReference>Get_Service_Appointment.Status</leftValueReference>
                 <operator>EqualTo</operator>
@@ -180,6 +205,13 @@
                 <operator>IsNull</operator>
                 <rightValue>
                     <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Service_Appointment.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Cannot Complete</stringValue>
                 </rightValue>
             </conditions>
             <connector>
@@ -279,7 +311,7 @@
         <locationY>0</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Get_Existing_Assigned_Resource</targetReference>
+            <targetReference>Check_Appointment_End_Time</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -306,7 +338,8 @@
         </connector>
         <fields>
             <name>DispatchIntroText</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Oppdraget har allerede en reservert tolk. Vil du tildele oppdraget til denne tolken?&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText
+            >&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Oppdraget har allerede en reservert tolk. Vil du tildele oppdraget til denne tolken?&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>
@@ -422,7 +455,8 @@
         <allowPause>false</allowPause>
         <fields>
             <name>ErrorText</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;{!ActionMessage}&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText
+            >&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;{!ActionMessage}&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>
@@ -480,7 +514,8 @@
         <allowPause>false</allowPause>
         <fields>
             <name>FaultText</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;{!$Flow.FaultMessage}&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText
+            >&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;{!$Flow.FaultMessage}&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>
@@ -538,7 +573,8 @@
         <allowPause>false</allowPause>
         <fields>
             <name>NotAvailableText</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Oppdraget må være akseptert av tjenesteleverandør. Du kan reservere eller tildele en tolk når status er Åpen eller Frigitt til tolker og ingen tolk allerede er valgt.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Har oppdraget status Reservert og en reservert tolk, kan du tildele denne tolken.&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText
+            >&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Du kan reservere eller tildele en tolk frem til oppdragets sluttid. Oppdraget må være akseptert av tjenesteleverandør. Du kan reservere eller tildele en tolk når status er Åpen, Udekket eller Frigitt til tolker og ingen tolk allerede er valgt.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Har oppdraget status Reservert og en reservert tolk, kan du tildele denne tolken.&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>
@@ -593,7 +629,8 @@
         </connector>
         <fields>
             <name>IntroText</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Velg en tjenesteressurs og om oppdraget skal settes til &lt;/span&gt;&lt;strong style=&quot;font-size: 16px;&quot;&gt;Reservert&lt;/strong&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt; eller &lt;/span&gt;&lt;strong style=&quot;font-size: 16px;&quot;&gt;Tildelt&lt;/strong&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Oppdraget må være akseptert av tjenesteleverandør og ha status Åpen eller Frigitt til tolker.&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText
+            >&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Velg en tjenesteressurs og om oppdraget skal settes til &lt;/span&gt;&lt;strong style=&quot;font-size: 16px;&quot;&gt;Reservert&lt;/strong&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt; eller &lt;/span&gt;&lt;strong style=&quot;font-size: 16px;&quot;&gt;Tildelt&lt;/strong&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Oppdraget må være akseptert av tjenesteleverandør og ha status Åpen, Udekket eller Frigitt til tolker. Du kan reservere eller tildele en tolk frem til oppdragets sluttid.&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>
@@ -749,7 +786,8 @@
         <allowPause>false</allowPause>
         <fields>
             <name>SuccessText</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;{!ActionMessage}&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText
+            >&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;{!ActionMessage}&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>

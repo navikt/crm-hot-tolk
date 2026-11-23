@@ -228,7 +228,11 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
     }
 
     get showRemoveInterpreterAction() {
-        return this.showAssignOrReserveAction && Boolean(this.assignedResourceId);
+        return (
+            this.showAssignOrReserveAction &&
+            ['Scheduled', 'Dispatched'].includes(this.getFieldValue(STATUS_FIELD)) &&
+            Boolean(this.assignedResourceId)
+        );
     }
 
     get isAssignmentOpen() {
@@ -260,11 +264,9 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
     }
 
     get showAssignOrReserveAction() {
-        const status = this.getFieldValue(STATUS_FIELD);
         return (
             this.getFieldValue(HOT_TJENESTELEVERANDOR_STATUS_FIELD) === 'Accepted' &&
-            Boolean(status) &&
-            !['Completed', 'Canceled', 'Annul', 'In Progress', 'Cannot Complete'].includes(status)
+            ['None', 'Scheduled', 'Dispatched', 'Cannot Complete'].includes(this.getFieldValue(STATUS_FIELD))
         );
     }
 
@@ -554,11 +556,43 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
                     message: 'Tolken er fjernet, men siden kunne ikke oppdateres. Last inn siden på nytt.'
                 };
             } else {
-                this.actionError = error?.body?.message || error?.message || 'Tolken kunne ikke fjernes. Prøv igjen.';
+                console.error('Error removing assigned interpreter:', error);
+                this.actionError = this.getRemovalErrorMessage(error);
             }
         } finally {
             this.isRemoving = false;
         }
+    }
+
+    getRemovalErrorMessage(error) {
+        const body = error?.body;
+        const errors = [
+            ...(Array.isArray(body) ? body : [body]),
+            ...(body?.output?.errors || []),
+            ...Object.values(body?.output?.fieldErrors || {}).flat()
+        ].filter(Boolean);
+        if (
+            error?.status === 403 ||
+            errors.some(({ errorCode }) =>
+                [
+                    'INSUFFICIENT_ACCESS',
+                    'INSUFFICIENT_ACCESS_OR_READONLY',
+                    'INSUFFICIENT_ACCESS_ON_CROSS_REFERENCE_ENTITY'
+                ].includes(errorCode)
+            )
+        ) {
+            return 'Du har ikke tilgang til å fjerne tolken fra dette oppdraget. Kontakt Nav formidler for hjelp.';
+        }
+        if (errors.some(({ errorCode }) => errorCode === 'UNABLE_TO_LOCK_ROW')) {
+            return 'Oppdraget oppdateres av noen andre. Vent litt og prøv igjen.';
+        }
+        const validationError = errors.find(({ errorCode }) => errorCode === 'FIELD_CUSTOM_VALIDATION_EXCEPTION');
+        if (validationError?.message) {
+            return validationError.message.startsWith('Cannot change status')
+                ? 'Oppdragets status tillater ikke at tolken fjernes. Kontakt Nav formidler for hjelp.'
+                : validationError.message;
+        }
+        return 'Tolken kunne ikke fjernes fra oppdraget. Last inn siden på nytt og prøv igjen. Kontakt Nav formidler hvis feilen vedvarer.';
     }
 
     async handleAssignmentStatusChange(event) {

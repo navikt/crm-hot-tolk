@@ -2,6 +2,25 @@
 private class HOT_SPAssignOrReserveSAServiceTest {
     @TestSetup
     static void setup() {
+        Type stubType = Type.forName('FSL_TestStub');
+        if (stubType != null) {
+            Callable stub = (Callable) stubType.newInstance();
+            Map<String, Set<String>> transitions = new Map<String, Set<String>>{
+                'None' => new Set<String>{ 'Scheduled', 'Dispatched', 'Released to Freelance', 'Cannot Complete' },
+                'Scheduled' => new Set<String>{ 'Dispatched', 'None' },
+                'Dispatched' => new Set<String>{ 'None' },
+                'Released to Freelance' => new Set<String>{ 'None', 'Scheduled', 'Dispatched' },
+                'Cannot Complete' => new Set<String>{ 'None' }
+            };
+            for (String fromStatus : transitions.keySet()) {
+                for (String toStatus : transitions.get(fromStatus)) {
+                    stub.call(
+                        'addStatusTransition',
+                        new Map<String, Object>{ 'fromStatus' => fromStatus, 'toStatus' => toStatus }
+                    );
+                }
+            }
+        }
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('SPAssignOrReserve', workType);
@@ -32,10 +51,14 @@ private class HOT_SPAssignOrReserveSAServiceTest {
         secondResource.HOT_IsEmployedInterpreter__c = false;
         secondResource.HOT_ServiceTerritory__c = serviceTerritory.Id;
         insert new List<ServiceResource>{ firstResource, secondResource };
-        insert new List<ServiceTerritoryMember>{
+        List<ServiceTerritoryMember> territoryMembers = new List<ServiceTerritoryMember>{
             HOT_TestDataFactory.createServiceTerritoryMember(firstResource, serviceTerritory),
             HOT_TestDataFactory.createServiceTerritoryMember(secondResource, serviceTerritory)
         };
+        for (ServiceTerritoryMember member : territoryMembers) {
+            member.EffectiveStartDate = Datetime.now().addDays(-1);
+        }
+        insert territoryMembers;
 
         ServiceAppointment appointment = getServiceAppointment();
         update new ServiceAppointment(
@@ -68,6 +91,98 @@ private class HOT_SPAssignOrReserveSAServiceTest {
     @IsTest
     static void serviceProviderAssignsFromReleased() {
         assertServiceProviderAssignment(createReleasedToFreelanceServiceAppointment(), 'Dispatched');
+    }
+
+    @IsTest
+    static void serviceProviderReservesFutureUncoveredAppointment() {
+        ServiceAppointment appointment = getServiceAppointment();
+        update new ServiceAppointment(Id = appointment.Id, Status = 'Cannot Complete');
+        assertServiceProviderAssignment(appointment, 'Scheduled');
+    }
+
+    @IsTest
+    static void serviceProviderAssignsFutureUncoveredAppointment() {
+        ServiceAppointment appointment = getServiceAppointment();
+        update new ServiceAppointment(Id = appointment.Id, Status = 'Cannot Complete');
+        assertServiceProviderAssignment(appointment, 'Dispatched');
+    }
+
+    @IsTest
+    static void serviceProviderRejectsPastScheduledEndTime() {
+        assertEndTimeBlocksNewAssignment(Datetime.now().addSeconds(-1));
+    }
+
+    @IsTest
+    static void serviceProviderRejectsScheduledEndTimeAtCurrentTime() {
+        assertEndTimeBlocksNewAssignment(Datetime.now());
+    }
+
+    private static void assertEndTimeBlocksNewAssignment(Datetime endTime) {
+        ServiceAppointment appointment = getServiceAppointment();
+        ServiceResource resource = getServiceResources()[0];
+        update new ServiceAppointment(
+            Id = appointment.Id,
+            SchedStartTime = endTime.addHours(-2),
+            SchedEndTime = endTime,
+            HOT_TjenesteleverandorStatus__c = 'Accepted'
+        );
+        Assert.isTrue(
+            [SELECT DueDate FROM ServiceAppointment WHERE Id = :appointment.Id].DueDate > Datetime.now(),
+            'The scheduled end time, not the ordered end time, must control eligibility'
+        );
+
+        Test.startTest();
+        for (String targetStatus : new List<String>{ 'Scheduled', 'Dispatched' }) {
+            HOT_SPAssignOrReserveSAService.Result result = HOT_SPAssignOrReserveSAService.assignOrReserve(
+                new List<HOT_SPAssignOrReserveSAService.Input>{
+                    createRequest(appointment.Id, resource.Id, targetStatus)
+                }
+            )[0];
+            Assert.isFalse(result.success);
+            Assert.areEqual(
+                'Oppdragets sluttid er passert. Du kan ikke reservere eller tildele en tolk.',
+                result.message
+            );
+        }
+        Test.stopTest();
+
+        Assert.areEqual('None', [SELECT Status FROM ServiceAppointment WHERE Id = :appointment.Id].Status);
+        Assert.areEqual(0, [SELECT COUNT() FROM AssignedResource WHERE ServiceAppointmentId = :appointment.Id]);
+    }
+
+    @IsTest
+    static void serviceProviderRejectsDispatchOfEndedReservation() {
+        ServiceAppointment appointment = getServiceAppointment();
+        ServiceResource resource = getServiceResources()[0];
+        AssignedResource reservation = new AssignedResource(
+            ServiceAppointmentId = appointment.Id,
+            ServiceResourceId = resource.Id
+        );
+        insert reservation;
+        update new ServiceAppointment(
+            Id = appointment.Id,
+            Status = 'Scheduled',
+            SchedStartTime = Datetime.now().addHours(-2),
+            SchedEndTime = Datetime.now().addSeconds(-1),
+            HOT_TjenesteleverandorStatus__c = 'Accepted'
+        );
+
+        Test.startTest();
+        HOT_SPAssignOrReserveSAService.Result result = HOT_SPAssignOrReserveSAService.assignOrReserve(
+            new List<HOT_SPAssignOrReserveSAService.Input>{ createRequest(appointment.Id, resource.Id, 'Dispatched') }
+        )[0];
+        Test.stopTest();
+
+        Assert.isFalse(result.success);
+        Assert.areEqual('Oppdragets sluttid er passert. Du kan ikke reservere eller tildele en tolk.', result.message);
+        Assert.areEqual('Scheduled', [SELECT Status FROM ServiceAppointment WHERE Id = :appointment.Id].Status);
+        AssignedResource actual = [
+            SELECT Id, ServiceResourceId
+            FROM AssignedResource
+            WHERE ServiceAppointmentId = :appointment.Id
+        ];
+        Assert.areEqual(reservation.Id, actual.Id);
+        Assert.areEqual(resource.Id, actual.ServiceResourceId);
     }
 
     @IsTest
