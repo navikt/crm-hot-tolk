@@ -105,7 +105,7 @@ private class HOT_MySAListControllerTest {
 
         Test.startTest();
         List<ServiceAppointment> allSAs = [
-            SELECT Id, Status, HOT_DelPol_ToHideRecord__c, SchedEndTime
+            SELECT Id
             FROM ServiceAppointment
         ];
 

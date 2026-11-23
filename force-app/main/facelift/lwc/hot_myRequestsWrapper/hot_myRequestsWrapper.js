@@ -500,7 +500,17 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
             tempEndDate.getTime() > Date.now()
         ) {
             if (this.urlStateParameters.level === 'R') {
-                this.modalContent = 'Er du sikker på at du vil avlyse alle fremtidige datoer i bestillingen?';
+                const now = Date.now();
+                const futureWorkOrders = this.allRecords.filter(
+                    (record) =>
+                        record.HOT_Request__c === this.request.Id &&
+                        record.Status !== 'Canceled' &&
+                        new Date(record.StartDate).getTime() > now
+                );
+                this.modalContent =
+                    futureWorkOrders.length === 1
+                        ? 'Er du sikker på at du vil avlyse det siste tidspunktet på denne bestillingen?'
+                        : `Er du sikker på at du vil avlyse de ${futureWorkOrders.length} neste tidspunktene på denne bestillingen?`;
             } else {
                 this.modalContent =
                     'Er du sikker på at du vil avlyse bestillingen?\nDato: ' + this.workOrder.StartAndEndDate;
