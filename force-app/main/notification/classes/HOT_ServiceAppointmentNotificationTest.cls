@@ -148,7 +148,7 @@ private class HOT_ServiceAppointmentNotificationTest {
         Test.startTest();
         HOT_ServiceAppointmentNotification.dispatcherServiceAppointmentChanged(
             new List<ServiceAppointment>{ appointment },
-            new Map<Id, SObject>{ appointment.Id => oldAppointment }
+            new Map<Id, ServiceAppointment>{ appointment.Id => oldAppointment }
         );
         Test.stopTest();
 
