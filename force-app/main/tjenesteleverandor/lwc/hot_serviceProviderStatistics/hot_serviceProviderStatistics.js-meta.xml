@@ -2,7 +2,7 @@
 <LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>66.0</apiVersion>
     <isExposed>true</isExposed>
-    <masterLabel>HOT - Tjenesteleverandør Statistics</masterLabel>
+    <masterLabel>HOT - Service Provider Statistics</masterLabel>
     <description>Statistikk for tjenesteleverandør</description>
     <targets>
         <target>lightningCommunity__Page</target>
