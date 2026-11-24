@@ -44,6 +44,13 @@ export default class hot_requestForm_request_v2 extends LightningElement {
     @api isEditMode = false;
     @api refreshToken;
 
+    get hideRecurringInEditMode() {
+        return (
+            this.isEditMode &&
+            !(this.parentFieldValues?.Status__c === 'Åpen' && this.parentFieldValues?.IsSerieoppdrag__c === false)
+        );
+    }
+
     // Dont want to use this because focus will move to top on re-rendrering which happens on "Additional information"
     // renderedCallback() {
     //     this.template.querySelector('h2').focus();
@@ -327,17 +334,9 @@ export default class hot_requestForm_request_v2 extends LightningElement {
             }
         });
 
-        hasErrors += this.validateCheckbox();
         hasErrors += this.template.querySelector('c-hot_recurring-time-input_v2').validateFields();
 
         return hasErrors;
-    }
-
-    validateCheckbox() {
-        if (this.hasFiles) {
-            return this.template.querySelector('c-upload-files').validateCheckbox();
-        }
-        return false;
     }
 
     getFileConsent(event) {
@@ -403,36 +402,16 @@ export default class hot_requestForm_request_v2 extends LightningElement {
         this.fieldValues.IsOrdererWantStatusUpdateOnSMS__c = event.detail.checked;
     }
 
-    uploadFilesDropHandler(event) {
-        event.preventDefault();
-        this.template.querySelector('c-upload-files').dropHandler(event);
-    }
-
-    dragOverHandler(event) {
-        event.preventDefault();
-    }
-
+    /**
+     * Retained for package compatibility; files are uploaded by lightning-file-upload after submission.
+     */
     @api
-    handleFileUpload(recordId) {
-        if (this.hasFiles) {
-            this.template.querySelector('c-upload-files').handleFileUpload(recordId);
-        }
-    }
-    hasFiles = false;
-    checkFileDataLength(event) {
-        this.hasFiles = event.detail > 0;
-    }
+    handleFileUpload(recordId) {}
 
     @api deleteMarkedFiles() {
         let ele = this.template.querySelector('c-record-files-with-sharing');
         if (ele !== null) {
             ele.deleteMarkedFiles();
-        }
-    }
-
-    onUploadComplete() {
-        if (this.template.querySelector('c-record-files-with-sharing') !== null) {
-            this.template.querySelector('c-record-files-with-sharing').refreshContentDocuments();
         }
     }
 }
