@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionCalls>
         <name>Change_Interpreter</name>
@@ -52,7 +52,9 @@
         <label>Can Change Interpreter</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
-        <defaultConnector><targetReference>NotAvailableScreen</targetReference></defaultConnector>
+        <defaultConnector>
+            <targetReference>NotAvailableScreen</targetReference>
+        </defaultConnector>
         <defaultConnectorLabel>Not Available</defaultConnectorLabel>
         <rules>
             <name>Allowed</name>
@@ -92,7 +94,9 @@
                 <operator>GreaterThan</operator>
                 <rightValue><elementReference>$Flow.CurrentDateTime</elementReference></rightValue>
             </conditions>
-            <connector><targetReference>SelectInterpreterAndStatus</targetReference></connector>
+            <connector>
+                <targetReference>SelectInterpreterAndStatus</targetReference>
+            </connector>
             <label>Allowed</label>
         </rules>
     </decisions>
@@ -101,7 +105,9 @@
         <label>Was Action Successful</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
-        <defaultConnector><targetReference>ErrorScreen</targetReference></defaultConnector>
+        <defaultConnector>
+            <targetReference>ErrorScreen</targetReference>
+        </defaultConnector>
         <defaultConnectorLabel>Error</defaultConnectorLabel>
         <rules>
             <name>Success</name>
@@ -111,12 +117,13 @@
                 <operator>EqualTo</operator>
                 <rightValue><booleanValue>true</booleanValue></rightValue>
             </conditions>
-            <connector><targetReference>SuccessScreen</targetReference></connector>
+            <connector>
+                <targetReference>SuccessScreen</targetReference>
+            </connector>
             <label>Success</label>
         </rules>
     </decisions>
-    <description
-    >Change the interpreter on an accepted provider appointment. Requires an existing assignment and Scheduled or Dispatched status. The Apex action replaces the assignment atomically and preserves scheduled times.</description>
+    <description>Change the interpreter on an accepted provider appointment. Requires an existing assignment and Scheduled or Dispatched status. The Apex action replaces the assignment and preserves scheduled times.</description>
     <environments>Default</environments>
     <interviewLabel>HOT_SPChangeInterpreter {!$Flow.CurrentDateTime}</interviewLabel>
     <label>HOT_SPChangeInterpreter</label>
@@ -135,7 +142,9 @@
         <locationX>0</locationX>
         <locationY>0</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector><targetReference>Can_Change_Interpreter</targetReference></connector>
+        <connector>
+            <targetReference>Can_Change_Interpreter</targetReference>
+        </connector>
         <filterLogic>and</filterLogic>
         <filters>
             <field>ServiceAppointmentId</field>
@@ -152,7 +161,9 @@
         <locationX>0</locationX>
         <locationY>0</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector><targetReference>Get_Existing_Assigned_Resource</targetReference></connector>
+        <connector>
+            <targetReference>Get_Existing_Assigned_Resource</targetReference>
+        </connector>
         <filterLogic>and</filterLogic>
         <filters>
             <field>Id</field>
@@ -173,17 +184,25 @@
         <allowPause>false</allowPause>
         <fields>
             <name>ErrorText</name>
-            <fieldText
-            >&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;{!ActionMessage}&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;{!ActionMessage}&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <fields>
             <name>ErrorFooter</name>
             <extensionName>c:hot_flowFooterButtons</extensionName>
             <fieldType>ComponentInstance</fieldType>
-            <inputParameters><name>showBack</name><value><booleanValue>true</booleanValue></value></inputParameters>
-            <inputParameters><name>showFinish</name><value><booleanValue>true</booleanValue></value></inputParameters>
-            <inputParameters><name>size</name><value><stringValue>small</stringValue></value></inputParameters>
+            <inputParameters>
+                <name>showBack</name>
+                <value><booleanValue>true</booleanValue></value>
+            </inputParameters>
+            <inputParameters>
+                <name>showFinish</name>
+                <value><booleanValue>true</booleanValue></value>
+            </inputParameters>
+            <inputParameters>
+                <name>size</name>
+                <value><stringValue>small</stringValue></value>
+            </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <storeOutputAutomatically>true</storeOutputAutomatically>
@@ -201,17 +220,25 @@
         <allowPause>false</allowPause>
         <fields>
             <name>FaultText</name>
-            <fieldText
-            >&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;{!$Flow.FaultMessage}&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;{!$Flow.FaultMessage}&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <fields>
             <name>FaultFooter</name>
             <extensionName>c:hot_flowFooterButtons</extensionName>
             <fieldType>ComponentInstance</fieldType>
-            <inputParameters><name>showBack</name><value><booleanValue>true</booleanValue></value></inputParameters>
-            <inputParameters><name>showFinish</name><value><booleanValue>true</booleanValue></value></inputParameters>
-            <inputParameters><name>size</name><value><stringValue>small</stringValue></value></inputParameters>
+            <inputParameters>
+                <name>showBack</name>
+                <value><booleanValue>true</booleanValue></value>
+            </inputParameters>
+            <inputParameters>
+                <name>showFinish</name>
+                <value><booleanValue>true</booleanValue></value>
+            </inputParameters>
+            <inputParameters>
+                <name>size</name>
+                <value><stringValue>small</stringValue></value>
+            </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <storeOutputAutomatically>true</storeOutputAutomatically>
@@ -229,16 +256,21 @@
         <allowPause>false</allowPause>
         <fields>
             <name>NotAvailableText</name>
-            <fieldText
-            >&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Du kan bare endre tolk på et reservert eller tildelt oppdrag som er akseptert av tjenesteleverandør, har en valgt tolk og ikke har passert sluttid. Tildelingen kan være endret. Lukk vinduet og last inn oppdraget på nytt.&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Du kan bare endre tolk på et reservert eller tildelt oppdrag som er bekreftet av tjenesteleverandør, har en valgt tolk og ikke har passert sluttid. Tildelingen kan være endret. Lukk vinduet og last inn oppdraget på nytt.&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <fields>
             <name>NotAvailableFooter</name>
             <extensionName>c:hot_flowFooterButtons</extensionName>
             <fieldType>ComponentInstance</fieldType>
-            <inputParameters><name>showFinish</name><value><booleanValue>true</booleanValue></value></inputParameters>
-            <inputParameters><name>size</name><value><stringValue>small</stringValue></value></inputParameters>
+            <inputParameters>
+                <name>showFinish</name>
+                <value><booleanValue>true</booleanValue></value>
+            </inputParameters>
+            <inputParameters>
+                <name>size</name>
+                <value><stringValue>small</stringValue></value>
+            </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <storeOutputAutomatically>true</storeOutputAutomatically>
@@ -254,26 +286,42 @@
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
-        <connector><targetReference>Change_Interpreter</targetReference></connector>
+        <connector>
+            <targetReference>Change_Interpreter</targetReference>
+        </connector>
         <fields>
             <name>IntroText</name>
-            <fieldText
-            >&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Velg en annen tolk og om oppdraget skal settes til Reservert eller Tildelt.&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Velg en annen tolk og om oppdraget skal settes til Reservert eller Tildelt.&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <fields>
             <name>SelectedResource</name>
             <extensionName>c:hot_flowWantedResourceSearch</extensionName>
             <fieldType>ComponentInstance</fieldType>
-            <inputParameters><name>label</name><value><stringValue>Ny tolk</stringValue></value></inputParameters>
-            <inputParameters><name>searchFreelances</name><value><booleanValue
-                    >true</booleanValue></value></inputParameters>
-            <inputParameters><name>searchEmployees</name><value><booleanValue
-                    >false</booleanValue></value></inputParameters>
-            <inputParameters><name>searchServiceProviderDispatcher</name><value><booleanValue
-                    >false</booleanValue></value></inputParameters>
-            <inputParameters><name>recordId</name><value><elementReference
-                    >recordId</elementReference></value></inputParameters>
+            <inputParameters>
+                <name>label</name>
+                <value><stringValue>Ny tolk</stringValue></value>
+            </inputParameters>
+            <inputParameters>
+                <name>searchFreelances</name>
+                <value><booleanValue
+                    >true</booleanValue></value>
+            </inputParameters>
+            <inputParameters>
+                <name>searchEmployees</name>
+                <value><booleanValue
+                    >false</booleanValue></value>
+            </inputParameters>
+            <inputParameters>
+                <name>searchServiceProviderDispatcher</name>
+                <value><booleanValue
+                    >false</booleanValue></value>
+            </inputParameters>
+            <inputParameters>
+                <name>recordId</name>
+                <value><elementReference
+                    >recordId</elementReference></value>
+            </inputParameters>
             <inputParameters>
                 <name>excludedServiceResourceId</name>
                 <value>
@@ -288,17 +336,35 @@
             <name>DesiredStatus</name>
             <extensionName>c:hot_flowRadioButton</extensionName>
             <fieldType>ComponentInstance</fieldType>
-            <inputParameters><name>groupLabel</name><value><stringValue
-                    >Ny status</stringValue></value></inputParameters>
-            <inputParameters><name>rbOneLabel</name><value><stringValue
-                    >Reservert</stringValue></value></inputParameters>
-            <inputParameters><name>rbOneValue</name><value><stringValue
-                    >Scheduled</stringValue></value></inputParameters>
-            <inputParameters><name>rbTwoLabel</name><value><stringValue>Tildelt</stringValue></value></inputParameters>
-            <inputParameters><name>rbTwoValue</name><value><stringValue
-                    >Dispatched</stringValue></value></inputParameters>
-            <inputParameters><name>value</name><value><elementReference
-                    >currentStatus</elementReference></value></inputParameters>
+            <inputParameters>
+                <name>groupLabel</name>
+                <value><stringValue
+                    >Ny status</stringValue></value>
+            </inputParameters>
+            <inputParameters>
+                <name>rbOneLabel</name>
+                <value><stringValue
+                    >Reservert</stringValue></value>
+            </inputParameters>
+            <inputParameters>
+                <name>rbOneValue</name>
+                <value><stringValue
+                    >Scheduled</stringValue></value>
+            </inputParameters>
+            <inputParameters>
+                <name>rbTwoLabel</name>
+                <value><stringValue>Tildelt</stringValue></value>
+            </inputParameters>
+            <inputParameters>
+                <name>rbTwoValue</name>
+                <value><stringValue
+                    >Dispatched</stringValue></value>
+            </inputParameters>
+            <inputParameters>
+                <name>value</name>
+                <value><elementReference
+                    >currentStatus</elementReference></value>
+            </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <storeOutputAutomatically>true</storeOutputAutomatically>
@@ -307,9 +373,18 @@
             <name>ChangeFooter</name>
             <extensionName>c:hot_flowFooterButtons</extensionName>
             <fieldType>ComponentInstance</fieldType>
-            <inputParameters><name>showNext</name><value><booleanValue>true</booleanValue></value></inputParameters>
-            <inputParameters><name>showFinish</name><value><booleanValue>false</booleanValue></value></inputParameters>
-            <inputParameters><name>size</name><value><stringValue>small</stringValue></value></inputParameters>
+            <inputParameters>
+                <name>showNext</name>
+                <value><booleanValue>true</booleanValue></value>
+            </inputParameters>
+            <inputParameters>
+                <name>showFinish</name>
+                <value><booleanValue>false</booleanValue></value>
+            </inputParameters>
+            <inputParameters>
+                <name>size</name>
+                <value><stringValue>small</stringValue></value>
+            </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <storeOutputAutomatically>true</storeOutputAutomatically>
@@ -327,16 +402,21 @@
         <allowPause>false</allowPause>
         <fields>
             <name>SuccessText</name>
-            <fieldText
-            >&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;{!ActionMessage}&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;{!ActionMessage}&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <fields>
             <name>SuccessFooter</name>
             <extensionName>c:hot_flowFooterButtons</extensionName>
             <fieldType>ComponentInstance</fieldType>
-            <inputParameters><name>showFinish</name><value><booleanValue>true</booleanValue></value></inputParameters>
-            <inputParameters><name>size</name><value><stringValue>small</stringValue></value></inputParameters>
+            <inputParameters>
+                <name>showFinish</name>
+                <value><booleanValue>true</booleanValue></value>
+            </inputParameters>
+            <inputParameters>
+                <name>size</name>
+                <value><stringValue>small</stringValue></value>
+            </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <storeOutputAutomatically>true</storeOutputAutomatically>
@@ -347,31 +427,51 @@
     <start>
         <locationX>0</locationX>
         <locationY>0</locationY>
-        <connector><targetReference>Get_Service_Appointment</targetReference></connector>
+        <connector>
+            <targetReference>Get_Service_Appointment</targetReference>
+        </connector>
     </start>
     <status>Active</status>
     <variables>
-        <name>ActionMessage</name><dataType>String</dataType><isCollection>false</isCollection><isInput
-        >false</isInput><isOutput>false</isOutput>
+        <name>ActionMessage</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
     </variables>
     <variables>
-        <name>ActionSuccess</name><dataType>Boolean</dataType><isCollection>false</isCollection><isInput
-        >false</isInput><isOutput>false</isOutput>
+        <name>ActionSuccess</name>
+        <dataType>Boolean</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
     </variables>
     <variables>
-        <name>assignedResourceId</name><dataType>String</dataType><isCollection>false</isCollection><isInput
-        >true</isInput><isOutput>false</isOutput>
+        <name>assignedResourceId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
     </variables>
     <variables>
-        <name>currentStatus</name><dataType>String</dataType><isCollection>false</isCollection><isInput
-        >true</isInput><isOutput>false</isOutput>
+        <name>currentStatus</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
     </variables>
     <variables>
-        <name>originalServiceResourceId</name><dataType>String</dataType><isCollection>false</isCollection><isInput
-        >true</isInput><isOutput>false</isOutput>
+        <name>originalServiceResourceId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
     </variables>
     <variables>
-        <name>recordId</name><dataType>String</dataType><isCollection>false</isCollection><isInput
-        >true</isInput><isOutput>false</isOutput>
+        <name>recordId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
     </variables>
 </Flow>

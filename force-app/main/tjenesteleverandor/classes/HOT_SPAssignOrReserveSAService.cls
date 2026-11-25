@@ -172,7 +172,7 @@ public without sharing class HOT_SPAssignOrReserveSAService {
                 validateServiceAppointment(serviceAppointment, existingAssignedResources);
             }
             if (serviceAppointment.HOT_TjenesteleverandorStatus__c != 'Accepted') {
-                throw new FlowHandledException('Oppdraget må være akseptert av tjenesteleverandør.');
+                throw new FlowHandledException('Oppdraget må være bekreftet av tjenesteleverandør.');
             }
             if (serviceAppointment.SchedEndTime == null) {
                 throw new FlowHandledException(
@@ -260,10 +260,12 @@ public without sharing class HOT_SPAssignOrReserveSAService {
             throw new FlowHandledException('Du må velge en tolk.');
         }
         if (!SUPPORTED_TARGET_STATUSES.contains(req.targetStatus)) {
-            throw new FlowHandledException('Ugyldig målstatus.');
+            throw new FlowHandledException('Du må velge om oppdraget skal reserveres eller tildeles.');
         }
         if ((req.assignedResourceId == null) != (req.originalServiceResourceId == null)) {
-            throw new FlowHandledException('Opprinnelig tildeling mangler. Last inn oppdraget på nytt.');
+            throw new FlowHandledException(
+                'Kunne ikke identifisere tolken som skal byttes ut. Last inn oppdraget på nytt og prøv igjen.'
+            );
         }
     }
 

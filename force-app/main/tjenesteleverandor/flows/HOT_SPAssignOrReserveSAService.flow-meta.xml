@@ -604,7 +604,7 @@
         </fields>
         <fields>
             <name>NotAvailableText</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Du kan reservere eller tildele en tolk frem til oppdragets sluttid. Oppdraget må være akseptert av tjenesteleverandør. Du kan reservere eller tildele en tolk når status er Åpen, Udekket eller Frigitt til tolker og ingen tolk allerede er valgt.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Har oppdraget status Reservert og en reservert tolk, kan du tildele denne tolken.&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Du kan reservere eller tildele en tolk frem til oppdragets sluttid. Du kan reservere eller tildele en tolk når status er Åpen, Udekket eller Frigitt til tolker og ingen tolk allerede er valgt.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Har oppdraget status Reservert og en reservert tolk, kan du tildele denne tolken.&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>
@@ -669,7 +669,7 @@
         </connector>
         <fields>
             <name>IntroText</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Velg en tjenesteressurs og om oppdraget skal settes til &lt;/span&gt;&lt;strong style=&quot;font-size: 16px;&quot;&gt;Reservert&lt;/strong&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt; eller &lt;/span&gt;&lt;strong style=&quot;font-size: 16px;&quot;&gt;Tildelt&lt;/strong&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Oppdraget må være akseptert av tjenesteleverandør og ha status Åpen, Udekket eller Frigitt til tolker. Du kan reservere eller tildele en tolk frem til oppdragets sluttid.&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Velg en tjenesteressurs og om oppdraget skal settes til &lt;/span&gt;&lt;strong style=&quot;font-size: 16px;&quot;&gt;Reservert&lt;/strong&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt; eller &lt;/span&gt;&lt;strong style=&quot;font-size: 16px;&quot;&gt;Tildelt&lt;/strong&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Oppdraget må være bekreftet av tjenesteleverandør og ha status Åpen, Udekket eller Frigitt til tolker. Du kan reservere eller tildele en tolk frem til oppdragets sluttid.&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>

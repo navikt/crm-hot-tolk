@@ -291,7 +291,7 @@ private class HOT_SPAssignOrReserveSAServiceTest {
                 }
             )[0];
             Assert.isFalse(result.success);
-            Assert.areEqual('Oppdraget må være akseptert av tjenesteleverandør.', result.message);
+            Assert.areEqual('Oppdraget må være bekreftet av tjenesteleverandør.', result.message);
         }
         Test.stopTest();
 
@@ -577,7 +577,7 @@ private class HOT_SPAssignOrReserveSAServiceTest {
         Test.stopTest();
 
         Assert.isFalse(result.success);
-        Assert.areEqual('Oppdraget må være akseptert av tjenesteleverandør.', result.message);
+        Assert.areEqual('Oppdraget må være bekreftet av tjenesteleverandør.', result.message);
         assertOriginalAssignment(original, 'Scheduled');
     }
 
