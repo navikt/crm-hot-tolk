@@ -41,8 +41,8 @@ private class HOT_EventHandlerTest {
         System.assertEquals(serviceAppointment.HOT_AddressFormated__c, event.Location);
 
         event.Subject = 'TEST';
-        event = [SELECT Subject FROM Event];
         update event;
+        event = [SELECT Subject FROM Event WHERE Id = :event.Id];
 
         System.assertEquals(
             serviceAppointment.AppointmentNumber + ': ' + serviceAppointment.WorkType.Name,
