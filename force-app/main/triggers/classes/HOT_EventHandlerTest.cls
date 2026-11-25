@@ -68,6 +68,12 @@ private class HOT_EventHandlerTest {
             SELECT Id, AppointmentNumber, WorkType.Name, HOT_AddressFormated__c
             FROM ServiceAppointment
         ];
+        serviceAppointment.Status = 'Dispatched';
+        serviceAppointment.HOT_AssignedResourceId__c = UserInfo.getUserId();
+        serviceAppointment.HOT_IsEmployedInterpreter__c = true;
+        serviceAppointment.SchedStartTime = DateTime.now().addDays(1);
+        serviceAppointment.SchedEndTime = serviceAppointment.SchedStartTime.addHours(1);
+        update serviceAppointment;
 
         String hotEventRecordTypeId = Schema.getGlobalDescribe()
             .get('Event')
