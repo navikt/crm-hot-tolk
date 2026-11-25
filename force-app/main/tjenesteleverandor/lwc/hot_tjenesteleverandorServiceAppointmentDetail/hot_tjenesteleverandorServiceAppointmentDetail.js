@@ -292,6 +292,10 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
         return Boolean(canAcceptAppointments && this.isAcceptanceEligible);
     }
 
+    get showAssignOrReserveButton() {
+        return this.showAssignOrReserveAction && this.getFieldValue(STATUS_FIELD) !== 'Dispatched';
+    }
+
     get showAssignOrReserveAction() {
         return (
             this.getFieldValue(HOT_TJENESTELEVERANDOR_STATUS_FIELD) === 'Accepted' &&

@@ -14,6 +14,7 @@
             <template lwc:if={showAssignOrReserveAction}>
                 <div class="assignment-actions">
                     <c-button
+                        lwc:if={showAssignOrReserveButton}
                         button-styling="primary"
                         button-label="Reserver eller tildel tolk"
                         disabled={areAssignmentActionsDisabled}
