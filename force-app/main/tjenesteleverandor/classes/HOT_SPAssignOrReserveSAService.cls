@@ -15,6 +15,12 @@ public without sharing class HOT_SPAssignOrReserveSAService {
 
         @InvocableVariable(required=true label='Target Status')
         public String targetStatus;
+
+        @InvocableVariable(label='Assigned Resource to Replace')
+        public Id assignedResourceId;
+
+        @InvocableVariable(label='Original Service Resource Id')
+        public Id originalServiceResourceId;
     }
 
     public class Result {
@@ -36,7 +42,7 @@ public without sharing class HOT_SPAssignOrReserveSAService {
 
     @InvocableMethod(
         label='Assign or Reserve Service Provider Appointment'
-        description='Assigns or reserves an active freelance interpreter after the service provider has accepted the appointment.'
+        description='Assigns, reserves or changes an active freelance interpreter after the service provider has accepted the appointment.'
         category='HOT Tolketjeneste'
         iconName='slds:standard:service_appointment'
     )
@@ -92,6 +98,7 @@ public without sharing class HOT_SPAssignOrReserveSAService {
                       SELECT
                           Id,
                           Status,
+                          SchedStartTime,
                           SchedEndTime,
                           HOT_ServiceResource__c,
                           HOT_AssignedResourceId__c,
@@ -144,10 +151,14 @@ public without sharing class HOT_SPAssignOrReserveSAService {
             List<AssignedResource> existingAssignedResources = this.assignedResourcesByServiceAppointmentId.get(
                 req.serviceAppointmentId
             );
+            Boolean changingInterpreter = req.assignedResourceId != null;
             Boolean dispatchingReservation =
+                !changingInterpreter &&
                 serviceAppointment.Status == 'Scheduled' &&
                 req.targetStatus == 'Dispatched';
-            if (dispatchingReservation) {
+            if (changingInterpreter) {
+                validateInterpreterChange(req, serviceAppointment, existingAssignedResources);
+            } else if (dispatchingReservation) {
                 if (
                     existingAssignedResources == null ||
                     existingAssignedResources.size() != 1 ||
@@ -177,6 +188,7 @@ public without sharing class HOT_SPAssignOrReserveSAService {
                 throw new FlowHandledException('Du må velge en aktiv tolk.');
             }
             assignmentSavepoint = Database.setSavepoint();
+            AssignedResource newAssignedResource;
             if (dispatchingReservation) {
                 update new ServiceAppointment(
                     Id = serviceAppointment.Id,
@@ -184,6 +196,15 @@ public without sharing class HOT_SPAssignOrReserveSAService {
                     HOT_IsReleasedToFreelance__c = true
                 );
             } else {
+                if (changingInterpreter) {
+                    delete existingAssignedResources;
+                    update new ServiceAppointment(
+                        Id = serviceAppointment.Id,
+                        SchedStartTime = serviceAppointment.SchedStartTime,
+                        SchedEndTime = serviceAppointment.SchedEndTime,
+                        HOT_IsEmployedInterpreter__c = false
+                    );
+                }
                 if (serviceAppointment.Status == 'Cannot Complete') {
                     update new ServiceAppointment(Id = serviceAppointment.Id, Status = 'None');
                 }
@@ -192,6 +213,7 @@ public without sharing class HOT_SPAssignOrReserveSAService {
                     ServiceResourceId = req.serviceResourceId
                 );
                 insert assignedResource;
+                newAssignedResource = assignedResource;
                 update new ServiceAppointment(
                     Id = serviceAppointment.Id,
                     Status = req.targetStatus,
@@ -201,10 +223,20 @@ public without sharing class HOT_SPAssignOrReserveSAService {
                 );
             }
             serviceAppointment.Status = req.targetStatus;
+            if (newAssignedResource != null) {
+                this.assignedResourcesByServiceAppointmentId.put(
+                    serviceAppointment.Id,
+                    new List<AssignedResource>{ newAssignedResource }
+                );
+                serviceAppointment.HOT_ServiceResource__c = serviceResource.Id;
+                serviceAppointment.HOT_AssignedResourceId__c = serviceResource.RelatedRecordId;
+            }
             result.success = true;
-            result.message = req.targetStatus == 'Dispatched'
-                ? 'Tolken ble tildelt oppdraget.'
-                : 'Tolken ble reservert til oppdraget.';
+            result.message = changingInterpreter
+                ? 'Tolken ble endret. Oppdraget er ' + (req.targetStatus == 'Dispatched' ? 'tildelt.' : 'reservert.')
+                : req.targetStatus == 'Dispatched'
+                      ? 'Tolken ble tildelt oppdraget.'
+                      : 'Tolken ble reservert til oppdraget.';
         } catch (Exception ex) {
             if (assignmentSavepoint != null) {
                 Database.rollback(assignmentSavepoint);
@@ -229,6 +261,30 @@ public without sharing class HOT_SPAssignOrReserveSAService {
         }
         if (!SUPPORTED_TARGET_STATUSES.contains(req.targetStatus)) {
             throw new FlowHandledException('Ugyldig målstatus.');
+        }
+        if ((req.assignedResourceId == null) != (req.originalServiceResourceId == null)) {
+            throw new FlowHandledException('Opprinnelig tildeling mangler. Last inn oppdraget på nytt.');
+        }
+    }
+
+    private static void validateInterpreterChange(
+        Input req,
+        ServiceAppointment serviceAppointment,
+        List<AssignedResource> existingAssignedResources
+    ) {
+        if (!SUPPORTED_TARGET_STATUSES.contains(serviceAppointment.Status)) {
+            throw new FlowHandledException('Du kan bare endre tolk på et reservert eller tildelt oppdrag.');
+        }
+        if (
+            existingAssignedResources == null ||
+            existingAssignedResources.size() != 1 ||
+            existingAssignedResources[0].Id != req.assignedResourceId ||
+            existingAssignedResources[0].ServiceResourceId != req.originalServiceResourceId
+        ) {
+            throw new FlowHandledException('Tildelingen er endret. Last inn oppdraget på nytt.');
+        }
+        if (req.serviceResourceId == req.originalServiceResourceId) {
+            throw new FlowHandledException('Du må velge en annen tolk.');
         }
     }
 

@@ -1092,6 +1092,10 @@
     </flowAccesses>
     <flowAccesses>
         <enabled>true</enabled>
+        <flow>HOT_SPChangeInterpreter</flow>
+    </flowAccesses>
+    <flowAccesses>
+        <enabled>true</enabled>
         <flow>HOT_ServiceProviderTransferSADispatcher</flow>
     </flowAccesses>
     <hasActivationRequired>false</hasActivationRequired>

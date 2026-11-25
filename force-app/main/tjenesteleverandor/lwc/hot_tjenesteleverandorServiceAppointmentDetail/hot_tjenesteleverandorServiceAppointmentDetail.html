@@ -19,6 +19,15 @@
                         disabled={areAssignmentActionsDisabled}
                         onbuttonclick={handleAssignOrReserve}
                     ></c-button>
+                    <template lwc:if={showChangeInterpreterAction}>
+                        <c-hot_button
+                            data-id="change-interpreter"
+                            button-styling="primary"
+                            button-label="Endre tolk"
+                            disabled={areAssignmentActionsDisabled}
+                            onbuttonclick={handleChangeInterpreter}
+                        ></c-hot_button>
+                    </template>
                     <template lwc:if={showRemoveInterpreterAction}>
                         <c-hot_button
                             data-id="remove-interpreter"
@@ -43,7 +52,7 @@
             <template lwc:if={activeDialog}>
                 <div class="modal-header">
                     <h2>{actionDialogTitle}</h2>
-                    <template lwc:if={isAssignmentOpen}>
+                    <template lwc:if={isFlowOpen}>
                         <button class="close-btn" onclick={closeActionModal} aria-label="Lukk">
                             <img src={exitCrossIcon} alt="" aria-hidden="true" />
                         </button>
@@ -84,6 +93,16 @@
                             <lightning-flow
                                 flow-api-name="HOT_SPAssignOrReserveSAService"
                                 flow-input-variables={assignmentInputVariables}
+                                flow-finish-behavior="NONE"
+                                onstatuschange={handleAssignmentStatusChange}
+                            ></lightning-flow>
+                        </div>
+                    </template>
+                    <template lwc:if={isChangeInterpreterOpen}>
+                        <div class="flow-content">
+                            <lightning-flow
+                                flow-api-name="HOT_SPChangeInterpreter"
+                                flow-input-variables={changeInterpreterInputVariables}
                                 flow-finish-behavior="NONE"
                                 onstatuschange={handleAssignmentStatusChange}
                             ></lightning-flow>

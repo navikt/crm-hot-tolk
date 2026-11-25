@@ -155,6 +155,20 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
         return [{ name: 'recordId', type: 'String', value: this.effectiveRecordId }];
     }
 
+    get changeInterpreterInputVariables() {
+        const record = this.assignedResourceResult?.data?.records[0];
+        return [
+            ...this.assignmentInputVariables,
+            { name: 'assignedResourceId', type: 'String', value: this.assignedResourceId },
+            {
+                name: 'originalServiceResourceId',
+                type: 'String',
+                value: getFieldValue(record, 'AssignedResource.ServiceResourceId')
+            },
+            { name: 'currentStatus', type: 'String', value: this.getFieldValue(STATUS_FIELD) }
+        ];
+    }
+
     @wire(CurrentPageReference)
     handlePageReference(pageReference) {
         this.routeRecordId = pageReference?.state?.c__recordId;
@@ -243,7 +257,22 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
         return this.activeDialog === 'removal';
     }
 
+    get showChangeInterpreterAction() {
+        return this.showRemoveInterpreterAction;
+    }
+
+    get isChangeInterpreterOpen() {
+        return this.activeDialog === 'change-interpreter';
+    }
+
+    get isFlowOpen() {
+        return this.isAssignmentOpen || this.isChangeInterpreterOpen;
+    }
+
     get actionDialogTitle() {
+        if (this.isChangeInterpreterOpen) {
+            return 'Endre tolk';
+        }
         return this.isAssignmentOpen ? 'Reserver eller tildel tolk' : 'Fjern tolk';
     }
 
@@ -514,6 +543,12 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
 
     handleRemoveInterpreter() {
         this.activeDialog = 'removal';
+        this.actionError = undefined;
+        this.responseFeedback = undefined;
+    }
+
+    handleChangeInterpreter() {
+        this.activeDialog = 'change-interpreter';
         this.actionError = undefined;
         this.responseFeedback = undefined;
     }

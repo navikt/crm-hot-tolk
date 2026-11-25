@@ -22,6 +22,12 @@
             />
             <property name="value" type="String" label="Search value" role="outputOnly" />
             <property name="recordId" type="String" label="Service Appointment Id" role="inputOnly" />
+            <property
+                name="excludedServiceResourceId"
+                type="String"
+                label="Service Resource Id to exclude"
+                role="inputOnly"
+            />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>
