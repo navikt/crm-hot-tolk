@@ -16,23 +16,33 @@
         <flowTransactionModel>Automatic</flowTransactionModel>
         <inputParameters>
             <name>serviceAppointmentId</name>
-            <value><elementReference>recordId</elementReference></value>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
         </inputParameters>
         <inputParameters>
             <name>serviceResourceId</name>
-            <value><elementReference>SelectedResource.value</elementReference></value>
+            <value>
+                <elementReference>SelectedResource.value</elementReference>
+            </value>
         </inputParameters>
         <inputParameters>
             <name>targetStatus</name>
-            <value><elementReference>DesiredStatus.value</elementReference></value>
+            <value>
+                <elementReference>DesiredStatus.value</elementReference>
+            </value>
         </inputParameters>
         <inputParameters>
             <name>assignedResourceId</name>
-            <value><elementReference>assignedResourceId</elementReference></value>
+            <value>
+                <elementReference>assignedResourceId</elementReference>
+            </value>
         </inputParameters>
         <inputParameters>
             <name>originalServiceResourceId</name>
-            <value><elementReference>originalServiceResourceId</elementReference></value>
+            <value>
+                <elementReference>originalServiceResourceId</elementReference>
+            </value>
         </inputParameters>
         <nameSegment>HOT_SPAssignOrReserveSAService</nameSegment>
         <offset>0</offset>
@@ -62,37 +72,51 @@
             <conditions>
                 <leftValueReference>Get_Service_Appointment.Status</leftValueReference>
                 <operator>EqualTo</operator>
-                <rightValue><stringValue>Scheduled</stringValue></rightValue>
+                <rightValue>
+                    <stringValue>Scheduled</stringValue>
+                </rightValue>
             </conditions>
             <conditions>
                 <leftValueReference>Get_Service_Appointment.Status</leftValueReference>
                 <operator>EqualTo</operator>
-                <rightValue><stringValue>Dispatched</stringValue></rightValue>
+                <rightValue>
+                    <stringValue>Dispatched</stringValue>
+                </rightValue>
             </conditions>
             <conditions>
                 <leftValueReference>Get_Service_Appointment.HOT_TjenesteleverandorStatus__c</leftValueReference>
                 <operator>EqualTo</operator>
-                <rightValue><stringValue>Accepted</stringValue></rightValue>
+                <rightValue>
+                    <stringValue>Accepted</stringValue>
+                </rightValue>
             </conditions>
             <conditions>
                 <leftValueReference>Get_Existing_Assigned_Resource.Id</leftValueReference>
                 <operator>EqualTo</operator>
-                <rightValue><elementReference>assignedResourceId</elementReference></rightValue>
+                <rightValue>
+                    <elementReference>assignedResourceId</elementReference>
+                </rightValue>
             </conditions>
             <conditions>
                 <leftValueReference>Get_Existing_Assigned_Resource.ServiceResourceId</leftValueReference>
                 <operator>EqualTo</operator>
-                <rightValue><elementReference>originalServiceResourceId</elementReference></rightValue>
+                <rightValue>
+                    <elementReference>originalServiceResourceId</elementReference>
+                </rightValue>
             </conditions>
             <conditions>
                 <leftValueReference>Get_Existing_Assigned_Resource.Id</leftValueReference>
                 <operator>IsNull</operator>
-                <rightValue><booleanValue>false</booleanValue></rightValue>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
             </conditions>
             <conditions>
                 <leftValueReference>Get_Service_Appointment.SchedEndTime</leftValueReference>
                 <operator>GreaterThan</operator>
-                <rightValue><elementReference>$Flow.CurrentDateTime</elementReference></rightValue>
+                <rightValue>
+                    <elementReference>$Flow.CurrentDateTime</elementReference>
+                </rightValue>
             </conditions>
             <connector>
                 <targetReference>SelectInterpreterAndStatus</targetReference>
@@ -115,7 +139,9 @@
             <conditions>
                 <leftValueReference>ActionSuccess</leftValueReference>
                 <operator>EqualTo</operator>
-                <rightValue><booleanValue>true</booleanValue></rightValue>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
             </conditions>
             <connector>
                 <targetReference>SuccessScreen</targetReference>
@@ -129,11 +155,15 @@
     <label>HOT_SPChangeInterpreter</label>
     <processMetadataValues>
         <name>BuilderType</name>
-        <value><stringValue>LightningFlowBuilder</stringValue></value>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
     </processMetadataValues>
     <processMetadataValues>
         <name>CanvasMode</name>
-        <value><stringValue>AUTO_LAYOUT_CANVAS</stringValue></value>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
     </processMetadataValues>
     <processType>Flow</processType>
     <recordLookups>
@@ -149,7 +179,9 @@
         <filters>
             <field>ServiceAppointmentId</field>
             <operator>EqualTo</operator>
-            <value><elementReference>recordId</elementReference></value>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
         <object>AssignedResource</object>
@@ -168,7 +200,9 @@
         <filters>
             <field>Id</field>
             <operator>EqualTo</operator>
-            <value><elementReference>recordId</elementReference></value>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
         <object>ServiceAppointment</object>
@@ -184,8 +218,16 @@
         <allowPause>false</allowPause>
         <fields>
             <name>ErrorText</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;{!ActionMessage}&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;{!ActionMessage}&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <fields>
             <name>ErrorFooter</name>
@@ -193,19 +235,33 @@
             <fieldType>ComponentInstance</fieldType>
             <inputParameters>
                 <name>showBack</name>
-                <value><booleanValue>true</booleanValue></value>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
             </inputParameters>
             <inputParameters>
                 <name>showFinish</name>
-                <value><booleanValue>true</booleanValue></value>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
             </inputParameters>
             <inputParameters>
                 <name>size</name>
-                <value><stringValue>small</stringValue></value>
+                <value>
+                    <stringValue>small</stringValue>
+                </value>
             </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <storeOutputAutomatically>true</storeOutputAutomatically>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <showFooter>false</showFooter>
         <showHeader>false</showHeader>
@@ -220,8 +276,16 @@
         <allowPause>false</allowPause>
         <fields>
             <name>FaultText</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;{!$Flow.FaultMessage}&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;{!$Flow.FaultMessage}&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <fields>
             <name>FaultFooter</name>
@@ -229,19 +293,33 @@
             <fieldType>ComponentInstance</fieldType>
             <inputParameters>
                 <name>showBack</name>
-                <value><booleanValue>true</booleanValue></value>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
             </inputParameters>
             <inputParameters>
                 <name>showFinish</name>
-                <value><booleanValue>true</booleanValue></value>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
             </inputParameters>
             <inputParameters>
                 <name>size</name>
-                <value><stringValue>small</stringValue></value>
+                <value>
+                    <stringValue>small</stringValue>
+                </value>
             </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <storeOutputAutomatically>true</storeOutputAutomatically>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <showFooter>false</showFooter>
         <showHeader>false</showHeader>
@@ -258,6 +336,14 @@
             <name>NotAvailableText</name>
             <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Du kan bare endre tolk på et reservert eller tildelt oppdrag som er bekreftet av tjenesteleverandør, har en valgt tolk og ikke har passert sluttid. Tildelingen kan være endret. Lukk vinduet og last inn oppdraget på nytt.&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <fields>
             <name>NotAvailableFooter</name>
@@ -265,15 +351,27 @@
             <fieldType>ComponentInstance</fieldType>
             <inputParameters>
                 <name>showFinish</name>
-                <value><booleanValue>true</booleanValue></value>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
             </inputParameters>
             <inputParameters>
                 <name>size</name>
-                <value><stringValue>small</stringValue></value>
+                <value>
+                    <stringValue>small</stringValue>
+                </value>
             </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <storeOutputAutomatically>true</storeOutputAutomatically>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <showFooter>false</showFooter>
         <showHeader>false</showHeader>
@@ -293,6 +391,14 @@
             <name>IntroText</name>
             <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Velg en annen tolk og om oppdraget skal settes til Reservert eller Tildelt.&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <fields>
             <name>SelectedResource</name>
@@ -300,27 +406,33 @@
             <fieldType>ComponentInstance</fieldType>
             <inputParameters>
                 <name>label</name>
-                <value><stringValue>Ny tolk</stringValue></value>
+                <value>
+                    <stringValue>Ny tolk</stringValue>
+                </value>
             </inputParameters>
             <inputParameters>
                 <name>searchFreelances</name>
-                <value><booleanValue
-                    >true</booleanValue></value>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
             </inputParameters>
             <inputParameters>
                 <name>searchEmployees</name>
-                <value><booleanValue
-                    >false</booleanValue></value>
+                <value>
+                    <booleanValue>false</booleanValue>
+                </value>
             </inputParameters>
             <inputParameters>
                 <name>searchServiceProviderDispatcher</name>
-                <value><booleanValue
-                    >false</booleanValue></value>
+                <value>
+                    <booleanValue>false</booleanValue>
+                </value>
             </inputParameters>
             <inputParameters>
                 <name>recordId</name>
-                <value><elementReference
-                    >recordId</elementReference></value>
+                <value>
+                    <elementReference>recordId</elementReference>
+                </value>
             </inputParameters>
             <inputParameters>
                 <name>excludedServiceResourceId</name>
@@ -331,6 +443,14 @@
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <storeOutputAutomatically>true</storeOutputAutomatically>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <fields>
             <name>DesiredStatus</name>
@@ -338,36 +458,51 @@
             <fieldType>ComponentInstance</fieldType>
             <inputParameters>
                 <name>groupLabel</name>
-                <value><stringValue
-                    >Ny status</stringValue></value>
+                <value>
+                    <stringValue>Ny status</stringValue>
+                </value>
             </inputParameters>
             <inputParameters>
                 <name>rbOneLabel</name>
-                <value><stringValue
-                    >Reservert</stringValue></value>
+                <value>
+                    <stringValue>Reservert</stringValue>
+                </value>
             </inputParameters>
             <inputParameters>
                 <name>rbOneValue</name>
-                <value><stringValue
-                    >Scheduled</stringValue></value>
+                <value>
+                    <stringValue>Scheduled</stringValue>
+                </value>
             </inputParameters>
             <inputParameters>
                 <name>rbTwoLabel</name>
-                <value><stringValue>Tildelt</stringValue></value>
+                <value>
+                    <stringValue>Tildelt</stringValue>
+                </value>
             </inputParameters>
             <inputParameters>
                 <name>rbTwoValue</name>
-                <value><stringValue
-                    >Dispatched</stringValue></value>
+                <value>
+                    <stringValue>Dispatched</stringValue>
+                </value>
             </inputParameters>
             <inputParameters>
                 <name>value</name>
-                <value><elementReference
-                    >currentStatus</elementReference></value>
+                <value>
+                    <elementReference>currentStatus</elementReference>
+                </value>
             </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <storeOutputAutomatically>true</storeOutputAutomatically>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <fields>
             <name>ChangeFooter</name>
@@ -375,19 +510,33 @@
             <fieldType>ComponentInstance</fieldType>
             <inputParameters>
                 <name>showNext</name>
-                <value><booleanValue>true</booleanValue></value>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
             </inputParameters>
             <inputParameters>
                 <name>showFinish</name>
-                <value><booleanValue>false</booleanValue></value>
+                <value>
+                    <booleanValue>false</booleanValue>
+                </value>
             </inputParameters>
             <inputParameters>
                 <name>size</name>
-                <value><stringValue>small</stringValue></value>
+                <value>
+                    <stringValue>small</stringValue>
+                </value>
             </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <storeOutputAutomatically>true</storeOutputAutomatically>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <showFooter>false</showFooter>
         <showHeader>false</showHeader>
@@ -402,8 +551,16 @@
         <allowPause>false</allowPause>
         <fields>
             <name>SuccessText</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;{!ActionMessage}&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;{!ActionMessage}&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <fields>
             <name>SuccessFooter</name>
@@ -411,15 +568,27 @@
             <fieldType>ComponentInstance</fieldType>
             <inputParameters>
                 <name>showFinish</name>
-                <value><booleanValue>true</booleanValue></value>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
             </inputParameters>
             <inputParameters>
                 <name>size</name>
-                <value><stringValue>small</stringValue></value>
+                <value>
+                    <stringValue>small</stringValue>
+                </value>
             </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <storeOutputAutomatically>true</storeOutputAutomatically>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <showFooter>false</showFooter>
         <showHeader>false</showHeader>
