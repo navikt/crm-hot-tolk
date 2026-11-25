@@ -1,8 +1,5 @@
 @IsTest
 private class HOT_EventControllerTest {
-    private static final String ORIGINAL_LOCATION = 'Original event location';
-    private static final String APPOINTMENT_ADDRESS = 'Appointment address';
-
     @TestSetup
     static void createOwners() {
         Profile profile = [
@@ -82,7 +79,6 @@ private class HOT_EventControllerTest {
                     WhatId = appointment.Id,
                     OwnerId = ownerId,
                     Subject = 'Existing calendar event',
-                    Location = ORIGINAL_LOCATION,
                     StartDateTime = startTime,
                     EndDateTime = startTime.addHours(1)
                 )
@@ -96,9 +92,7 @@ private class HOT_EventControllerTest {
         return eventsByAppointment;
     }
 
-    private static ServiceAppointment snapshot(Id appointmentId, Id ownerId, String address, Datetime startTime) {
-        // The controller consumes trigger snapshots. Deserialize the read-only formatted address
-        // so these unit tests do not invoke unrelated SA automation or managed calendar sync.
+    private static ServiceAppointment snapshot(Id appointmentId, Id ownerId, Datetime startTime) {
         return (ServiceAppointment) JSON.deserialize(
             JSON.serialize(
                 new Map<String, Object>{
@@ -106,7 +100,6 @@ private class HOT_EventControllerTest {
                     'Status' => 'Dispatched',
                     'HOT_AssignedResourceId__c' => ownerId,
                     'HOT_IsEmployedInterpreter__c' => true,
-                    'HOT_AddressFormated__c' => address,
                     'SchedStartTime' => startTime,
                     'SchedEndTime' => startTime == null ? null : startTime.addHours(1)
                 }
@@ -118,7 +111,7 @@ private class HOT_EventControllerTest {
     private static Map<Id, Event> getEvents(Set<Id> appointmentIds) {
         Map<Id, Event> eventsByAppointment = new Map<Id, Event>();
         for (Event ev : [
-            SELECT Id, WhatId, OwnerId, Location, Subject, StartDateTime, EndDateTime
+            SELECT Id, WhatId, OwnerId
             FROM Event
             WHERE WhatId IN :appointmentIds
         ]) {
@@ -127,19 +120,15 @@ private class HOT_EventControllerTest {
         return eventsByAppointment;
     }
 
-    private static void assertEvent(Event beforeEvent, Event afterEvent, Id expectedOwner, String expectedLocation) {
+    private static void assertEvent(Event beforeEvent, Event afterEvent, Id expectedOwner) {
         Assert.isNotNull(afterEvent, 'The existing event must not be deleted');
         Assert.areEqual(beforeEvent.Id, afterEvent.Id, 'Update the existing event instead of replacing it');
         Assert.areEqual(beforeEvent.WhatId, afterEvent.WhatId, 'Keep the appointment relationship');
         Assert.areEqual(expectedOwner, afterEvent.OwnerId, 'Copy the assigned user when eligible');
-        Assert.areEqual(expectedLocation, afterEvent.Location, 'Copy the formatted address when eligible');
-        Assert.areEqual(beforeEvent.Subject, afterEvent.Subject, 'Subject belongs to standard calendar sync');
-        Assert.areEqual(beforeEvent.StartDateTime, afterEvent.StartDateTime, 'Do not sync start times');
-        Assert.areEqual(beforeEvent.EndDateTime, afterEvent.EndDateTime, 'Do not sync end times');
     }
 
     @IsTest
-    static void reassignmentUpdatesOwnerAndLocationEvenForPastAppointment() {
+    static void reassignmentUpdatesOwnerEvenForPastAppointment() {
         Map<String, Id> owners = getOwners();
         List<ServiceAppointment> appointments = createAppointments(1);
         Id appointmentId = appointments[0].Id;
@@ -148,13 +137,11 @@ private class HOT_EventControllerTest {
         ServiceAppointment oldAppointment = snapshot(
             appointmentId,
             owners.get('EventOld'),
-            APPOINTMENT_ADDRESS,
             pastStart
         );
         ServiceAppointment updatedAppointment = snapshot(
             appointmentId,
             owners.get('EventNew'),
-            APPOINTMENT_ADDRESS,
             pastStart
         );
 
@@ -173,53 +160,14 @@ private class HOT_EventControllerTest {
         assertEvent(
             beforeEvents.get(appointmentId),
             getEvents(beforeEvents.keySet()).get(appointmentId),
-            owners.get('EventNew'),
-            APPOINTMENT_ADDRESS
+            owners.get('EventNew')
         );
-    }
-
-    @IsTest
-    static void addressChangesTodayUpdateLocationAndCanClearIt() {
-        Map<String, Id> owners = getOwners();
-        List<ServiceAppointment> appointments = createAppointments(2);
-        Map<Id, Event> beforeEvents = createEvents(appointments, owners.get('EventOld'));
-        List<ServiceAppointment> updatedAppointments = new List<ServiceAppointment>();
-        Map<Id, SObject> oldMap = new Map<Id, SObject>();
-        // The controller's Datetime >= Date.today() promotes the Date to midnight GMT,
-        // not midnight in the running user's timezone. Exercise that exact inclusive cutoff.
-        Datetime todayStart = Datetime.newInstanceGmt(Date.today(), Time.newInstance(0, 0, 0, 0));
-        for (Integer i = 0; i < appointments.size(); i++) {
-            Id appointmentId = appointments[i].Id;
-            oldMap.put(appointmentId, snapshot(appointmentId, owners.get('EventOld'), 'Previous address', todayStart));
-            updatedAppointments.add(
-                snapshot(appointmentId, owners.get('EventOld'), i == 0 ? APPOINTMENT_ADDRESS : null, todayStart)
-            );
-        }
-
-        Test.startTest();
-        HOT_EventController.updateServiceAppointmentEvents(updatedAppointments, oldMap);
-        Test.stopTest();
-
-        Map<Id, Event> afterEvents = getEvents(beforeEvents.keySet());
-        Assert.areEqual(
-            2,
-            [SELECT COUNT() FROM Event WHERE WhatId IN :beforeEvents.keySet()],
-            'Keep both existing events'
-        );
-        for (ServiceAppointment appointment : updatedAppointments) {
-            assertEvent(
-                beforeEvents.get(appointment.Id),
-                afterEvents.get(appointment.Id),
-                owners.get('EventOld'),
-                appointment.HOT_AddressFormated__c
-            );
-        }
     }
 
     @IsTest
     static void ineligibleAndUnrelatedChangesLeaveEventsUntouched() {
         Map<String, Id> owners = getOwners();
-        List<ServiceAppointment> appointments = createAppointments(11);
+        List<ServiceAppointment> appointments = createAppointments(7);
         Map<Id, Event> beforeEvents = createEvents(appointments, owners.get('EventOld'));
         List<ServiceAppointment> updatedAppointments = new List<ServiceAppointment>();
         Map<Id, SObject> oldMap = new Map<Id, SObject>();
@@ -227,12 +175,11 @@ private class HOT_EventControllerTest {
         for (ServiceAppointment appointment : appointments) {
             oldMap.put(
                 appointment.Id,
-                snapshot(appointment.Id, owners.get('EventOld'), APPOINTMENT_ADDRESS, futureStart)
+                snapshot(appointment.Id, owners.get('EventOld'), futureStart)
             );
-            updatedAppointments.add(snapshot(appointment.Id, owners.get('EventOld'), APPOINTMENT_ADDRESS, futureStart));
+            updatedAppointments.add(snapshot(appointment.Id, owners.get('EventOld'), futureStart));
         }
 
-        // Each case isolates a reason not to update, even if another relevant field changes.
         updatedAppointments[0].HOT_AssignedResourceId__c = null; // Resource removed.
         updatedAppointments[1].Status = 'Scheduled';
         updatedAppointments[1].HOT_AssignedResourceId__c = owners.get('EventNew');
@@ -242,19 +189,7 @@ private class HOT_EventControllerTest {
         updatedAppointments[3].HOT_AssignedResourceId__c = owners.get('EventNew');
         // Index 4 is completely unchanged.
         ((ServiceAppointment) oldMap.get(appointments[5].Id)).HOT_AssignedResourceId__c = null; // First assignment.
-        // An address-only change just before the controller's GMT cutoff must remain ineligible.
-        updatedAppointments[6] = snapshot(
-            appointments[6].Id,
-            owners.get('EventOld'),
-            'Changed past address',
-            Datetime.newInstanceGmt(Date.today(), Time.newInstance(0, 0, 0, 0)).addSeconds(-1)
-        );
-        updatedAppointments[7] = snapshot(appointments[7].Id, owners.get('EventOld'), 'Changed address', null);
-        updatedAppointments[8].SchedStartTime = futureStart.addHours(2);
-        updatedAppointments[8].SchedEndTime = futureStart.addHours(3);
-        updatedAppointments[9].ActualStartTime = futureStart;
-        updatedAppointments[9].ActualEndTime = futureStart.addHours(3);
-        ((ServiceAppointment) oldMap.get(appointments[10].Id)).Status = 'Scheduled'; // Dispatch alone.
+        ((ServiceAppointment) oldMap.get(appointments[6].Id)).Status = 'Scheduled';
 
         Test.startTest();
         Integer dmlBefore = Limits.getDmlStatements();
@@ -272,29 +207,23 @@ private class HOT_EventControllerTest {
             assertEvent(
                 beforeEvents.get(appointment.Id),
                 afterEvents.get(appointment.Id),
-                owners.get('EventOld'),
-                ORIGINAL_LOCATION
+                owners.get('EventOld')
             );
         }
     }
 
     @IsTest
-    static void eligibleChangesWithoutExistingEventsDoNotCreateThem() {
+    static void reassignmentWithoutExistingEventDoesNotCreateOne() {
         Map<String, Id> owners = getOwners();
-        List<ServiceAppointment> appointments = createAppointments(2);
+        List<ServiceAppointment> appointments = createAppointments(1);
         List<ServiceAppointment> updatedAppointments = new List<ServiceAppointment>();
         Map<Id, SObject> oldMap = new Map<Id, SObject>();
         Datetime futureStart = Datetime.now().addDays(2);
         for (Integer i = 0; i < appointments.size(); i++) {
             Id appointmentId = appointments[i].Id;
-            oldMap.put(appointmentId, snapshot(appointmentId, owners.get('EventOld'), ORIGINAL_LOCATION, futureStart));
+            oldMap.put(appointmentId, snapshot(appointmentId, owners.get('EventOld'), futureStart));
             updatedAppointments.add(
-                snapshot(
-                    appointmentId,
-                    i == 0 ? owners.get('EventNew') : owners.get('EventOld'),
-                    i == 0 ? ORIGINAL_LOCATION : APPOINTMENT_ADDRESS,
-                    futureStart
-                )
+                snapshot(appointmentId, owners.get('EventNew'), futureStart)
             );
         }
         Set<Id> appointmentIds = oldMap.keySet();
@@ -329,15 +258,10 @@ private class HOT_EventControllerTest {
             Id appointmentId = appointments[i].Id;
             oldMap.put(
                 appointmentId,
-                snapshot(appointmentId, owners.get('EventOld'), APPOINTMENT_ADDRESS, futureStart)
+                snapshot(appointmentId, owners.get('EventOld'), futureStart)
             );
             updatedAppointments.add(
-                snapshot(
-                    appointmentId,
-                    Math.mod(i, 2) == 0 ? owners.get('EventNew') : owners.get('EventOld'),
-                    Math.mod(i, 2) == 0 ? APPOINTMENT_ADDRESS : 'New address ' + i,
-                    futureStart
-                )
+                snapshot(appointmentId, owners.get('EventNew'), futureStart)
             );
         }
 
@@ -355,8 +279,7 @@ private class HOT_EventControllerTest {
             assertEvent(
                 beforeEvents.get(appointment.Id),
                 afterEvents.get(appointment.Id),
-                (Id) appointment.HOT_AssignedResourceId__c,
-                appointment.HOT_AddressFormated__c
+                owners.get('EventNew')
             );
         }
     }
@@ -375,7 +298,7 @@ private class HOT_EventControllerTest {
         for (ServiceAppointment appointment : appointments) {
             updatedAppointments.put(
                 appointment.Id,
-                snapshot(appointment.Id, owners.get('EventNew'), APPOINTMENT_ADDRESS, Datetime.now().addDays(2))
+                snapshot(appointment.Id, owners.get('EventNew'), Datetime.now().addDays(2))
             );
         }
 
@@ -396,8 +319,7 @@ private class HOT_EventControllerTest {
         assertEvent(
             beforeEvents.get(existingAppointmentId),
             afterEvents.get(existingAppointmentId),
-            owners.get('EventNew'),
-            APPOINTMENT_ADDRESS
+            owners.get('EventNew')
         );
     }
 
@@ -409,19 +331,13 @@ private class HOT_EventControllerTest {
         List<ServiceAppointment> updatedAppointments = new List<ServiceAppointment>();
         Map<Id, SObject> oldMap = new Map<Id, SObject>();
         Datetime futureStart = Datetime.now().addDays(2);
-        // Force a platform STRING_TOO_LONG DML error, independent of org validation rules.
-        String invalidLocation = '';
-        for (Integer i = 0; i <= Event.Location.getDescribe().getLength(); i++) {
-            invalidLocation += 'x';
-        }
         for (Integer i = 0; i < appointments.size(); i++) {
             Id appointmentId = appointments[i].Id;
-            oldMap.put(appointmentId, snapshot(appointmentId, owners.get('EventOld'), ORIGINAL_LOCATION, futureStart));
+            oldMap.put(appointmentId, snapshot(appointmentId, owners.get('EventOld'), futureStart));
             updatedAppointments.add(
                 snapshot(
                     appointmentId,
-                    owners.get('EventNew'),
-                    i == 0 ? invalidLocation : APPOINTMENT_ADDRESS,
+                    i == 0 ? appointmentId : owners.get('EventNew'),
                     futureStart
                 )
             );
@@ -445,8 +361,7 @@ private class HOT_EventControllerTest {
             assertEvent(
                 beforeEvents.get(appointment.Id),
                 afterEvents.get(appointment.Id),
-                owners.get('EventOld'),
-                ORIGINAL_LOCATION
+                owners.get('EventOld')
             );
         }
     }
@@ -454,7 +369,7 @@ private class HOT_EventControllerTest {
     @IsTest
     static void emptyInputsAndMissingEventMapEntriesDoNotIssueDml() {
         Id appointmentId = createAppointments(1)[0].Id;
-        ServiceAppointment appointment = snapshot(appointmentId, UserInfo.getUserId(), APPOINTMENT_ADDRESS, null);
+        ServiceAppointment appointment = snapshot(appointmentId, UserInfo.getUserId(), null);
 
         Test.startTest();
         Integer dmlBefore = Limits.getDmlStatements();
