@@ -19,7 +19,7 @@ public without sharing class HOT_EventController {
         //hent eksisterende events først
         Map<Id, Event> existingEvents = new Map<Id, Event>();
         for (Event ev : [
-            SELECT Id, WhatId, OwnerId, Location, StartDateTime, EndDateTime, Subject
+            SELECT Id, WhatId, OwnerId
             FROM Event
             WHERE WhatId IN :saIds
         ]) {
@@ -29,8 +29,8 @@ public without sharing class HOT_EventController {
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             ServiceAppointment oldServiceAppointment = (ServiceAppointment) triggerOldMap.get(serviceAppointment.Id);
             Boolean eventExists = existingEvents.containsKey(serviceAppointment.Id);
-            
-            // Når tolk er endret, oppdater eventet 
+
+            // Når tolk er endret, oppdater eventet
 
             Boolean canUpdateEvent =
                 serviceAppointment.HOT_AssignedResourceId__c != null &&
@@ -40,20 +40,17 @@ public without sharing class HOT_EventController {
 
             Boolean assignedResourceChanged =
                 oldServiceAppointment.HOT_AssignedResourceId__c != null &&
-                serviceAppointment.HOT_AssignedResourceId__c !=
-                    oldServiceAppointment.HOT_AssignedResourceId__c;
+                serviceAppointment.HOT_AssignedResourceId__c != oldServiceAppointment.HOT_AssignedResourceId__c;
 
             Boolean upcomingAddressChanged =
-                serviceAppointment.HOT_AddressFormated__c !=
-                    oldServiceAppointment.HOT_AddressFormated__c &&
+                serviceAppointment.HOT_AddressFormated__c != oldServiceAppointment.HOT_AddressFormated__c &&
                 serviceAppointment.SchedStartTime >= Date.today();
 
             if (canUpdateEvent && (assignedResourceChanged || upcomingAddressChanged)) {
                 saToUpdateMap.put(serviceAppointment.Id, serviceAppointment);
-            } 
+            }
         }
 
-        
         if (!saToUpdateMap.isEmpty()) {
             updateExistingEvents(existingEvents, saToUpdateMap);
         }
@@ -68,8 +65,6 @@ public without sharing class HOT_EventController {
                 continue;
 
             ServiceAppointment sa = updatedSA.get(saId);
-
-            ev.Location = sa.HOT_AddressFormated__c;
             ev.OwnerId = sa.HOT_AssignedResourceId__c;
 
             eventsToUpdate.add(ev);
