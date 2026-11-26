@@ -323,7 +323,6 @@ private class HOT_SPAssignOrReserveSAServiceTest {
 
         System.Test.startTest();
         delete assignment;
-        System.Test.stopTest();
 
         ServiceAppointment actual = [
             SELECT
@@ -348,6 +347,7 @@ private class HOT_SPAssignOrReserveSAServiceTest {
         Assert.isNull(actual.HOT_ServiceResource__c);
         Assert.isNull(actual.HOT_AssignedResourceId__c);
         Assert.areEqual(0, [SELECT COUNT() FROM AssignedResource WHERE ServiceAppointmentId = :appointment.Id]);
+        System.Test.stopTest();
     }
 
     private static void assertServiceProviderAssignment(ServiceAppointment appointment, String targetStatus) {
