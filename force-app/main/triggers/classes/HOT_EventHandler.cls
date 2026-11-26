@@ -68,6 +68,9 @@ public without sharing class HOT_EventHandler extends MyTriggers {
             if (newEvent) {
                 event.HOT_IsCreatedFromSA__c = true;
             }
+            if (event.showAs == 'Busy') {
+                event.Type = 'Outlook Absence';
+            }
         }
     }
 }
