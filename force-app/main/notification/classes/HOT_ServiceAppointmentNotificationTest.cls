@@ -61,6 +61,135 @@ private class HOT_ServiceAppointmentNotificationTest {
     }
 
     @IsTest
+    private static void resourceCanceledNotifiesTLDispatcherTest() {
+        verifyNotificationRecipients(true, false, false);
+    }
+
+    @IsTest
+    private static void resourceCanceledNotifiesProviderGroupTest() {
+        verifyNotificationRecipients(true, true, false);
+    }
+
+    @IsTest
+    private static void canceledByUserNotifiesTLDispatcherTest() {
+        verifyNotificationRecipients(false, false, false);
+    }
+
+    @IsTest
+    private static void canceledByUserNotifiesProviderGroupTest() {
+        verifyNotificationRecipients(false, true, false);
+    }
+
+    @IsTest
+    private static void resourceCanceledDispatcherCreatesNoRecordsTest() {
+        verifyNotificationRecipients(true, false, true);
+    }
+
+    @IsTest
+    private static void canceledByUserDispatcherCreatesNoRecordsTest() {
+        verifyNotificationRecipients(false, false, true);
+    }
+
+    private static void verifyNotificationRecipients(
+        Boolean resourceCanceled,
+        Boolean useGroup,
+        Boolean isEmployedInterpreter
+    ) {
+        List<ServiceResource> resources = [
+            SELECT Id, Name, RelatedRecordId
+            FROM ServiceResource
+            WHERE RelatedRecordId != NULL
+            ORDER BY Name
+        ];
+        Set<Id> expectedRecipients = new Set<Id>{ resources[0].RelatedRecordId };
+        if (useGroup) {
+            expectedRecipients.add(resources[1].RelatedRecordId);
+            System.runAs(new User(Id = UserInfo.getUserId())) {
+                Group providerGroup = [
+                    SELECT Id
+                    FROM Group
+                    WHERE DeveloperName = 'HOT_Tolk_Tjenesteleverandor' AND Type = 'Regular'
+                ];
+                delete [SELECT Id FROM GroupMember WHERE GroupId = :providerGroup.Id];
+                insert new List<GroupMember>{
+                    new GroupMember(GroupId = providerGroup.Id, UserOrGroupId = resources[0].RelatedRecordId),
+                    new GroupMember(GroupId = providerGroup.Id, UserOrGroupId = resources[1].RelatedRecordId)
+                };
+            }
+        }
+        ServiceAppointment appointment = [
+            SELECT
+                Id,
+                OwnerId,
+                AppointmentNumber,
+                Subject,
+                EarliestStartTime,
+                Status,
+                HOT_WorkOrderLineItem__c,
+                HOT_IsEmployedInterpreter__c,
+                HOT_ServiceResource__c,
+                HOT_CanceledByInterpreter__c,
+                HOT_TLDispatcher__c
+            FROM ServiceAppointment
+            WHERE Subject = 'subject'
+            LIMIT 1
+        ];
+        appointment.HOT_IsEmployedInterpreter__c = isEmployedInterpreter;
+        appointment.HOT_ServiceResource__c = resources[0].Id;
+        ServiceAppointment oldAppointment = appointment.clone(true, false, false, false);
+        oldAppointment.HOT_ServiceResource__c = resources[0].Id;
+        oldAppointment.HOT_CanceledByInterpreter__c = false;
+        oldAppointment.Status = 'Dispatched';
+        appointment.HOT_TLDispatcher__c = useGroup ? null : resources[0].RelatedRecordId;
+        appointment.HOT_CanceledByInterpreter__c = resourceCanceled;
+        appointment.Status = resourceCanceled ? 'Dispatched' : 'Canceled';
+        Integer notificationCountBefore = [SELECT COUNT() FROM HOT_Notification__c];
+
+        Test.startTest();
+        HOT_ServiceAppointmentNotification.dispatcherServiceAppointmentChanged(
+            new List<ServiceAppointment>{ appointment },
+            new Map<Id, ServiceAppointment>{ appointment.Id => oldAppointment }
+        );
+        Test.stopTest();
+
+        if (isEmployedInterpreter) {
+            System.assertEquals(
+                notificationCountBefore,
+                [SELECT COUNT() FROM HOT_Notification__c],
+                'Dispatcher notifications must not create HOT_Notification__c records'
+            );
+            return;
+        }
+
+        List<HOT_Notification__c> notifications = [
+            SELECT Tjenesteleverandor__c, HOT_Subject__c, HOT_NotificationText__c, HOT_RelatedObjectType__c
+            FROM HOT_Notification__c
+            WHERE HOT_RelatedObject__c = :appointment.Id AND Tjenesteleverandor__c != NULL
+        ];
+        System.assertEquals(expectedRecipients.size(), notifications.size());
+        Set<Id> actualRecipients = new Set<Id>();
+        for (HOT_Notification__c notification : notifications) {
+            actualRecipients.add(notification.Tjenesteleverandor__c);
+            System.assertEquals('serviceAppointment', notification.HOT_RelatedObjectType__c);
+            System.assertEquals(
+                resourceCanceled
+                    ? 'Tolk tar seg av: \n' + appointment.AppointmentNumber
+                    : appointment.AppointmentNumber +
+                      ' - ' +
+                      appointment.EarliestStartTime?.format('d.M.yyyy') +
+                      ' -  Avlyst',
+                notification.HOT_Subject__c
+            );
+            System.assert(
+                notification.HOT_NotificationText__c.contains(
+                    resourceCanceled ? resources[0].Name + ' meldte seg av' : 'er avlyst.'
+                )
+            );
+        }
+        System.assertEquals(expectedRecipients, actualRecipients);
+    }
+
+    @IsTest
     private static void notifyResourceAndDispatcherTest() {
         List<ServiceResource> testResources = [
             SELECT Id, HOT_IsEmployedInterpreter__c
@@ -765,8 +894,8 @@ private class HOT_ServiceAppointmentNotificationTest {
         Test.stopTest();
         System.assertEquals(
             '{type: "comm__namedPage",attributes: {pageName: "mine-oppdrag"}, state: {list: "my", id: "' +
-            request.Id +
-            '"}}',
+                request.Id +
+                '"}}',
             result
         );
     }
