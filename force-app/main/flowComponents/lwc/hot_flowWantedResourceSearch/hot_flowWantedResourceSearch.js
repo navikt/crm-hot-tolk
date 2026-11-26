@@ -12,6 +12,7 @@ export default class Hot_flowWantedResourceSearch extends LightningElement {
     @api searchServiceProviderDispatcher = false;
     @api value = '';
     @api recordId;
+    @api excludedServiceResourceId;
 
     searchText = '';
     serviceResources = [];
@@ -97,7 +98,11 @@ export default class Hot_flowWantedResourceSearch extends LightningElement {
 
         const normalizedQuery = query.toLocaleLowerCase('nb-NO');
         return this.serviceResources
-            .filter((resource) => resource.Name?.toLocaleLowerCase('nb-NO').includes(normalizedQuery))
+            .filter(
+                (resource) =>
+                    resource.Id !== this.excludedServiceResourceId &&
+                    resource.Name?.toLocaleLowerCase('nb-NO').includes(normalizedQuery)
+            )
             .sort((left, right) => left.Name.localeCompare(right.Name, 'nb-NO', { sensitivity: 'base' }))
             .slice(0, 5);
     }

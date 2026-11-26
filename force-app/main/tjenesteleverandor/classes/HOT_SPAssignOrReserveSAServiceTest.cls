@@ -2,6 +2,8 @@
 private class HOT_SPAssignOrReserveSAServiceTest {
     @TestSetup
     static void setup() {
+        configureFslStatusTransitions();
+
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('SPAssignOrReserve', workType);
@@ -32,10 +34,14 @@ private class HOT_SPAssignOrReserveSAServiceTest {
         secondResource.HOT_IsEmployedInterpreter__c = false;
         secondResource.HOT_ServiceTerritory__c = serviceTerritory.Id;
         insert new List<ServiceResource>{ firstResource, secondResource };
-        insert new List<ServiceTerritoryMember>{
+        List<ServiceTerritoryMember> territoryMembers = new List<ServiceTerritoryMember>{
             HOT_TestDataFactory.createServiceTerritoryMember(firstResource, serviceTerritory),
             HOT_TestDataFactory.createServiceTerritoryMember(secondResource, serviceTerritory)
         };
+        for (ServiceTerritoryMember member : territoryMembers) {
+            member.EffectiveStartDate = Datetime.now().addDays(-1);
+        }
+        insert territoryMembers;
 
         ServiceAppointment appointment = getServiceAppointment();
         update new ServiceAppointment(
@@ -48,6 +54,126 @@ private class HOT_SPAssignOrReserveSAServiceTest {
             HOT_TestDataFactory.createInterestedResource(appointment.Id, firstResource.Id),
             HOT_TestDataFactory.createInterestedResource(appointment.Id, secondResource.Id)
         };
+        createReleasedToFreelanceServiceAppointment();
+    }
+
+    private static void configureFslStatusTransitions() {
+        Type fslTestStubType = Type.forName('FSL_TestStub');
+        if (fslTestStubType == null) {
+            return;
+        }
+
+        Callable fslTestStub = (Callable) fslTestStubType.newInstance();
+        Map<String, Set<String>> targetStatusesBySourceStatus = new Map<String, Set<String>>{
+            'None' => new Set<String>{ 'Scheduled', 'Dispatched', 'Released to Freelance', 'Cannot Complete' },
+            'Scheduled' => new Set<String>{ 'Dispatched', 'None' },
+            'Dispatched' => new Set<String>{ 'None' },
+            'Released to Freelance' => new Set<String>{ 'None', 'Scheduled', 'Dispatched' },
+            'Cannot Complete' => new Set<String>{ 'None' }
+        };
+
+        for (String sourceStatus : targetStatusesBySourceStatus.keySet()) {
+            for (String targetStatus : targetStatusesBySourceStatus.get(sourceStatus)) {
+                fslTestStub.call(
+                    'addStatusTransition',
+                    new Map<String, Object>{ 'fromStatus' => sourceStatus, 'toStatus' => targetStatus }
+                );
+            }
+        }
+    }
+
+    @IsTest
+    static void returnsNoResultsForNullOrEmptyRequests() {
+        System.Test.startTest();
+        List<HOT_SPAssignOrReserveSAService.Result> nullResults = HOT_SPAssignOrReserveSAService.assignOrReserve(null);
+        List<HOT_SPAssignOrReserveSAService.Result> emptyResults = HOT_SPAssignOrReserveSAService.assignOrReserve(
+            new List<HOT_SPAssignOrReserveSAService.Input>()
+        );
+        System.Test.stopTest();
+
+        Assert.isTrue(nullResults.isEmpty(), 'A null request list must produce no results');
+        Assert.isTrue(emptyResults.isEmpty(), 'An empty request list must produce no results');
+    }
+
+    @IsTest
+    static void rejectsNullRequest() {
+        System.Test.startTest();
+        List<HOT_SPAssignOrReserveSAService.Result> results = HOT_SPAssignOrReserveSAService.assignOrReserve(
+            new List<HOT_SPAssignOrReserveSAService.Input>{ null }
+        );
+        System.Test.stopTest();
+
+        Assert.areEqual(1, results.size(), 'Each input must receive a result, including a null input');
+        Assert.isFalse(results[0].success);
+        Assert.areEqual('Ingen input ble sendt til handlingen.', results[0].message);
+        Assert.isNull(results[0].serviceAppointmentId);
+    }
+
+    @IsTest
+    static void rejectsMissingFieldsAndUnsupportedTargetStatus() {
+        ServiceAppointment appointment = getServiceAppointment();
+        ServiceResource resource = getServiceResources()[0];
+        List<HOT_SPAssignOrReserveSAService.Input> inputs = new List<HOT_SPAssignOrReserveSAService.Input>{
+            createRequest(null, resource.Id, 'Scheduled'),
+            createRequest(appointment.Id, null, 'Scheduled'),
+            createRequest(appointment.Id, resource.Id, null),
+            createRequest(appointment.Id, resource.Id, 'None')
+        };
+        List<String> expectedMessages = new List<String>{
+            'Oppdrag mangler.',
+            'Du må velge en tolk.',
+            'Du må velge om oppdraget skal reserveres eller tildeles.',
+            'Du må velge om oppdraget skal reserveres eller tildeles.'
+        };
+
+        System.Test.startTest();
+        List<HOT_SPAssignOrReserveSAService.Result> results = HOT_SPAssignOrReserveSAService.assignOrReserve(inputs);
+        System.Test.stopTest();
+
+        Assert.areEqual(inputs.size(), results.size());
+        for (Integer i = 0; i < results.size(); i++) {
+            Assert.isFalse(results[i].success, 'Invalid input must fail at index ' + i);
+            Assert.areEqual(expectedMessages[i], results[i].message);
+            Assert.areEqual(inputs[i].serviceAppointmentId, results[i].serviceAppointmentId);
+        }
+        Assert.areEqual('None', [SELECT Status FROM ServiceAppointment WHERE Id = :appointment.Id].Status);
+        Assert.areEqual(0, [SELECT COUNT() FROM AssignedResource WHERE ServiceAppointmentId = :appointment.Id]);
+    }
+
+    @IsTest
+    static void rejectsIncompleteInterpreterChangeIdentifiers() {
+        ServiceAppointment appointment = getServiceAppointment();
+        List<ServiceResource> resources = getServiceResources();
+        AssignedResource original = assignOriginalInterpreter(appointment.Id, resources[0].Id, 'Scheduled');
+        HOT_SPAssignOrReserveSAService.Input missingAssignment = createChangeRequest(
+            original,
+            resources[1].Id,
+            'Scheduled'
+        );
+        missingAssignment.assignedResourceId = null;
+        HOT_SPAssignOrReserveSAService.Input missingOriginalInterpreter = createChangeRequest(
+            original,
+            resources[1].Id,
+            'Scheduled'
+        );
+        missingOriginalInterpreter.originalServiceResourceId = null;
+
+        System.Test.startTest();
+        List<HOT_SPAssignOrReserveSAService.Result> results = HOT_SPAssignOrReserveSAService.assignOrReserve(
+            new List<HOT_SPAssignOrReserveSAService.Input>{ missingAssignment, missingOriginalInterpreter }
+        );
+        System.Test.stopTest();
+
+        Assert.areEqual(2, results.size());
+        for (HOT_SPAssignOrReserveSAService.Result result : results) {
+            Assert.isFalse(result.success);
+            Assert.areEqual(
+                'Kunne ikke identifisere tolken som skal byttes ut. Last inn oppdraget på nytt og prøv igjen.',
+                result.message
+            );
+            Assert.areEqual(appointment.Id, result.serviceAppointmentId);
+        }
+        assertOriginalAssignment(original, 'Scheduled');
     }
 
     @IsTest
@@ -70,18 +196,176 @@ private class HOT_SPAssignOrReserveSAServiceTest {
         assertServiceProviderAssignment(createReleasedToFreelanceServiceAppointment(), 'Dispatched');
     }
 
+    @IsTest
+    static void serviceProviderReservesFutureUncoveredAppointment() {
+        ServiceAppointment appointment = getServiceAppointment();
+        update new ServiceAppointment(Id = appointment.Id, Status = 'Cannot Complete');
+        assertServiceProviderAssignment(appointment, 'Scheduled');
+    }
+
+    @IsTest
+    static void serviceProviderAssignsFutureUncoveredAppointment() {
+        ServiceAppointment appointment = getServiceAppointment();
+        update new ServiceAppointment(Id = appointment.Id, Status = 'Cannot Complete');
+        assertServiceProviderAssignment(appointment, 'Dispatched');
+    }
+
+    @IsTest
+    static void serviceProviderRejectsPastScheduledEndTime() {
+        assertEndTimeBlocksNewAssignment(Datetime.now().addSeconds(-1));
+    }
+
+    @IsTest
+    static void serviceProviderRejectsScheduledEndTimeAtCurrentTime() {
+        assertEndTimeBlocksNewAssignment(Datetime.now());
+    }
+
+    private static void assertEndTimeBlocksNewAssignment(Datetime endTime) {
+        ServiceAppointment appointment = getServiceAppointment();
+        ServiceResource resource = getServiceResources()[0];
+        update new ServiceAppointment(
+            Id = appointment.Id,
+            SchedStartTime = endTime.addHours(-2),
+            SchedEndTime = endTime,
+            HOT_TjenesteleverandorStatus__c = 'Accepted'
+        );
+        Assert.isTrue(
+            [SELECT DueDate FROM ServiceAppointment WHERE Id = :appointment.Id].DueDate > Datetime.now(),
+            'The scheduled end time, not the ordered end time, must control eligibility'
+        );
+
+        System.Test.startTest();
+        List<HOT_SPAssignOrReserveSAService.Result> results = HOT_SPAssignOrReserveSAService.assignOrReserve(
+            new List<HOT_SPAssignOrReserveSAService.Input>{
+                createRequest(appointment.Id, resource.Id, 'Scheduled'),
+                createRequest(appointment.Id, resource.Id, 'Dispatched')
+            }
+        );
+        System.Test.stopTest();
+
+        Assert.areEqual(2, results.size());
+        for (HOT_SPAssignOrReserveSAService.Result result : results) {
+            Assert.isFalse(result.success);
+            Assert.areEqual(
+                'Oppdragets sluttid er passert. Du kan ikke reservere eller tildele en tolk.',
+                result.message
+            );
+        }
+        Assert.areEqual('None', [SELECT Status FROM ServiceAppointment WHERE Id = :appointment.Id].Status);
+        Assert.areEqual(0, [SELECT COUNT() FROM AssignedResource WHERE ServiceAppointmentId = :appointment.Id]);
+    }
+
+    @IsTest
+    static void serviceProviderRejectsDispatchOfEndedReservation() {
+        ServiceAppointment appointment = getServiceAppointment();
+        ServiceResource resource = getServiceResources()[0];
+        AssignedResource reservation = new AssignedResource(
+            ServiceAppointmentId = appointment.Id,
+            ServiceResourceId = resource.Id
+        );
+        insert reservation;
+        update new ServiceAppointment(
+            Id = appointment.Id,
+            Status = 'Scheduled',
+            SchedStartTime = Datetime.now().addHours(-2),
+            SchedEndTime = Datetime.now().addSeconds(-1),
+            HOT_TjenesteleverandorStatus__c = 'Accepted'
+        );
+
+        System.Test.startTest();
+        HOT_SPAssignOrReserveSAService.Result result = HOT_SPAssignOrReserveSAService.assignOrReserve(
+            new List<HOT_SPAssignOrReserveSAService.Input>{ createRequest(appointment.Id, resource.Id, 'Dispatched') }
+        )[0];
+        System.Test.stopTest();
+
+        Assert.isFalse(result.success);
+        Assert.areEqual('Oppdragets sluttid er passert. Du kan ikke reservere eller tildele en tolk.', result.message);
+        Assert.areEqual('Scheduled', [SELECT Status FROM ServiceAppointment WHERE Id = :appointment.Id].Status);
+        AssignedResource actual = [
+            SELECT Id, ServiceResourceId
+            FROM AssignedResource
+            WHERE ServiceAppointmentId = :appointment.Id
+        ];
+        Assert.areEqual(reservation.Id, actual.Id);
+        Assert.areEqual(resource.Id, actual.ServiceResourceId);
+    }
+
+    @IsTest
+    static void removingReservedInterpreterPreservesProviderAcceptance() {
+        assertRemovingInterpreterPreservesProviderAcceptance('Scheduled');
+    }
+
+    @IsTest
+    static void removingAssignedInterpreterPreservesProviderAcceptance() {
+        assertRemovingInterpreterPreservesProviderAcceptance('Dispatched');
+    }
+
+    private static void assertRemovingInterpreterPreservesProviderAcceptance(String targetStatus) {
+        ServiceAppointment appointment = getServiceAppointment();
+        AssignedResource assignment = new AssignedResource(
+            ServiceAppointmentId = appointment.Id,
+            ServiceResourceId = getServiceResources()[0].Id
+        );
+        insert assignment;
+        update new ServiceAppointment(
+            Id = appointment.Id,
+            Status = targetStatus,
+            HOT_IsReleasedToTjenesteleverandor__c = true,
+            HOT_IsReleasedToFreelance__c = true,
+            HOT_TjenesteleverandorStatus__c = 'Accepted',
+            HOT_TjenesteleverandorTransferDate__c = System.now().addHours(-1)
+        );
+        ServiceAppointment beforeRemoval = [
+            SELECT HOT_TjenesteleverandorTransferDate__c, HOT_TjenesteleverandorAcceptDate__c
+            FROM ServiceAppointment
+            WHERE Id = :appointment.Id
+        ];
+
+        System.Test.startTest();
+        delete assignment;
+
+        ServiceAppointment actual = [
+            SELECT
+                HOT_TjenesteleverandorStatus__c,
+                HOT_IsReleasedToTjenesteleverandor__c,
+                HOT_TjenesteleverandorTransferDate__c,
+                HOT_TjenesteleverandorAcceptDate__c,
+                HOT_TjenesteleverandorDeadline__c,
+                HOT_ServiceResource__c,
+                HOT_AssignedResourceId__c
+            FROM ServiceAppointment
+            WHERE Id = :appointment.Id
+        ];
+        Assert.areEqual('Accepted', actual.HOT_TjenesteleverandorStatus__c);
+        Assert.isTrue(actual.HOT_IsReleasedToTjenesteleverandor__c);
+        Assert.areEqual(
+            beforeRemoval.HOT_TjenesteleverandorTransferDate__c,
+            actual.HOT_TjenesteleverandorTransferDate__c
+        );
+        Assert.areEqual(beforeRemoval.HOT_TjenesteleverandorAcceptDate__c, actual.HOT_TjenesteleverandorAcceptDate__c);
+        Assert.isNull(actual.HOT_TjenesteleverandorDeadline__c);
+        Assert.isNull(actual.HOT_ServiceResource__c);
+        Assert.isNull(actual.HOT_AssignedResourceId__c);
+        Assert.areEqual(0, [SELECT COUNT() FROM AssignedResource WHERE ServiceAppointmentId = :appointment.Id]);
+        System.Test.stopTest();
+    }
+
     private static void assertServiceProviderAssignment(ServiceAppointment appointment, String targetStatus) {
         update new ServiceAppointment(Id = appointment.Id, HOT_TjenesteleverandorStatus__c = 'Accepted');
         ServiceResource resource = getServiceResources()[0];
 
-        Test.startTest();
+        System.Test.startTest();
         HOT_SPAssignOrReserveSAService.Result result = HOT_SPAssignOrReserveSAService.assignOrReserve(
             new List<HOT_SPAssignOrReserveSAService.Input>{ createRequest(appointment.Id, resource.Id, targetStatus) }
         )[0];
-        Test.stopTest();
+        System.Test.stopTest();
 
         ServiceAppointment actual = [
-            SELECT Status, HOT_TjenesteleverandorStatus__c, HOT_ServiceResource__c, HOT_AssignedResourceId__c,
+            SELECT
+                Status,
+                HOT_TjenesteleverandorStatus__c,
+                HOT_ServiceResource__c,
+                HOT_AssignedResourceId__c,
                 HOT_IsReleasedToFreelance__c
             FROM ServiceAppointment
             WHERE Id = :appointment.Id
@@ -101,18 +385,20 @@ private class HOT_SPAssignOrReserveSAServiceTest {
         ServiceResource resource = getServiceResources()[0];
         update new ServiceAppointment(Id = appointment.Id, HOT_TjenesteleverandorStatus__c = 'Transferred');
 
-        Test.startTest();
-        for (String targetStatus : new List<String>{ 'Scheduled', 'Dispatched' }) {
-            HOT_SPAssignOrReserveSAService.Result result = HOT_SPAssignOrReserveSAService.assignOrReserve(
-                new List<HOT_SPAssignOrReserveSAService.Input>{
-                    createRequest(appointment.Id, resource.Id, targetStatus)
-                }
-            )[0];
-            Assert.isFalse(result.success);
-            Assert.areEqual('Oppdraget må være akseptert av tjenesteleverandør.', result.message);
-        }
-        Test.stopTest();
+        System.Test.startTest();
+        List<HOT_SPAssignOrReserveSAService.Result> results = HOT_SPAssignOrReserveSAService.assignOrReserve(
+            new List<HOT_SPAssignOrReserveSAService.Input>{
+                createRequest(appointment.Id, resource.Id, 'Scheduled'),
+                createRequest(appointment.Id, resource.Id, 'Dispatched')
+            }
+        );
+        System.Test.stopTest();
 
+        Assert.areEqual(2, results.size());
+        for (HOT_SPAssignOrReserveSAService.Result result : results) {
+            Assert.isFalse(result.success);
+            Assert.areEqual('Oppdraget må være bekreftet av tjenesteleverandør.', result.message);
+        }
         Assert.areEqual(0, [SELECT COUNT() FROM AssignedResource WHERE ServiceAppointmentId = :appointment.Id]);
     }
 
@@ -125,18 +411,20 @@ private class HOT_SPAssignOrReserveSAServiceTest {
         resources[1].IsActive = false;
         update resources;
 
-        Test.startTest();
-        for (ServiceResource resource : resources) {
-            HOT_SPAssignOrReserveSAService.Result result = HOT_SPAssignOrReserveSAService.assignOrReserve(
-                new List<HOT_SPAssignOrReserveSAService.Input>{
-                    createRequest(appointment.Id, resource.Id, 'Dispatched')
-                }
-            )[0];
+        System.Test.startTest();
+        List<HOT_SPAssignOrReserveSAService.Result> results = HOT_SPAssignOrReserveSAService.assignOrReserve(
+            new List<HOT_SPAssignOrReserveSAService.Input>{
+                createRequest(appointment.Id, resources[0].Id, 'Dispatched'),
+                createRequest(appointment.Id, resources[1].Id, 'Dispatched')
+            }
+        );
+        System.Test.stopTest();
+
+        Assert.areEqual(2, results.size());
+        for (HOT_SPAssignOrReserveSAService.Result result : results) {
             Assert.isFalse(result.success);
             Assert.areEqual('Du må velge en aktiv tolk.', result.message);
         }
-        Test.stopTest();
-
         Assert.areEqual(0, [SELECT COUNT() FROM AssignedResource WHERE ServiceAppointmentId = :appointment.Id]);
     }
 
@@ -150,11 +438,11 @@ private class HOT_SPAssignOrReserveSAServiceTest {
             'Scheduled'
         );
 
-        Test.startTest();
+        System.Test.startTest();
         List<HOT_SPAssignOrReserveSAService.Result> results = HOT_SPAssignOrReserveSAService.assignOrReserve(
             new List<HOT_SPAssignOrReserveSAService.Input>{ input, input }
         );
-        Test.stopTest();
+        System.Test.stopTest();
 
         Assert.isTrue(results[0].success, results[0].message);
         Assert.isFalse(results[1].success, 'The same appointment cannot receive a second interpreter');
@@ -173,14 +461,18 @@ private class HOT_SPAssignOrReserveSAServiceTest {
             WHERE ServiceAppointmentId = :appointment.Id
         ];
 
-        Test.startTest();
+        System.Test.startTest();
         HOT_SPAssignOrReserveSAService.Result result = HOT_SPAssignOrReserveSAService.assignOrReserve(
             new List<HOT_SPAssignOrReserveSAService.Input>{ createRequest(appointment.Id, resource.Id, 'Dispatched') }
         )[0];
-        Test.stopTest();
+        System.Test.stopTest();
 
         ServiceAppointment actual = [
-            SELECT Status, HOT_TjenesteleverandorStatus__c, HOT_ServiceResource__c, HOT_AssignedResourceId__c,
+            SELECT
+                Status,
+                HOT_TjenesteleverandorStatus__c,
+                HOT_ServiceResource__c,
+                HOT_AssignedResourceId__c,
                 HOT_IsReleasedToFreelance__c
             FROM ServiceAppointment
             WHERE Id = :appointment.Id
@@ -206,13 +498,13 @@ private class HOT_SPAssignOrReserveSAServiceTest {
         List<ServiceResource> resources = getServiceResources();
         reserveForServiceProvider(appointment.Id, resources[0].Id);
 
-        Test.startTest();
+        System.Test.startTest();
         HOT_SPAssignOrReserveSAService.Result result = HOT_SPAssignOrReserveSAService.assignOrReserve(
             new List<HOT_SPAssignOrReserveSAService.Input>{
                 createRequest(appointment.Id, resources[1].Id, 'Dispatched')
             }
         )[0];
-        Test.stopTest();
+        System.Test.stopTest();
 
         Assert.isFalse(result.success);
         Assert.areEqual(
@@ -230,19 +522,18 @@ private class HOT_SPAssignOrReserveSAServiceTest {
     @IsTest
     static void serviceProviderRejectsDispatchWithoutReservation() {
         ServiceAppointment appointment = getServiceAppointment();
+        ServiceResource resource = getServiceResources()[0];
         update new ServiceAppointment(
             Id = appointment.Id,
             Status = 'Scheduled',
             HOT_TjenesteleverandorStatus__c = 'Accepted'
         );
 
-        Test.startTest();
+        System.Test.startTest();
         HOT_SPAssignOrReserveSAService.Result result = HOT_SPAssignOrReserveSAService.assignOrReserve(
-            new List<HOT_SPAssignOrReserveSAService.Input>{
-                createRequest(appointment.Id, getServiceResources()[0].Id, 'Dispatched')
-            }
+            new List<HOT_SPAssignOrReserveSAService.Input>{ createRequest(appointment.Id, resource.Id, 'Dispatched') }
         )[0];
-        Test.stopTest();
+        System.Test.stopTest();
 
         Assert.isFalse(result.success);
         Assert.areEqual('Scheduled', [SELECT Status FROM ServiceAppointment WHERE Id = :appointment.Id].Status);
@@ -255,6 +546,270 @@ private class HOT_SPAssignOrReserveSAServiceTest {
             new List<HOT_SPAssignOrReserveSAService.Input>{ createRequest(appointmentId, resourceId, 'Scheduled') }
         )[0];
         Assert.isTrue(result.success, result.message);
+    }
+
+    @IsTest
+    static void changesReservedInterpreterAndKeepsReservation() {
+        assertInterpreterChange('Scheduled', 'Scheduled');
+    }
+
+    @IsTest
+    static void changesReservedInterpreterAndDispatches() {
+        assertInterpreterChange('Scheduled', 'Dispatched');
+    }
+
+    @IsTest
+    static void changesDispatchedInterpreterAndReserves() {
+        assertInterpreterChange('Dispatched', 'Scheduled');
+    }
+
+    @IsTest
+    static void changesDispatchedInterpreterAndKeepsDispatch() {
+        assertInterpreterChange('Dispatched', 'Dispatched');
+    }
+
+    private static void assertInterpreterChange(String sourceStatus, String targetStatus) {
+        ServiceAppointment appointment = getServiceAppointment();
+        List<ServiceResource> resources = getServiceResources();
+        ServiceAppointment beforeChange = [
+            SELECT SchedStartTime, SchedEndTime
+            FROM ServiceAppointment
+            WHERE Id = :appointment.Id
+        ];
+        update new ServiceAppointment(
+            Id = appointment.Id,
+            SchedStartTime = beforeChange.SchedStartTime.addMinutes(15),
+            SchedEndTime = beforeChange.SchedEndTime.addMinutes(15)
+        );
+        AssignedResource original = assignOriginalInterpreter(appointment.Id, resources[0].Id, sourceStatus);
+
+        System.Test.startTest();
+        HOT_SPAssignOrReserveSAService.Result result = HOT_SPAssignOrReserveSAService.assignOrReserve(
+            new List<HOT_SPAssignOrReserveSAService.Input>{
+                createChangeRequest(original, resources[1].Id, targetStatus)
+            }
+        )[0];
+
+        Assert.isTrue(result.success, result.message);
+        ServiceAppointment actual = [
+            SELECT
+                Status,
+                HOT_TjenesteleverandorStatus__c,
+                HOT_ServiceResource__c,
+                HOT_AssignedResourceId__c,
+                HOT_IsReleasedToFreelance__c,
+                HOT_IsEmployedInterpreter__c,
+                SchedStartTime,
+                SchedEndTime
+            FROM ServiceAppointment
+            WHERE Id = :appointment.Id
+        ];
+        Assert.areEqual(targetStatus, actual.Status);
+        Assert.areEqual('Accepted', actual.HOT_TjenesteleverandorStatus__c);
+        Assert.areEqual(resources[1].Id, actual.HOT_ServiceResource__c);
+        Assert.areEqual(resources[1].RelatedRecordId, actual.HOT_AssignedResourceId__c);
+        Assert.isTrue(actual.HOT_IsReleasedToFreelance__c);
+        Assert.isFalse(actual.HOT_IsEmployedInterpreter__c);
+        Assert.areEqual(beforeChange.SchedStartTime.addMinutes(15), actual.SchedStartTime);
+        Assert.areEqual(beforeChange.SchedEndTime.addMinutes(15), actual.SchedEndTime);
+        List<AssignedResource> assignments = [
+            SELECT Id, ServiceResourceId
+            FROM AssignedResource
+            WHERE ServiceAppointmentId = :appointment.Id
+        ];
+        Assert.areEqual(1, assignments.size());
+        Assert.areEqual(resources[1].Id, assignments[0].ServiceResourceId);
+        Assert.areNotEqual(original.Id, assignments[0].Id);
+        Map<Id, String> interestedStatuses = new Map<Id, String>();
+        for (HOT_InterestedResource__c resource : [
+            SELECT ServiceResource__c, Status__c
+            FROM HOT_InterestedResource__c
+            WHERE ServiceAppointment__c = :appointment.Id
+        ]) {
+            interestedStatuses.put(resource.ServiceResource__c, resource.Status__c);
+        }
+        Assert.areEqual('Withdrawn', interestedStatuses.get(resources[0].Id));
+        if (sourceStatus == 'Dispatched' && targetStatus == 'Scheduled') {
+            Assert.isTrue(
+                new Set<String>{ 'Reserved', 'Assigned' }.contains(interestedStatuses.get(resources[1].Id)),
+                'The replacement must have an active interest status regardless of managed Field Service status resets'
+            );
+        } else {
+            Assert.areEqual(
+                targetStatus == 'Dispatched' ? 'Assigned' : 'Reserved',
+                interestedStatuses.get(resources[1].Id)
+            );
+        }
+        System.Test.stopTest();
+    }
+
+    @IsTest
+    static void rejectsSameInterpreterAndStaleAssignment() {
+        ServiceAppointment appointment = getServiceAppointment();
+        List<ServiceResource> resources = getServiceResources();
+        AssignedResource original = assignOriginalInterpreter(appointment.Id, resources[0].Id, 'Scheduled');
+        HOT_SPAssignOrReserveSAService.Input sameInterpreter = createChangeRequest(
+            original,
+            resources[0].Id,
+            'Scheduled'
+        );
+        HOT_SPAssignOrReserveSAService.Input staleInterpreter = createChangeRequest(
+            original,
+            resources[1].Id,
+            'Dispatched'
+        );
+        staleInterpreter.originalServiceResourceId = resources[1].Id;
+
+        System.Test.startTest();
+        List<HOT_SPAssignOrReserveSAService.Result> results = HOT_SPAssignOrReserveSAService.assignOrReserve(
+            new List<HOT_SPAssignOrReserveSAService.Input>{ sameInterpreter, staleInterpreter }
+        );
+        System.Test.stopTest();
+
+        Assert.isFalse(results[0].success);
+        Assert.areEqual('Du må velge en annen tolk.', results[0].message);
+        Assert.isFalse(results[1].success);
+        Assert.areEqual('Tildelingen er endret. Last inn oppdraget på nytt.', results[1].message);
+        assertOriginalAssignment(original, 'Scheduled');
+    }
+
+    @IsTest
+    static void rejectsInterpreterChangeWhenProviderHasNotAccepted() {
+        ServiceAppointment appointment = getServiceAppointment();
+        List<ServiceResource> resources = getServiceResources();
+        AssignedResource original = assignOriginalInterpreter(appointment.Id, resources[0].Id, 'Scheduled');
+        update new ServiceAppointment(Id = appointment.Id, HOT_TjenesteleverandorStatus__c = 'Transferred');
+
+        System.Test.startTest();
+        HOT_SPAssignOrReserveSAService.Result result = HOT_SPAssignOrReserveSAService.assignOrReserve(
+            new List<HOT_SPAssignOrReserveSAService.Input>{
+                createChangeRequest(original, resources[1].Id, 'Dispatched')
+            }
+        )[0];
+        System.Test.stopTest();
+
+        Assert.isFalse(result.success);
+        Assert.areEqual('Oppdraget må være bekreftet av tjenesteleverandør.', result.message);
+        assertOriginalAssignment(original, 'Scheduled');
+    }
+
+    @IsTest
+    static void rejectsInterpreterChangeToInactiveResource() {
+        ServiceAppointment appointment = getServiceAppointment();
+        List<ServiceResource> resources = getServiceResources();
+        AssignedResource original = assignOriginalInterpreter(appointment.Id, resources[0].Id, 'Dispatched');
+        update new ServiceResource(Id = resources[1].Id, IsActive = false);
+
+        System.Test.startTest();
+        HOT_SPAssignOrReserveSAService.Result result = HOT_SPAssignOrReserveSAService.assignOrReserve(
+            new List<HOT_SPAssignOrReserveSAService.Input>{
+                createChangeRequest(original, resources[1].Id, 'Scheduled')
+            }
+        )[0];
+
+        Assert.isFalse(result.success);
+        Assert.areEqual('Du må velge en aktiv tolk.', result.message);
+        assertOriginalAssignment(original, 'Dispatched');
+        System.Test.stopTest();
+    }
+
+    @IsTest
+    static void rollsBackInterpreterChangeWhenNewInterpreterHasOverlap() {
+        ServiceAppointment appointment = getServiceAppointment();
+        List<ServiceResource> resources = getServiceResources();
+        AssignedResource original = assignOriginalInterpreter(appointment.Id, resources[0].Id, 'Dispatched');
+        System.Test.startTest();
+        ServiceAppointment overlappingAppointment = [
+            SELECT Id
+            FROM ServiceAppointment
+            WHERE Subject = 'ReleasedSPAssignOrReserve'
+            LIMIT 1
+        ];
+        insert new AssignedResource(
+            ServiceAppointmentId = overlappingAppointment.Id,
+            ServiceResourceId = resources[1].Id
+        );
+
+        HOT_SPAssignOrReserveSAService.Result result = HOT_SPAssignOrReserveSAService.assignOrReserve(
+            new List<HOT_SPAssignOrReserveSAService.Input>{
+                createChangeRequest(original, resources[1].Id, 'Scheduled')
+            }
+        )[0];
+
+        Assert.isFalse(result.success, 'Overlap must reject the replacement after deletion of the old assignment');
+        assertOriginalAssignment(original, 'Dispatched');
+        ServiceAppointment actual = [
+            SELECT HOT_ServiceResource__c, HOT_TjenesteleverandorStatus__c
+            FROM ServiceAppointment
+            WHERE Id = :appointment.Id
+        ];
+        Assert.areEqual(resources[0].Id, actual.HOT_ServiceResource__c);
+        Assert.areEqual('Accepted', actual.HOT_TjenesteleverandorStatus__c);
+        System.Test.stopTest();
+    }
+
+    @IsTest
+    static void rejectsRepeatedInterpreterChangeInSameBatch() {
+        ServiceAppointment appointment = getServiceAppointment();
+        List<ServiceResource> resources = getServiceResources();
+        AssignedResource original = assignOriginalInterpreter(appointment.Id, resources[0].Id, 'Scheduled');
+        HOT_SPAssignOrReserveSAService.Input input = createChangeRequest(original, resources[1].Id, 'Scheduled');
+
+        System.Test.startTest();
+        List<HOT_SPAssignOrReserveSAService.Result> results = HOT_SPAssignOrReserveSAService.assignOrReserve(
+            new List<HOT_SPAssignOrReserveSAService.Input>{ input, input }
+        );
+        System.Test.stopTest();
+
+        Assert.isTrue(results[0].success, results[0].message);
+        Assert.isFalse(results[1].success);
+        Assert.areEqual('Tildelingen er endret. Last inn oppdraget på nytt.', results[1].message);
+        Assert.areEqual(1, [SELECT COUNT() FROM AssignedResource WHERE ServiceAppointmentId = :appointment.Id]);
+    }
+
+    private static AssignedResource assignOriginalInterpreter(Id appointmentId, Id resourceId, String status) {
+        AssignedResource original = new AssignedResource(
+            ServiceAppointmentId = appointmentId,
+            ServiceResourceId = resourceId
+        );
+        insert original;
+        update new ServiceAppointment(
+            Id = appointmentId,
+            Status = status,
+            HOT_IsReleasedToTjenesteleverandor__c = true,
+            HOT_IsReleasedToFreelance__c = true,
+            HOT_TjenesteleverandorStatus__c = 'Accepted'
+        );
+        return original;
+    }
+
+    private static HOT_SPAssignOrReserveSAService.Input createChangeRequest(
+        AssignedResource original,
+        Id newResourceId,
+        String targetStatus
+    ) {
+        HOT_SPAssignOrReserveSAService.Input input = createRequest(
+            original.ServiceAppointmentId,
+            newResourceId,
+            targetStatus
+        );
+        input.assignedResourceId = original.Id;
+        input.originalServiceResourceId = original.ServiceResourceId;
+        return input;
+    }
+
+    private static void assertOriginalAssignment(AssignedResource original, String expectedStatus) {
+        AssignedResource actual = [
+            SELECT Id, ServiceResourceId
+            FROM AssignedResource
+            WHERE ServiceAppointmentId = :original.ServiceAppointmentId
+        ];
+        Assert.areEqual(original.Id, actual.Id);
+        Assert.areEqual(original.ServiceResourceId, actual.ServiceResourceId);
+        Assert.areEqual(
+            expectedStatus,
+            [SELECT Status FROM ServiceAppointment WHERE Id = :original.ServiceAppointmentId].Status
+        );
     }
 
     private static HOT_SPAssignOrReserveSAService.Input createRequest(

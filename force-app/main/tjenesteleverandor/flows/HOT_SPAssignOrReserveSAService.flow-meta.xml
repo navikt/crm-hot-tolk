@@ -8,6 +8,7 @@
         <actionName>HOT_SPAssignOrReserveSAService</actionName>
         <actionType>apex</actionType>
         <connector>
+            <isGoTo>true</isGoTo>
             <targetReference>Was_Action_Successful</targetReference>
         </connector>
         <faultConnector>
@@ -139,7 +140,7 @@
         <defaultConnectorLabel>Not Available</defaultConnectorLabel>
         <rules>
             <name>Allowed</name>
-            <conditionLogic>(1 OR 2) AND 3 AND 4 AND 5 AND 6</conditionLogic>
+            <conditionLogic>(1 OR 2 OR 7) AND 3 AND 4 AND 5 AND 6</conditionLogic>
             <conditions>
                 <leftValueReference>Get_Service_Appointment.Status</leftValueReference>
                 <operator>EqualTo</operator>
@@ -182,10 +183,43 @@
                     <booleanValue>true</booleanValue>
                 </rightValue>
             </conditions>
+            <conditions>
+                <leftValueReference>Get_Service_Appointment.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Cannot Complete</stringValue>
+                </rightValue>
+            </conditions>
             <connector>
                 <targetReference>SelectInterpreterAndStatus</targetReference>
             </connector>
             <label>Allowed</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_Appointment_End_Time</name>
+        <label>Check Appointment End Time</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <isGoTo>true</isGoTo>
+            <targetReference>NotAvailableScreen</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>End Time Passed or Missing</defaultConnectorLabel>
+        <rules>
+            <name>Appointment_Has_Not_Ended</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Service_Appointment.SchedEndTime</leftValueReference>
+                <operator>GreaterThan</operator>
+                <rightValue>
+                    <elementReference>$Flow.CurrentDateTime</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_Existing_Assigned_Resource</targetReference>
+            </connector>
+            <label>Appointment Has Not Ended</label>
         </rules>
     </decisions>
     <decisions>
@@ -236,6 +270,15 @@
         </rules>
     </decisions>
     <environments>Default</environments>
+    <formulas>
+        <name>IsUncoveredAppointmentEnded</name>
+        <dataType>Boolean</dataType>
+        <expression>AND(
+    ISPICKVAL({!Get_Service_Appointment.Status}, &quot;Cannot Complete&quot;),
+    NOT(ISBLANK({!Get_Service_Appointment.SchedEndTime})),
+    {!Get_Service_Appointment.SchedEndTime} &lt;= {!$Flow.CurrentDateTime}
+)</expression>
+    </formulas>
     <interviewLabel>HOT_SPAssignOrReserveSAService {!$Flow.CurrentDateTime}</interviewLabel>
     <label>HOT_SPAssignOrReserveSAService</label>
     <processMetadataValues>
@@ -279,7 +322,7 @@
         <locationY>0</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Get_Existing_Assigned_Resource</targetReference>
+            <targetReference>Check_Appointment_End_Time</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -537,8 +580,8 @@
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <fields>
-            <name>NotAvailableText</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Oppdraget må være akseptert av tjenesteleverandør. Du kan reservere eller tildele en tolk når status er Åpen eller Frigitt til tolker og ingen tolk allerede er valgt.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Har oppdraget status Reservert og en reservert tolk, kan du tildele denne tolken.&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <name>UncoveredAppointmentEndedText</name>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Du kan ikke reservere eller tildele tolk etter oppdragets sluttid.&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>
@@ -548,6 +591,39 @@
                     <stringValue>12</stringValue>
                 </width>
             </styleProperties>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>IsUncoveredAppointmentEnded</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <booleanValue>true</booleanValue>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
+        </fields>
+        <fields>
+            <name>NotAvailableText</name>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Du kan reservere eller tildele en tolk frem til oppdragets sluttid. Du kan reservere eller tildele en tolk når status er Åpen, Udekket eller Frigitt til tolker og ingen tolk allerede er valgt.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Har oppdraget status Reservert og en reservert tolk, kan du tildele denne tolken.&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>IsUncoveredAppointmentEnded</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <booleanValue>false</booleanValue>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
         </fields>
         <fields>
             <name>NotAvailableFooter</name>
@@ -593,7 +669,7 @@
         </connector>
         <fields>
             <name>IntroText</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Velg en tjenesteressurs og om oppdraget skal settes til &lt;/span&gt;&lt;strong style=&quot;font-size: 16px;&quot;&gt;Reservert&lt;/strong&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt; eller &lt;/span&gt;&lt;strong style=&quot;font-size: 16px;&quot;&gt;Tildelt&lt;/strong&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Oppdraget må være akseptert av tjenesteleverandør og ha status Åpen eller Frigitt til tolker.&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Velg en tjenesteressurs og om oppdraget skal settes til &lt;/span&gt;&lt;strong style=&quot;font-size: 16px;&quot;&gt;Reservert&lt;/strong&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt; eller &lt;/span&gt;&lt;strong style=&quot;font-size: 16px;&quot;&gt;Tildelt&lt;/strong&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Oppdraget må være bekreftet av tjenesteleverandør og ha status Åpen, Udekket eller Frigitt til tolker. Du kan reservere eller tildele en tolk frem til oppdragets sluttid.&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>
@@ -603,6 +679,29 @@
                     <stringValue>12</stringValue>
                 </width>
             </styleProperties>
+        </fields>
+        <fields>
+            <name>MessageToServiceProviderText</name>
+            <fieldText>&lt;p&gt;&lt;strong style=&quot;font-size: 16px;&quot;&gt;Beskjed til leverandør:&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;{!Get_Service_Appointment.HOT_MessageToServiceProvider__c}&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>Get_Service_Appointment.HOT_MessageToServiceProvider__c</leftValueReference>
+                    <operator>IsNull</operator>
+                    <rightValue>
+                        <booleanValue>false</booleanValue>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
         </fields>
         <fields>
             <name>SelectedResource</name>

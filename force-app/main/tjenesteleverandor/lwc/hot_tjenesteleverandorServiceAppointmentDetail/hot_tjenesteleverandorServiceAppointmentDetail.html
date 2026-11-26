@@ -12,45 +12,103 @@
                 <span>Tilbake til oppdrag</span>
             </button>
             <template lwc:if={showAssignOrReserveAction}>
-                <c-button
-                    button-styling="primary"
-                    button-label="Reserver eller tildel tolk"
-                    disabled={isAssignmentOpen}
-                    onbuttonclick={handleAssignOrReserve}
-                ></c-button>
+                <div class="assignment-actions">
+                    <c-button
+                        lwc:if={showAssignOrReserveButton}
+                        button-styling="primary"
+                        button-label="Reserver eller tildel tolk"
+                        disabled={areAssignmentActionsDisabled}
+                        onbuttonclick={handleAssignOrReserve}
+                    ></c-button>
+                    <template lwc:if={showChangeInterpreterAction}>
+                        <c-hot_button
+                            data-id="change-interpreter"
+                            button-styling="primary"
+                            button-label="Endre tolk"
+                            disabled={areAssignmentActionsDisabled}
+                            onbuttonclick={handleChangeInterpreter}
+                        ></c-hot_button>
+                    </template>
+                    <template lwc:if={showRemoveInterpreterAction}>
+                        <c-hot_button
+                            data-id="remove-interpreter"
+                            button-styling="primary"
+                            button-label="Fjern tolk"
+                            disabled={areAssignmentActionsDisabled}
+                            onbuttonclick={handleRemoveInterpreter}
+                        ></c-hot_button>
+                    </template>
+                </div>
             </template>
         </nav>
 
         <dialog
-            data-id="assignment-dialog"
+            data-id="action-dialog"
             class="modal-container"
-            aria-label="Reserver eller tildel tolk"
+            aria-label={actionDialogTitle}
             aria-modal="true"
-            onclose={closeAssignmentModal}
+            oncancel={handleDialogCancel}
+            onclose={closeActionModal}
         >
-            <template lwc:if={isAssignmentOpen}>
+            <template lwc:if={activeDialog}>
                 <div class="modal-header">
-                    <h2>Reserver eller tildel tolk</h2>
-                    <button class="close-btn" onclick={closeAssignmentModal} aria-label="Lukk">
-                        <img src={exitCrossIcon} alt="" aria-hidden="true" />
-                    </button>
+                    <h2>{actionDialogTitle}</h2>
+                    <template lwc:if={isFlowOpen}>
+                        <button class="close-btn" onclick={closeActionModal} aria-label="Lukk">
+                            <img src={exitCrossIcon} alt="" aria-hidden="true" />
+                        </button>
+                    </template>
                 </div>
                 <div class="modal-body">
-                    <template lwc:if={assignmentError}>
+                    <template lwc:if={isRemovalOpen}>
+                        <p class="removal-confirmation">{removalConfirmation}</p>
+                    </template>
+                    <template lwc:if={actionError}>
                         <c-hot_local-alert
                             type="error"
                             content-view="title-only"
-                            title={assignmentError}
+                            title={actionError}
                         ></c-hot_local-alert>
                     </template>
-                    <div class="flow-content">
-                        <lightning-flow
-                            flow-api-name="HOT_SPAssignOrReserveSAService"
-                            flow-input-variables={assignmentInputVariables}
-                            flow-finish-behavior="NONE"
-                            onstatuschange={handleAssignmentStatusChange}
-                        ></lightning-flow>
-                    </div>
+                    <template lwc:if={isRemovalOpen}>
+                        <div class="removal-actions">
+                            <c-hot_button
+                                data-id="cancel-removal"
+                                button-styling="secondary"
+                                button-label="Avbryt"
+                                disabled={isRemoving}
+                                onbuttonclick={closeActionModal}
+                            ></c-hot_button>
+                            <c-hot_button
+                                data-id="confirm-removal"
+                                button-styling="danger"
+                                button-label="Fjern tolk"
+                                disabled={isRemoving}
+                                is-loading={isRemoving}
+                                onbuttonclick={confirmRemoveInterpreter}
+                            ></c-hot_button>
+                        </div>
+                    </template>
+                    <template lwc:if={isAssignmentOpen}>
+                        <div class="flow-content">
+                            <lightning-flow
+                                flow-api-name="HOT_SPAssignOrReserveSAService"
+                                flow-input-variables={assignmentInputVariables}
+                                flow-finish-behavior="NONE"
+                                onstatuschange={handleAssignmentStatusChange}
+                            ></lightning-flow>
+                        </div>
+                    </template>
+                    <template lwc:if={isChangeInterpreterOpen}>
+                        <div class="flow-content">
+                            <lightning-flow
+                                flow-api-name="HOT_SPChangeInterpreter"
+                                flow-input-variables={changeInterpreterInputVariables}
+                                flow-finish-behavior="NONE"
+                                onstatuschange={handleAssignmentStatusChange}
+                            ></lightning-flow>
+                        </div>
+                    </template>
                 </div>
             </template>
         </dialog>

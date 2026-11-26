@@ -1,7 +1,12 @@
 import { LightningElement, api, wire } from 'lwc';
-import { getRecord, getFieldValue, getFieldDisplayValue } from 'lightning/uiRecordApi';
+import {
+    getRecord,
+    getFieldValue,
+    getFieldDisplayValue,
+    deleteRecord,
+    notifyRecordUpdateAvailable
+} from 'lightning/uiRecordApi';
 import { NavigationMixin, CurrentPageReference } from 'lightning/navigation';
-import { notifyRecordUpdateAvailable } from 'lightning/uiRecordApi';
 import { getRelatedListRecords } from 'lightning/uiRelatedListApi';
 import { refreshApex } from '@salesforce/apex';
 import { RefreshEvent } from 'lightning/refresh';
@@ -102,8 +107,9 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
     hasError = false;
     hasCancellationDetails = false;
     isResponding = false;
-    isAssignmentOpen = false;
-    assignmentError;
+    activeDialog;
+    isRemoving = false;
+    actionError;
     pageScrollLock;
     exitCrossIcon = icons + '/Close/Close.svg';
     isAcceptanceEligible = false;
@@ -111,7 +117,7 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
     responseFeedback;
 
     renderedCallback() {
-        if (!this.isAssignmentOpen) {
+        if (!this.activeDialog) {
             return;
         }
         if (!this.pageScrollLock) {
@@ -123,7 +129,7 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
             };
             element.style.setProperty('overflow', 'hidden', 'important');
         }
-        const dialog = this.template.querySelector('[data-id="assignment-dialog"]');
+        const dialog = this.template.querySelector('[data-id="action-dialog"]');
         if (dialog && !dialog.open) {
             dialog.showModal();
         }
@@ -147,6 +153,20 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
 
     get assignmentInputVariables() {
         return [{ name: 'recordId', type: 'String', value: this.effectiveRecordId }];
+    }
+
+    get changeInterpreterInputVariables() {
+        const record = this.assignedResourceResult?.data?.records[0];
+        return [
+            ...this.assignmentInputVariables,
+            { name: 'assignedResourceId', type: 'String', value: this.assignedResourceId },
+            {
+                name: 'originalServiceResourceId',
+                type: 'String',
+                value: getFieldValue(record, 'AssignedResource.ServiceResourceId')
+            },
+            { name: 'currentStatus', type: 'String', value: this.getFieldValue(STATUS_FIELD) }
+        ];
     }
 
     @wire(CurrentPageReference)
@@ -217,6 +237,53 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
         return this.displayValue(getFieldValue(record, 'AssignedResource.ServiceResource.Name'));
     }
 
+    get assignedResourceId() {
+        return this.assignedResourceResult?.data?.records[0]?.id;
+    }
+
+    get showRemoveInterpreterAction() {
+        return (
+            this.showAssignOrReserveAction &&
+            ['Scheduled', 'Dispatched'].includes(this.getFieldValue(STATUS_FIELD)) &&
+            Boolean(this.assignedResourceId)
+        );
+    }
+
+    get isAssignmentOpen() {
+        return this.activeDialog === 'assignment';
+    }
+
+    get isRemovalOpen() {
+        return this.activeDialog === 'removal';
+    }
+
+    get showChangeInterpreterAction() {
+        return this.showRemoveInterpreterAction;
+    }
+
+    get isChangeInterpreterOpen() {
+        return this.activeDialog === 'change-interpreter';
+    }
+
+    get isFlowOpen() {
+        return this.isAssignmentOpen || this.isChangeInterpreterOpen;
+    }
+
+    get actionDialogTitle() {
+        if (this.isChangeInterpreterOpen) {
+            return 'Endre tolk';
+        }
+        return this.isAssignmentOpen ? 'Reserver eller tildel tolk' : 'Fjern tolk';
+    }
+
+    get areAssignmentActionsDisabled() {
+        return Boolean(this.activeDialog) || this.isRemoving;
+    }
+
+    get removalConfirmation() {
+        return `Er du sikker på at du vil fjerne ${this.assignedResourceName} fra oppdraget?`;
+    }
+
     get assignedResourceError() {
         return this.assignedResourceResult?.error || this.assignedResourceUrlError;
     }
@@ -225,12 +292,16 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
         return Boolean(canAcceptAppointments && this.isAcceptanceEligible);
     }
 
+    get showAssignOrReserveButton() {
+        return this.showAssignOrReserveAction && this.getFieldValue(STATUS_FIELD) !== 'Dispatched';
+    }
+
     get showAssignOrReserveAction() {
-        const status = this.getFieldValue(STATUS_FIELD);
         return (
             this.getFieldValue(HOT_TJENESTELEVERANDOR_STATUS_FIELD) === 'Accepted' &&
-            Boolean(status) &&
-            !['Completed', 'Canceled', 'Annul', 'In Progress', 'Cannot Complete'].includes(status)
+            ['None', 'Scheduled', 'Dispatched', 'Cannot Complete', 'Released to Freelance'].includes(
+                this.getFieldValue(STATUS_FIELD)
+            )
         );
     }
 
@@ -469,41 +540,127 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
     }
 
     handleAssignOrReserve() {
-        this.isAssignmentOpen = true;
-        this.assignmentError = undefined;
+        this.activeDialog = 'assignment';
+        this.actionError = undefined;
         this.responseFeedback = undefined;
     }
 
-    closeAssignmentModal() {
-        this.isAssignmentOpen = false;
-        const dialog = this.template.querySelector('[data-id="assignment-dialog"]');
+    handleRemoveInterpreter() {
+        this.activeDialog = 'removal';
+        this.actionError = undefined;
+        this.responseFeedback = undefined;
+    }
+
+    handleChangeInterpreter() {
+        this.activeDialog = 'change-interpreter';
+        this.actionError = undefined;
+        this.responseFeedback = undefined;
+    }
+
+    closeActionModal() {
+        this.activeDialog = undefined;
+        const dialog = this.template.querySelector('[data-id="action-dialog"]');
         if (dialog?.open) {
             dialog.close();
         }
         this.unlockPageScroll();
     }
 
+    handleDialogCancel(event) {
+        if (this.isRemoving) {
+            event.preventDefault();
+        }
+    }
+
+    async confirmRemoveInterpreter() {
+        if (!this.isRemovalOpen || this.isRemoving) {
+            return;
+        }
+        if (!this.showRemoveInterpreterAction) {
+            this.actionError = 'Tildelingen er endret. Lukk vinduet og last inn siden på nytt.';
+            return;
+        }
+
+        this.isRemoving = true;
+        this.actionError = undefined;
+        let interpreterRemoved = false;
+        try {
+            await deleteRecord(this.assignedResourceId);
+            interpreterRemoved = true;
+            this.closeActionModal();
+            await this.refreshAssignment();
+            this.responseFeedback = { type: 'success', message: 'Tolken er fjernet fra oppdraget.' };
+        } catch (error) {
+            if (interpreterRemoved) {
+                this.responseFeedback = {
+                    type: 'error',
+                    message: 'Tolken er fjernet, men siden kunne ikke oppdateres. Last inn siden på nytt.'
+                };
+            } else {
+                console.error('Error removing assigned interpreter:', error);
+                this.actionError = this.getRemovalErrorMessage(error);
+            }
+        } finally {
+            this.isRemoving = false;
+        }
+    }
+
+    getRemovalErrorMessage(error) {
+        const body = error?.body;
+        const errors = [
+            ...(Array.isArray(body) ? body : [body]),
+            ...(body?.output?.errors || []),
+            ...Object.values(body?.output?.fieldErrors || {}).flat()
+        ].filter(Boolean);
+        if (
+            error?.status === 403 ||
+            errors.some(({ errorCode }) =>
+                [
+                    'INSUFFICIENT_ACCESS',
+                    'INSUFFICIENT_ACCESS_OR_READONLY',
+                    'INSUFFICIENT_ACCESS_ON_CROSS_REFERENCE_ENTITY'
+                ].includes(errorCode)
+            )
+        ) {
+            return 'Du har ikke tilgang til å fjerne tolken fra dette oppdraget. Kontakt Nav formidler for hjelp.';
+        }
+        if (errors.some(({ errorCode }) => errorCode === 'UNABLE_TO_LOCK_ROW')) {
+            return 'Oppdraget oppdateres av noen andre. Vent litt og prøv igjen.';
+        }
+        const validationError = errors.find(({ errorCode }) => errorCode === 'FIELD_CUSTOM_VALIDATION_EXCEPTION');
+        if (validationError?.message) {
+            return validationError.message.startsWith('Cannot change status')
+                ? 'Oppdragets status tillater ikke at tolken fjernes. Kontakt Nav formidler for hjelp.'
+                : validationError.message;
+        }
+        return 'Tolken kunne ikke fjernes fra oppdraget. Last inn siden på nytt og prøv igjen. Kontakt Nav formidler hvis feilen vedvarer.';
+    }
+
     async handleAssignmentStatusChange(event) {
         const { status } = event.detail;
         if (status === 'ERROR') {
-            this.assignmentError = 'Tildelingen kunne ikke fullføres. Lukk vinduet og prøv igjen.';
+            this.actionError = 'Tildelingen kunne ikke fullføres. Lukk vinduet og prøv igjen.';
             return;
         }
         if (status !== 'FINISHED' && status !== 'FINISHED_SCREEN') {
             return;
         }
-        this.closeAssignmentModal();
+        this.closeActionModal();
         try {
-            this.markListsForRefresh();
-            await notifyRecordUpdateAvailable([{ recordId: this.effectiveRecordId }]);
-            await refreshApex(this.assignedResourceResult);
-            this.dispatchEvent(new RefreshEvent());
+            await this.refreshAssignment();
         } catch (error) {
             this.responseFeedback = {
                 type: 'error',
                 message: error?.body?.message || error?.message || 'Kunne ikke åpne eller oppdatere tildelingen.'
             };
         }
+    }
+
+    async refreshAssignment() {
+        this.markListsForRefresh();
+        await notifyRecordUpdateAvailable([{ recordId: this.effectiveRecordId }]);
+        await refreshApex(this.assignedResourceResult);
+        this.dispatchEvent(new RefreshEvent());
     }
 
     markListsForRefresh() {
