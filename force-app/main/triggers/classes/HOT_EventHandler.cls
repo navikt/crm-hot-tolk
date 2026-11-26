@@ -19,11 +19,20 @@ public without sharing class HOT_EventHandler extends MyTriggers {
             ) {
                 serviceAppointmentEvents.add(event);
                 serviceAppointmentIds.add(event.WhatId);
+            } else if (
+                event.RecordTypeId == hotEventRecordTypeId &&
+                event.WhatId == null
+            ) {
+                resourceAbsenceEvents.add(event);
             }
         }
 
         if (serviceAppointmentEvents.size() > 0) {
             setDefaultValuesSA(serviceAppointmentEvents, serviceAppointmentIds, true);
+        }
+
+        if (resourceAbsenceEvents.size() > 0) {
+            setDefaultValuesRA(resourceAbsenceEvents);
         }
     }
 
@@ -68,6 +77,11 @@ public without sharing class HOT_EventHandler extends MyTriggers {
             if (newEvent) {
                 event.HOT_IsCreatedFromSA__c = true;
             }
+        }
+    }
+
+    private static void setDefaultValuesRA(List<Event> events) {
+         for (Event event : events) {
             if (event.ShowAs == 'Busy') {
                 event.Type = 'Outlook Absence';
             }
