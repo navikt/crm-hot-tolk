@@ -10,8 +10,14 @@ public without sharing class HOT_EventHandler extends MyTriggers {
         List<Event> serviceAppointmentEvents = new List<Event>();
         List<Event> resourceAbsenceEvents = new List<Event>();
         Set<Id> serviceAppointmentIds = new Set<Id>();
+        Set<Id> userIds = new Set<Id>();
+        for (Event event : (List<Event>) records) {
+            userIds.add(event.OwnerId);
+        }
+        Map<Id, User> userMap = new Map<Id, User>([SELECT Id, CRM_UserProfileName__c FROM User WHERE Id IN :userIds AND (CRM_UserProfileName__c = 'HOT Tolk Ansatt' OR CRM_UserProfileName__c = 'HOT Tolk Formidler')]);
 
         for (Event event : (List<Event>) records) {
+            Boolean userWithProfileExists = userMap.containsKey(event.OwnerId);
             // Filtrer ut de som er koblet til ett oppdrag og er av type HOT Event
             if (
                 event.RecordTypeId == hotEventRecordTypeId &&
@@ -20,7 +26,7 @@ public without sharing class HOT_EventHandler extends MyTriggers {
                 serviceAppointmentEvents.add(event);
                 serviceAppointmentIds.add(event.WhatId);
             } else if (
-                event.RecordTypeId == hotEventRecordTypeId &&
+                userWithProfileExists &&
                 event.WhatId == null
             ) {
                 resourceAbsenceEvents.add(event);
