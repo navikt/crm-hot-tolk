@@ -5,7 +5,14 @@ public without sharing class HOT_ServiceAppointmentMessageController {
             throw new AuraHandledException('Ikke en gyldig oppdrags-ID.');
         }
 
-        if (!HOT_CheckPermissions.isFormidlerOrAdmin()) {
+        if (
+            !HOT_CheckPermissions.isFormidlerOrAdmin() &&
+            [
+                SELECT COUNT()
+                FROM PermissionSetAssignment
+                WHERE AssigneeId = :UserInfo.getUserId() AND PermissionSet.Name = 'HOT_Tolk_Ansatt'
+            ] == 0
+        ) {
             List<AssignedResource> assignedResources = [
                 SELECT Id
                 FROM AssignedResource
