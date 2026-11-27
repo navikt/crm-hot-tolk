@@ -50,7 +50,7 @@ private class HOT_EventHandlerTest {
         );
         Test.stopTest();
     }
-
+    
     @IsTest
     private static void testChangeOfAddress() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
