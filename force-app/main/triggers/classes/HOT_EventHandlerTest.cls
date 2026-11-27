@@ -1,6 +1,39 @@
 @IsTest
 private class HOT_EventHandlerTest {
     @IsTest
+    private static void testSetResourceAbsenceTypeOnUpdate() {
+        Id hotEventRecordTypeId = Schema.SObjectType.Event.getRecordTypeInfosByDeveloperName()
+            .get('HOT_Events')
+            .getRecordTypeId();
+        Event event = new Event(
+            Subject = 'TEST',
+            StartDateTime = DateTime.now().addDays(1),
+            DurationInMinutes = 60,
+            RecordTypeId = hotEventRecordTypeId,
+            ShowAs = 'Free'
+        );
+        insert event;
+
+        Test.startTest();
+        event.ShowAs = 'Busy';
+        update event;
+        event = [SELECT Id, Type, ShowAs FROM Event WHERE Id = :event.Id];
+        System.assertEquals('Outlook Absence', event.Type);
+
+        event.Type = null;
+        update event;
+        event = [SELECT Id, Type, ShowAs FROM Event WHERE Id = :event.Id];
+        System.assertEquals('Outlook Absence', event.Type);
+
+        event.ShowAs = 'Free';
+        event.Type = null;
+        update event;
+        event = [SELECT Type FROM Event WHERE Id = :event.Id];
+        System.assertEquals(null, event.Type);
+        Test.stopTest();
+    }
+
+    @IsTest
     private static void testSetDefaultValues() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -30,7 +63,8 @@ private class HOT_EventHandlerTest {
             StartDateTime = DateTime.now(),
             DurationInMinutes = 60,
             WhatId = serviceAppointment.Id,
-            RecordTypeId = hotEventRecordTypeId
+            RecordTypeId = hotEventRecordTypeId,
+            ShowAs = 'Free'
         );
         insert event;
         event = [SELECT Subject, Location FROM Event];
@@ -41,13 +75,15 @@ private class HOT_EventHandlerTest {
         System.assertEquals(serviceAppointment.HOT_AddressFormated__c, event.Location);
 
         event.Subject = 'TEST';
+        event.ShowAs = 'Busy';
         update event;
-        event = [SELECT Subject FROM Event WHERE Id = :event.Id];
+        event = [SELECT Subject, Type FROM Event WHERE Id = :event.Id];
 
         System.assertEquals(
             serviceAppointment.AppointmentNumber + ': ' + serviceAppointment.WorkType.Name,
             event.Subject
         );
+        System.assertNotEquals('Outlook Absence', event.Type);
         Test.stopTest();
     }
 
