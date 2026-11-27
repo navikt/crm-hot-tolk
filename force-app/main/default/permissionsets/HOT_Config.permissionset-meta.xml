@@ -1040,6 +1040,11 @@
         <field>ServiceAppointment.HOT_LateCancellationScreenInterpreter__c</field>
         <readable>true</readable>
     </fieldPermissions>
+        <fieldPermissions>
+        <editable>true</editable>
+        <field>ServiceAppointment.HOT_MessageToServiceProvider__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
         <field>ServiceAppointment.HOT_PreferredInterpreter__c</field>

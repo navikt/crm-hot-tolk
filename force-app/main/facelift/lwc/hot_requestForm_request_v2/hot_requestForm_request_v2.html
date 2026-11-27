@@ -152,7 +152,7 @@
             checked={componentValues.isOptionalFields}
         ></c-hot_switch>
 
-        <div if:true={componentValues.isOptionalFields}>
+        <div lwc:if={componentValues.isOptionalFields}>
             <br />
             <c-input
                 id="onsketTolk"
@@ -161,6 +161,14 @@
                 form="tolk-skjema-input"
                 value={fieldValues.UserPreferredInterpreter__c}
             ></c-input>
+            <br />
+            <c-picklist
+                master-label="Ønsket kjønn"
+                name="UserPreferredGender__c"
+                form="tolk-skjema-input"
+                choices={componentValues.genderChoices}
+                onpicklistvaluechange={handleGenderPicklist}
+            ></c-picklist>
             <br />
             <c-picklist
                 master-label="Anledning"

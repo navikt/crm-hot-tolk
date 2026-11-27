@@ -7,10 +7,7 @@ private class HOT_NotificationHandlerTest {
         ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
         insert serviceTerritory;
 
-        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
-        User user = HOT_TestDataFactory.createUser('user', profile);
-        insert user;
-        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
+        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
         serviceResource.HOT_IsFreelanceInterpreter__c = true;
         insert serviceResource;
         ServiceTerritoryMember serviceTerritoryMember = HOT_TestDataFactory.createServiceTerritoryMember(
@@ -42,23 +39,27 @@ private class HOT_NotificationHandlerTest {
 
     @IsTest
     static void testGetGroupIdByQueueId() {
-        List<Group> grpList = [
-            SELECT DeveloperName
-            FROM Group
-            WHERE
-                DeveloperName = 'HOT_group_4719_formidler'
-                OR DeveloperName = 'HOT_Tolk_Akuttvakt'
-                OR DeveloperName = 'HOT_group_4706_formidler'
-        ];
-        List<Id> queueIdsToTest = new List<Id>();
+        Group formidlerGroup = new Group(
+            Name = 'HOT group 999011 formidler',
+            DeveloperName = 'HOT_group_999011_formidler',
+            Type = 'Regular'
+        );
+        Group queue = new Group(Name = 'Queue 999011', DeveloperName = 'queue_999011', Type = 'Queue');
+        insert new List<Group>{ formidlerGroup, queue };
 
-        for (Group grp : grpList) {
-            queueIdsToTest.add(grp.Id);
-        }
+        Map<Id, Id> result = HOT_NotificationHandler.getGroupIdByQueueId(new List<Id>{ queue.Id });
 
-        Map<Id, Id> result = HOT_NotificationHandler.getGroupIdByQueueId(queueIdsToTest);
-        Integer sizeOfResult = result.size();
-        System.assertEquals(sizeOfResult, result.size());
+        System.assertEquals(formidlerGroup.Id, result.get(queue.Id));
+    }
+
+    @IsTest
+    static void malformedQueueNameIsReturnedAsUnresolved() {
+        Group queue = new Group(Name = 'Malformed Queue', DeveloperName = 'MalformedQueue', Type = 'Queue');
+        insert queue;
+
+        Map<Id, Id> result = HOT_NotificationHandler.getGroupIdByQueueId(new List<Id>{ queue.Id });
+
+        System.assertEquals(null, result.get(queue.Id));
     }
 
     @IsTest
@@ -97,5 +98,8 @@ private class HOT_NotificationHandlerTest {
             notificationType.Id,
             targetId
         );
+
+        System.assertNotEquals(null, notification);
+        HOT_NotificationHandler.sendNotification(notification, new Set<String>(), request);
     }
 }

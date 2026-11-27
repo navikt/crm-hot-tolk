@@ -1,3 +1,23 @@
+:host {
+    display: block;
+    position: relative;
+}
+
+.spinner-overlay {
+    position: absolute;
+    z-index: 10;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgb(255 255 255 / 70%);
+}
+
+.spinner-text {
+    margin-top: 5rem;
+    font-weight: 600;
+}
+
 .scroller {
     height: 30vh;
     overflow-y: scroll;

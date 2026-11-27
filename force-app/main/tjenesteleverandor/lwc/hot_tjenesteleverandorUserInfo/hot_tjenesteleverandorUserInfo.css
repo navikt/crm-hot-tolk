@@ -1,0 +1,191 @@
+@import 'c/hot_sharedFonts';
+
+.page-background {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 80vh;
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+}
+
+.profile-layout {
+    display: flex;
+    flex-direction: column;
+    width: min(100%, 80rem);
+    min-height: calc(80vh - 3rem);
+    margin: 0 auto;
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 4rem;
+}
+
+.header-title {
+    max-width: 100%;
+    font-size: 2rem;
+    text-align: center;
+    font-weight: 600;
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.profile-content {
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    flex: 1;
+    min-width: 0;
+}
+
+.regions-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: min(100%, 56rem);
+    min-height: calc(80vh - 7rem);
+    margin: 0 auto;
+    margin-top: 2rem;
+}
+
+.regions-section-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(80vh - 7rem);
+}
+
+.section-title {
+    width: 100%;
+    max-width: 42rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-align: left;
+    margin: 0 0 0.5rem;
+}
+
+.regions-grid {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    max-width: 42rem;
+    gap: 2rem;
+}
+
+.regions-column {
+    display: flex;
+    flex: 1 1 0;
+    flex-direction: column;
+    min-width: 0;
+    gap: 0.75rem;
+}
+
+.region-option {
+    min-width: 0;
+}
+
+.save-button-container {
+    display: flex;
+    justify-content: flex-start;
+    gap: 0.75rem;
+    width: 100%;
+    max-width: 42rem;
+    margin-top: 1.5rem;
+}
+
+.success-alert-container {
+    width: 100%;
+    max-width: 42rem;
+    margin-top: 2%;
+}
+
+.success-alert-container c-hot_local-alert {
+    display: block;
+    width: 100%;
+}
+
+.load-error,
+.save-error {
+    color: #a4262c;
+    margin: 1rem 0;
+}
+
+.alert-container {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    width: 100%;
+    min-height: calc(80vh - 7rem);
+    margin-top: 2rem;
+}
+
+.alert-container c-hot_local-alert {
+    display: block;
+    width: min(100%, 35rem);
+}
+
+@media (max-width: 40rem) {
+    .page-background {
+        padding: 1rem;
+    }
+
+    .profile-layout {
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+    }
+
+    .header-content {
+        align-items: center;
+        justify-content: center;
+        min-height: 4rem;
+    }
+
+    .header-title {
+        font-size: 1.75rem;
+        text-align: center;
+    }
+
+    .profile-content {
+        width: 100%;
+    }
+
+    .regions-section-loading {
+        min-height: calc(80vh - 6rem);
+    }
+
+    .regions-section {
+        min-height: calc(80vh - 6rem);
+    }
+
+    .alert-container {
+        min-height: calc(80vh - 6rem);
+    }
+
+    .regions-grid {
+        flex-direction: column;
+        max-width: 30rem;
+    }
+
+    .regions-column {
+        flex: 0 1 auto;
+        width: 100%;
+    }
+
+    .section-title {
+        max-width: 30rem;
+    }
+
+    .region-option {
+        flex-basis: 100%;
+    }
+
+    .save-button-container c-hot_button {
+        width: 100%;
+    }
+}
