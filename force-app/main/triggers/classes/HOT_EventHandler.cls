@@ -38,6 +38,7 @@ public without sharing class HOT_EventHandler extends MyTriggers {
 
     public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap) {
         List<Event> serviceAppointmentEvents = new List<Event>();
+        List<Event> resourceAbsenceEvents = new List<Event>();
         Set<Id> serviceAppointmentIds = new Set<Id>();
 
         for (Event event : (List<Event>) records) {
@@ -48,11 +49,20 @@ public without sharing class HOT_EventHandler extends MyTriggers {
             ) {
                 serviceAppointmentEvents.add(event);
                 serviceAppointmentIds.add(event.WhatId);
+            } else if (
+                event.RecordTypeId == hotEventRecordTypeId &&
+                event.WhatId == null
+            ) {
+                resourceAbsenceEvents.add(event);
             }
         }
 
         if (serviceAppointmentEvents.size() > 0) {
             setDefaultValuesSA(serviceAppointmentEvents, serviceAppointmentIds, false);
+        }
+
+        if (resourceAbsenceEvents.size() > 0) {
+            setDefaultValuesRA(resourceAbsenceEvents);
         }
     }
 
